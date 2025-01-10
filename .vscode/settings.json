@@ -1,0 +1,15 @@
+{
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "python.analysis.autoFormatStrings": true,
+    "python.analysis.generateWithTypeAnnotation": true,
+    "python.analysis.typeCheckingMode": "standard",
+    "python.analysis.typeEvaluation.enableReachabilityAnalysis": true,
+    "python.analysis.typeEvaluation.strictDictionaryInference": true,
+    "python.analysis.typeEvaluation.strictListInference": true,
+    "python.analysis.typeEvaluation.strictSetInference": true,
+    "files.exclude": {
+        "**/__pycache__": true
+    },
+}

@@ -1,0 +1,47 @@
+from __future__ import annotations
+
+from pygame import Surface
+from src.core import *
+from .spell import Spell
+
+class Construct(Spell):
+    def __init__(self, scene: MainScene, charge_time: float, lifespan: float, hp: int) -> None:
+        """
+        Notes: \n
+        A lifespan of -1 grants the construct infinite duration \n
+        An hp amount of -1 makes it indestructible
+        """
+        super().__init__(scene, charge_time)
+        self.lifespan = Timer(lifespan)
+        self.hp = hp
+        self.pos: Vec
+        self.scene.player.constructs.append(self)
+        # pretty sure this is *not* how hitboxes are made
+        self.rect = pygame.Rect()
+
+    def update_charge(self, dt: float) -> None:
+        pass
+    def update_aiming(self, dt: float) -> None:
+        pass
+
+    def update_spell(self, dt: float) -> None:
+        if self.lifespan.done:
+            self.kill()
+            return
+        if self.hp == 0:
+            self.kill()
+
+    def trigger_spell(self) -> None:
+        self.lifespan.reset()
+        screen_pos = self.game.mouse_pos - self.scene.player.screen_pos
+        screen_pos.y *= -1
+        self.pos = self.scene.player.pos + screen_pos
+        super().trigger_spell()
+
+    def take_damage(self, hp: int):
+        if self.hp == -1: return
+        self.hp = max(self.hp - hp, 0)
+
+    def kill(self) -> None:
+        self.scene.player.constructs.remove(self)
+        super().kill()

@@ -6,22 +6,20 @@ from .construct import Construct
 
 class Waterball(Projectile):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 5, 400, 1.5, 10, "water")
+        super().__init__(scene, 5, 400, 1.5, 10, "water", 20)
         self.exploding = False
         self.exploding_timer = Timer(0.1)
-        self.size = 20
 
     def draw_charge(self, screen: Surface) -> None:
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
-        screen_pos = Vec(self.pos.x - self.scene.player.pos.x, self.scene.player.pos.y - self.pos.y)
-        screen_pos += (screen.width / 2, screen.height / 2)
-        pygame.draw.circle(screen, (50, 100, 200), screen_pos, self.charging_time.elapsed * self.size / 1.5)
+        self.set_screen_pos(screen)
+        pygame.draw.circle(screen, (50, 100, 200), self.screen_pos, self.charging_time.elapsed * self.rad / self.charging_time.duration)
 
     def update_spell(self, dt: float) -> None:
         super().update_spell(dt)
         if self.exploding:
-            self.size = 20 + 180 * self.exploding_timer.elapsed / self.exploding_timer.duration
+            self.rad = 20 + 180 * self.exploding_timer.elapsed / self.exploding_timer.duration
             if self.exploding_timer.done:
                 # testing an exploding mechanic
                 self.rect = pygame.Rect(self.pos - (200, 200), (400, 400))
@@ -37,10 +35,8 @@ class Waterball(Projectile):
     def draw_spell(self, screen: Surface) -> None:
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
-        screen_pos = Vec(self.pos.x - self.scene.player.pos.x, self.scene.player.pos.y - self.pos.y)
-        screen_pos += (screen.width / 2, screen.height / 2)
-        pygame.draw.circle(screen, (50, 100, 200), screen_pos, self.size)
-        self.rect = pygame.Rect(self.pos - (self.size / 2, self.size / 2), (self.size, self.size))
+        self.set_screen_pos(screen)
+        pygame.draw.circle(screen, (50, 100, 200), self.screen_pos, self.rad)
 
     def collide(self, target: Construct | Projectile) -> None:
         # deals double damage against fire (testing this out)

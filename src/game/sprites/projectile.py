@@ -7,7 +7,7 @@ from abc import abstractmethod
 from .construct import Construct
 
 class Projectile(Spell):
-    def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float, dmg: int, elem: str) -> None:
+    def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
         super().__init__(scene, charge_time, elem)
         self.vel = Vec()
         self.pos = self.scene.player.pos.copy()
@@ -15,6 +15,8 @@ class Projectile(Spell):
         self.lifespan = LoopTimer(lifespan, 1)
         self.rect = pygame.Rect()
         self.damage = dmg
+        self.rad = radius
+        self.screen_pos = Vec()
         self.ignore_elem = []
         self.scene.projectiles.append(self)
 
@@ -40,6 +42,7 @@ class Projectile(Spell):
 
     def update_spell(self, dt: float) -> None:
         self.pos += self.vel * dt
+        self.rect = pygame.Rect(self.pos - (self.rad, self.rad), (self.rad * 2, self.rad * 2))
         if self.lifespan.done:
             self.kill()
             return
@@ -52,6 +55,10 @@ class Projectile(Spell):
                projectile.element not in self.ignore_elem and \
                projectile != self:
                 self.collide(projectile)
+
+    def set_screen_pos(self, screen: Surface) -> None:
+        self.screen_pos = Vec(self.pos.x - self.scene.player.pos.x, self.scene.player.pos.y - self.pos.y)
+        self.screen_pos += (screen.width / 2, screen.height / 2)
 
     def take_damage(self, dmg: int) -> int:
         """

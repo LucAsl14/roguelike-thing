@@ -52,7 +52,8 @@ class EarthBlock(Construct):
     def trigger_spell(self) -> None:
         super().trigger_spell()
 
-    def take_damage(self, hp: int):
-        super().take_damage(hp)
+    def take_damage(self, dmg: int) -> int:
+        dmg_taken = super().take_damage(dmg)
         if self.hp <= 10:
             self.extra_damaged = True
+        return dmg_taken

@@ -7,13 +7,21 @@ from abc import abstractmethod
 from .construct import Construct
 
 class Projectile(Spell):
-    def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float) -> None:
-        super().__init__(scene, charge_time)
+    def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float, dmg: int, elem: str) -> None:
+        super().__init__(scene, charge_time, elem)
         self.vel = Vec()
         self.pos = self.scene.player.pos.copy()
         self.speed = speed
         self.lifespan = LoopTimer(lifespan, 1)
         self.rect = pygame.Rect()
+        self.damage = dmg
+        self.ignore_elem = []
+        self.scene.projectiles.append(self)
+
+    def kill(self) -> None:
+        if not self.killed:
+            self.scene.projectiles.remove(self)
+        super().kill()
 
     def update_charge(self, dt: float) -> None:
         pass
@@ -35,11 +43,29 @@ class Projectile(Spell):
         if self.lifespan.done:
             self.kill()
             return
-        # collision with own construct
-        for construct in self.scene.player.constructs:
+        # collision with constructs and projectiles
+        for construct in self.scene.constructs:
             if self.rect.colliderect(construct.rect):
                 self.collide(construct)
+        for projectile in self.scene.projectiles:
+            if self.rect.colliderect(projectile.rect) and \
+               projectile.element not in self.ignore_elem and \
+               projectile != self:
+                self.collide(projectile)
+
+    def take_damage(self, dmg: int) -> int:
+        """
+        Returns:
+            Amount of damage taken
+        """
+        prev_dmg = self.damage
+        self.damage -= dmg
+        if self.damage <= 0:
+            self.damage = 0
+            self.kill()
+        return prev_dmg - self.damage
 
     @abstractmethod
-    def collide(self, target: Construct) -> None:
-        pass
+    def collide(self, target: Construct | Projectile) -> None:
+        dmg_dealt = target.take_damage(self.damage)
+        self.take_damage(dmg_dealt)

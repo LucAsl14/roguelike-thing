@@ -11,11 +11,11 @@ class Construct(Spell):
         A lifespan of -1 grants the construct infinite duration \n
         An hp amount of -1 makes it indestructible
         """
-        super().__init__(scene, charge_time)
+        super().__init__(scene, charge_time, "earth")
         self.lifespan = Timer(lifespan)
         self.hp = hp
         self.pos: Vec
-        self.scene.player.constructs.append(self)
+        self.scene.constructs.append(self)
         # pretty sure this is *not* how hitboxes are made
         self.rect = pygame.Rect()
 
@@ -38,10 +38,17 @@ class Construct(Spell):
         self.pos = self.scene.player.pos + screen_pos
         super().trigger_spell()
 
-    def take_damage(self, hp: int):
-        if self.hp == -1: return
-        self.hp = max(self.hp - hp, 0)
+    def take_damage(self, dmg: int) -> int:
+        """
+        Returns:
+            actual damage taken
+        """
+        prev_hp = self.hp
+        if self.hp == -1: return dmg
+        self.hp = max(self.hp - dmg, 0)
+        return prev_hp - self.hp
 
     def kill(self) -> None:
-        self.scene.player.constructs.remove(self)
+        if not self.killed:
+            self.scene.constructs.remove(self)
         super().kill()

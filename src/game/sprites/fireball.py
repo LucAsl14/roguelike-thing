@@ -13,7 +13,7 @@ class Fireball(Projectile):
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
         self.set_screen_pos(screen)
-        pygame.draw.circle(screen, (200, 100, 50), self.screen_pos, self.charging_time.elapsed * self.rad / self.charging_time.duration)
+        pygame.draw.circle(screen, (200, 100, 50), self.screen_pos, self.rad * self.charging_time.progress)
 
     def draw_spell(self, screen: Surface) -> None:
         if self.pos.distance_to(self.scene.player.pos) > 800:

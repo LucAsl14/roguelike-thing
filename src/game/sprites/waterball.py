@@ -13,12 +13,12 @@ class Waterball(Projectile):
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
         self.set_screen_pos(screen)
-        pygame.draw.circle(screen, (50, 100, 200), self.screen_pos, self.charging_time.elapsed * self.rad / self.charging_time.duration)
+        pygame.draw.circle(screen, (50, 100, 200), self.screen_pos, self.rad * self.charging_time.progress)
 
     def update_spell(self, dt: float) -> None:
         super().update_spell(dt)
         if self.exploding:
-            self.rad = 20 + 180 * self.exploding_timer.elapsed / self.exploding_timer.duration
+            self.rad = 20 + 180 * self.exploding_timer.progress
             if self.exploding_timer.done:
                 # testing an exploding mechanic
                 self.rect = pygame.Rect(self.pos - (200, 200), (400, 400))

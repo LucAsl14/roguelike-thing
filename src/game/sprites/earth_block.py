@@ -26,8 +26,8 @@ class EarthBlock(Construct):
     def draw_charge(self, screen: Surface) -> None:
         self.draw_spell(screen)
         for _ in range(5):
-            dpos = Vec(cos(uniform(0, 360)) * 300 * (0.2 - self.charging_time.elapsed),
-                       sin(uniform(0, 360)) * 300 * (0.2 - self.charging_time.elapsed))
+            dpos = Vec(cos(uniform(0, 360)) * 100 * (1 - self.charging_time.progress),
+                       sin(uniform(0, 360)) * 100 * (1 - self.charging_time.progress))
             if (self.pos + dpos).distance_to(self.scene.player.pos) > 800:
                 continue
             pygame.draw.circle(screen, (100, 60, 30), self.screen_pos + (dpos.x, -dpos.y), 10)

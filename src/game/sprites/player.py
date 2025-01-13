@@ -24,11 +24,11 @@ class Player(Sprite):
 
         # inventory
         self.inventory = Inventory(self.scene)
-        self.inventory.add("water")
         for _ in range(10):
+            self.inventory.add("water")
             self.inventory.add("fire")
             self.inventory.add("earth")
-        self.inventory.add("air")
+            self.inventory.add("air")
         self.scene.add(self.inventory)
 
         # spell queue

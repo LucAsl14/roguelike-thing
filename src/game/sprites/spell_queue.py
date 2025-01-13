@@ -2,7 +2,8 @@ from __future__ import annotations
 from src.core import *
 from .fireball import Fireball
 from .earth_block import EarthBlock
-from.waterball import Waterball
+from .waterball import Waterball
+from .gust import Gust
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, Layer.HUD)
@@ -10,41 +11,44 @@ class SpellQueue(Sprite):
         self.queue = []
         self.scene = scene
         self.cursor_timer = LoopTimer(0.5, -1)
-        self.cursor_on = True
+        self.cursor_blink_on = True
         self.aiming_spell = None
         self.spell_list = {
             "j": Waterball,
             "k": EarthBlock,
-            # "i": Gust,
+            "i": Gust,
             "l": Fireball,
         }
 
     def update(self, dt: float) -> None:
         if self.cursor_timer.done:
-            self.cursor_on = not self.cursor_on
+            self.cursor_blink_on = not self.cursor_blink_on
         self.parse_top_spell()
 
     def draw(self, screen: pygame.Surface) -> None:
         self.screen_pos = Vec(200, screen.get_height() - 180)
-        pygame.draw.rect(screen, (120, 120, 120, 128), pygame.Rect(self.screen_pos, (screen.get_width() - 400, 70)))
+        trans_surf = pygame.surface.Surface((screen.get_width() - 400, 70), pygame.SRCALPHA)
+        pygame.draw.rect(trans_surf, (120, 120, 120, 100), pygame.Rect((0, 0), (screen.get_width() - 400, 70)))
         for i in range(len(self.queue)):
-            draw_pos = Vec(self.screen_pos.x + 10 + 60 * i, self.screen_pos.y + 10)
-            if self.queue[i] == " " or draw_pos.x > screen.get_width() - 260:
+            draw_pos = Vec(10 + 60 * i, 10)
+            if self.queue[i] == " " or draw_pos.x > 400:
                 continue
             color = (0, 0, 0)
             match self.queue[i]:
                 case "water":
-                    color = (50, 100, 200)
+                    color = (50, 100, 200, 200)
                 case "air":
-                    color = (200, 200, 200)
+                    color = (200, 200, 200, 200)
                 case "earth":
-                    color = (100, 60, 30)
+                    color = (100, 60, 30, 200)
                 case "fire":
-                    color = (200, 100, 50)
-            pygame.draw.rect(screen, color, pygame.Rect(draw_pos, (50, 50)))
-        draw_pos = Vec(self.screen_pos.x + 10 + 60 * len(self.queue), self.screen_pos.y + 10)
-        if draw_pos.x <= screen.get_width() - 260 and self.cursor_on:
-            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(draw_pos, (5, 50)))
+                    color = (200, 100, 50, 200)
+            pygame.draw.rect(trans_surf, color, pygame.Rect(draw_pos, (50, 50)))
+        draw_pos = Vec(10 + 60 * len(self.queue), 10)
+        screen.blit(trans_surf, self.screen_pos)
+        if draw_pos.x <= 400 and self.cursor_blink_on:
+            pygame.draw.rect(trans_surf, (0, 0, 0, 200), pygame.Rect(draw_pos, (5, 50)))
+        screen.blit(trans_surf, self.screen_pos)
 
 
     def push(self, item: str) -> None:

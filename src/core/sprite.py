@@ -29,7 +29,7 @@ class Sprite(AbstractClass):
         self.scene.sprite_manager.layers[self.layer].bind(sprite, self)
 
     def kill(self) -> None:
-        self.scene.sprite_manager.remove(self)
+        self.scene.remove(self)
 
     def __hash__(self) -> int:
         return hash(self.uuid)

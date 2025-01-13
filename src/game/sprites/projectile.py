@@ -3,7 +3,6 @@ from __future__ import annotations
 from pygame import Surface
 from src.core import *
 from .spell import Spell
-from abc import abstractmethod
 from .construct import Construct
 
 class Projectile(Spell):
@@ -72,7 +71,7 @@ class Projectile(Spell):
             self.kill()
         return prev_dmg - self.damage
 
-    @abstractmethod
     def collide(self, target: Construct | Projectile) -> None:
         dmg_dealt = target.take_damage(self.damage)
         self.take_damage(dmg_dealt)
+        Log.debug(f"{self} dealt {dmg_dealt} dmg to {target}")

@@ -2,7 +2,6 @@ from __future__ import annotations
 from src.core import *
 from .projectile import Projectile
 from pygame import Surface
-from .construct import Construct
 
 class Waterball(Projectile):
     def __init__(self, scene: MainScene) -> None:
@@ -37,14 +36,6 @@ class Waterball(Projectile):
             return
         self.set_screen_pos(screen)
         pygame.draw.circle(screen, (50, 100, 200), self.screen_pos, self.rad)
-
-    def collide(self, target: Construct | Projectile) -> None:
-        # deals double damage against fire (testing this out)
-        if target.element == "fire":
-            self.damage *= 2
-        super().collide(target)
-        if target.element == "fire":
-            self.damage //= 2
 
     def kill(self) -> None:
         if self.aiming:

@@ -2,7 +2,7 @@ from __future__ import annotations
 from src.core import *
 from .fireball import Fireball
 from .earth_block import EarthBlock
-
+from.waterball import Waterball
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, Layer.HUD)
@@ -13,7 +13,7 @@ class SpellQueue(Sprite):
         self.cursor_on = True
         self.aiming_spell = None
         self.spell_list = {
-            # "j": Waterball,
+            "j": Waterball,
             "k": EarthBlock,
             # "i": Gust,
             "l": Fireball,

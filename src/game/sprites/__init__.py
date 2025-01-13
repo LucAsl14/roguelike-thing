@@ -7,3 +7,4 @@ from .projectile import Projectile
 from .fireball import Fireball
 from .construct import Construct
 from .earth_block import EarthBlock
+from .waterball import Waterball

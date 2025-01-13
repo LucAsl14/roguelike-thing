@@ -47,6 +47,8 @@ class Waterball(Projectile):
             self.damage //= 2
 
     def kill(self) -> None:
+        if self.aiming:
+            super().kill()
         if not self.exploding:
             self.exploding_timer.reset()
         self.exploding = True

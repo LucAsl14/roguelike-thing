@@ -7,6 +7,8 @@ class MainScene(Scene):
         super().__init__(game)
         self.player = Player(self)
         self.add(self.player)
+        self.constructs: list[Construct] = []
+        self.projectiles: list[Projectile] = []
 
     def update(self, dt: float) -> None:
         self.sprite_manager.update(dt)

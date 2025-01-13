@@ -1,6 +1,6 @@
 from __future__ import annotations
 from src.core import *
-from pygame.locals import K_w, K_a, K_s, K_d, K_q, K_i, K_j, K_k, K_l, KEYDOWN
+from pygame.locals import K_w, K_a, K_s, K_d, K_q, K_p, KEYDOWN
 from random import uniform
 
 from .inventory import Inventory
@@ -34,9 +34,6 @@ class Player(Sprite):
         # spell queue
         self.spell_queue = SpellQueue(self.scene)
         self.scene.add(self.spell_queue)
-
-        # owned constructs (?)
-        self.constructs: list[Construct] = []
 
         self.image = Images.player
         self.angle = 0
@@ -103,7 +100,9 @@ class Player(Sprite):
         # press a button to make decorations lol (NOT a feature)
         if self.keys[K_q]:
             self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-100, 100), uniform(-100, 100))))
-
+        # debug key
+        if self.keys[K_p]:
+            Log.debug(self.scene.projectiles)
 
     def update_position(self, dt: float) -> None:
         self.vel += self.acc * dt

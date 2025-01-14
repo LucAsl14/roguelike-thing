@@ -9,3 +9,4 @@ from .construct import Construct
 from .earth_block import EarthBlock
 from .waterball import Waterball
 from .gust import Gust
+from .stone_cannon import StoneCannon

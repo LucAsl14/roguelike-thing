@@ -4,6 +4,7 @@ from .fireball import Fireball
 from .earth_block import EarthBlock
 from .waterball import Waterball
 from .gust import Gust
+from.stone_cannon import StoneCannon
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, Layer.HUD)
@@ -18,6 +19,7 @@ class SpellQueue(Sprite):
             "k": EarthBlock,
             "i": Gust,
             "l": Fireball,
+            "kl": StoneCannon,
         }
 
     def update(self, dt: float) -> None:
@@ -31,7 +33,7 @@ class SpellQueue(Sprite):
         pygame.draw.rect(trans_surf, (120, 120, 120, 100), pygame.Rect((0, 0), (screen.get_width() - 400, 70)))
         for i in range(len(self.queue)):
             draw_pos = Vec(10 + 60 * i, 10)
-            if self.queue[i] == " " or draw_pos.x > 400:
+            if self.queue[i] == " " or draw_pos.x > screen.get_width() - 400:
                 continue
             color = (0, 0, 0)
             match self.queue[i]:
@@ -116,7 +118,7 @@ class SpellQueue(Sprite):
     def spend_top_spell(self) -> None:
         self.aiming_spell = None
         while len(self.queue) and self.queue[0] != " ":
-            # adding back the sigil with no cooldown for now
+            Log.info(self.queue[0])
             self.scene.player.inventory.add(self.pop())
         if len(self.queue):
             self.pop()

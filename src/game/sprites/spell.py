@@ -18,8 +18,8 @@ class Spell(Sprite):
         if self.aiming:
             self.update_aiming(dt)
             if MOUSEBUTTONDOWN in self.game.events:
-                self.aiming = False
                 self.trigger_spell()
+                self.aiming = False
         elif not self.charging_time.done:
             self.update_charge(dt)
         else:
@@ -64,5 +64,6 @@ class Spell(Sprite):
 
     @abstractmethod
     def trigger_spell(self) -> None:
-        self.scene.player.spell_queue.spend_top_spell()
+        if self.aiming:
+            self.scene.player.spell_queue.spend_top_spell()
         self.charging_time.reset()

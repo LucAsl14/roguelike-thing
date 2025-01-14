@@ -74,4 +74,5 @@ class Projectile(Spell):
     def collide(self, target: Construct | Projectile) -> None:
         dmg_dealt = target.take_damage(self.damage)
         self.take_damage(dmg_dealt)
-        Log.debug(f"{self} dealt {dmg_dealt} dmg to {target}")
+        if dmg_dealt > 0:
+            Log.debug(f"{self} dealt {dmg_dealt} dmg to {target}")

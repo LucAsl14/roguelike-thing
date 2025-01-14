@@ -45,7 +45,7 @@ class Gust(Spell):
     def trigger_spell(self) -> None:
         super().trigger_spell()
         for projectile in self.scene.projectiles:
-            if projectile.rect.colliderect(self.rect):
+            if projectile.element != "earth" and projectile.rect.colliderect(self.rect):
                 projectile.vel += (-400 * cos(self.angle), 400 * sin(self.angle))
         self.scene.player.vel += (2000 * cos(self.angle), -2000 * sin(self.angle))
         self.anim_timer.reset()

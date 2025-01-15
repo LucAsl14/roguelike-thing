@@ -21,9 +21,9 @@ class SpellQueue(Sprite):
             "k": EarthBlock,
             "i": Gust,
             "l": Fireball,
-            "kl": StoneCannon,
-            "jl": Steam,
-            "kj": Mud,
+            "kl": StoneCannon, "lk": StoneCannon, # temporarily doubling up until Andrew teaches me
+            "jl": Steam, "lj": Steam,
+            "kj": Mud, "jk": Mud,
         }
 
     def update(self, dt: float) -> None:

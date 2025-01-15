@@ -6,7 +6,7 @@ from .area_spell import AreaSpell
 
 class Steam(AreaSpell):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 0, "air", 20, 125)
+        super().__init__(scene, 0, "water", 20, 250)
         self.circle_offsets: list[tuple[float, float]] = []
         self.new_circle = LoopTimer(0.1)
 
@@ -17,7 +17,7 @@ class Steam(AreaSpell):
         self.set_screen_pos(screen)
         for point in self.circle_offsets:
             screen_pos = self.screen_pos + point
-            pygame.draw.circle(screen, (195, 195, 195), screen_pos, 50)
+            pygame.draw.circle(screen, (195, 195, 255), screen_pos, 100)
 
     def random_circle_point(self) -> tuple[float, float]:
         angle = uniform(0, 2*pi)

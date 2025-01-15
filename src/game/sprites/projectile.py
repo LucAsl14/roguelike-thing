@@ -11,7 +11,7 @@ class Projectile(Spell):
         self.vel = Vec()
         self.pos = self.scene.player.pos.copy()
         self.speed = speed
-        self.lifespan = LoopTimer(lifespan, 1)
+        self.lifespan = Timer(lifespan)
         self.rect = pygame.Rect()
         self.damage = dmg
         self.rad = radius

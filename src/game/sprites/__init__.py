@@ -10,3 +10,5 @@ from .earth_block import EarthBlock
 from .waterball import Waterball
 from .gust import Gust
 from .stone_cannon import StoneCannon
+from .area_spell import AreaSpell
+from .steam import Steam

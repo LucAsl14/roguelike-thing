@@ -4,7 +4,8 @@ from .fireball import Fireball
 from .earth_block import EarthBlock
 from .waterball import Waterball
 from .gust import Gust
-from.stone_cannon import StoneCannon
+from .stone_cannon import StoneCannon
+from .steam import Steam
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, Layer.HUD)
@@ -20,6 +21,7 @@ class SpellQueue(Sprite):
             "i": Gust,
             "l": Fireball,
             "kl": StoneCannon,
+            "jl": Steam,
         }
 
     def update(self, dt: float) -> None:
@@ -118,7 +120,6 @@ class SpellQueue(Sprite):
     def spend_top_spell(self) -> None:
         self.aiming_spell = None
         while len(self.queue) and self.queue[0] != " ":
-            Log.info(self.queue[0])
             self.scene.player.inventory.add(self.pop())
         if len(self.queue):
             self.pop()

@@ -6,6 +6,7 @@ from .waterball import Waterball
 from .gust import Gust
 from .stone_cannon import StoneCannon
 from .steam import Steam
+from .mud import Mud
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, Layer.HUD)
@@ -22,6 +23,7 @@ class SpellQueue(Sprite):
             "l": Fireball,
             "kl": StoneCannon,
             "jl": Steam,
+            "kj": Mud,
         }
 
     def update(self, dt: float) -> None:

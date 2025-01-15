@@ -3,7 +3,7 @@ from src.core import *
 
 class TestDecoration(Sprite):
     def __init__(self, scene: MainScene, pos: Vec) -> None:
-        super().__init__(scene, Layer.DEFAULT)
+        super().__init__(scene, Layer.GROUND)
         self.pos = pos
         # once again, band-aid fix for scene not being properly cast
         self.scene = scene

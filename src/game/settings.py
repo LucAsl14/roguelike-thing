@@ -5,7 +5,9 @@ import pygame
 
 class Layer(Enum):
     BACKGROUND = auto()
+    GROUND = auto()
     DEFAULT = auto()
+    SKY = auto()
     HUD = auto()
 
 TITLE = "Game"

@@ -5,8 +5,8 @@ from src.core import *
 from .spell import Spell
 
 class AreaSpell(Spell):
-    def __init__(self, scene: MainScene, charge_time: float, elem: str, lifespan: float, radius: int) -> None:
-        super().__init__(scene, charge_time, elem)
+    def __init__(self, scene: MainScene, charge_time: float, elem: str, lifespan: float, radius: int, layer = Layer.DEFAULT) -> None:
+        super().__init__(scene, charge_time, elem, layer)
         self.lifespan = Timer(lifespan)
         self.rad = radius
         self.pos = Vec()

@@ -4,8 +4,8 @@ from abc import abstractmethod
 from pygame.locals import MOUSEBUTTONDOWN
 
 class Spell(Sprite):
-    def __init__(self, scene: MainScene, charge_time: float, elem: str) -> None:
-        super().__init__(scene, Layer.DEFAULT)
+    def __init__(self, scene: MainScene, charge_time: float, elem: str, layer = Layer.DEFAULT) -> None:
+        super().__init__(scene, layer)
         self.aiming = True
         self.scene = scene
         self.charging_time = Timer(charge_time)

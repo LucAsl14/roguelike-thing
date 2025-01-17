@@ -34,7 +34,6 @@ class Construct(Spell):
     def trigger_spell(self) -> None:
         self.lifespan.reset()
         screen_pos = self.game.mouse_pos - self.scene.player.screen_pos
-        screen_pos.y *= -1
         self.pos = self.scene.player.pos + screen_pos
         super().trigger_spell()
 

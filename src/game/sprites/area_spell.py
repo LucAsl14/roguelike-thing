@@ -17,12 +17,11 @@ class AreaSpell(Spell):
 
     def update_aiming(self, dt: float) -> None:
         posdiff = (self.game.mouse_pos - self.scene.player.screen_pos)
-        posdiff.y *= -1
         self.pos = self.scene.player.pos + posdiff
 
     def draw_aiming(self, screen: Surface) -> None:
-        trans_surf = pygame.surface.Surface((self.rad * 2, self.rad * 2), pygame.SRCALPHA)
-        pygame.draw.circle(trans_surf, (120, 120, 120, 100), (self.rad, self.rad), self.rad)
+        trans_surf = pygame.surface.Surface(Vec(self.rad * 2), pygame.SRCALPHA)
+        pygame.draw.circle(trans_surf, (120, 120, 120, 100), Vec(self.rad), self.rad)
         self.screen_pos = self.game.mouse_pos
         screen.blit(trans_surf, self.screen_pos - (self.rad, self.rad))
 
@@ -35,5 +34,4 @@ class AreaSpell(Spell):
         super().trigger_spell()
 
     def set_screen_pos(self, screen: Surface) -> None:
-        self.screen_pos = Vec(self.pos.x - self.scene.player.pos.x, self.scene.player.pos.y - self.pos.y)
-        self.screen_pos += (screen.width / 2, screen.height / 2)
+        self.screen_pos = self.pos - self.scene.player.pos + self.scene.player.screen_pos

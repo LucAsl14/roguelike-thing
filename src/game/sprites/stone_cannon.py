@@ -22,11 +22,11 @@ class StoneCannon(Projectile):
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
         self.set_screen_pos(screen)
-        pygame.draw.circle(screen, (100, 60, 30), self.screen_pos, self.rad)
-        pygame.draw.circle(screen, (100, 60, 30), self.screen_pos + (8 * cos(self.angle), 8 * sin(self.angle)), self.rad / 2)
+        pygame.draw.circle(screen, EARTH, self.screen_pos, self.rad)
+        pygame.draw.circle(screen, EARTH, self.screen_pos + 8 * Vec(cos(self.angle), sin(self.angle)), self.rad / 2)
 
     def update_spell(self, dt: float) -> None:
-        self.vel = Vec(self.speed * cos(self.angle), -self.speed * sin(self.angle))
+        self.vel = self.speed * Vec(cos(self.angle), sin(self.angle))
         # custom external acc handling
         self.vel += self.external_acc
         if self.external_acc.magnitude() > 0:
@@ -34,7 +34,7 @@ class StoneCannon(Projectile):
             self.speed = self.vel.magnitude()
         self.external_acc = Vec()
         posdiff = self.target_pos - self.pos
-        target_angle = atan2(-posdiff.y, posdiff.x)
+        target_angle = atan2(posdiff.y, posdiff.x)
         degdiff = ((((self.angle - target_angle) * 180 / pi) % 360) + 360) % 360
         if degdiff <= 2 or degdiff >= 358:
             self.turn_speed = 0
@@ -55,11 +55,10 @@ class StoneCannon(Projectile):
                 spell.speed += int(uniform(-200, 201))
         super().trigger_spell()
         player = self.scene.player
-        screen_pos_diff = (self.game.mouse_pos - player.screen_pos)
-        screen_pos_diff.y *= -1
-        self.target_pos = screen_pos_diff + (player.pos.x , player.pos.y)
+        screen_pos_diff = self.game.mouse_pos - player.screen_pos
+        self.target_pos = screen_pos_diff + player.pos
         posdiff = self.target_pos - self.pos
-        target_angle = atan2(-posdiff.y, posdiff.x)
+        target_angle = atan2(posdiff.y, posdiff.x)
         self.angle = uniform(target_angle + pi/2 + pi/4, target_angle + 3*pi/2 - pi/4)
 
     def collide(self, target: Construct | Projectile) -> None:

@@ -11,19 +11,19 @@ class Whirlpool(AreaSpell):
         self.new_circle_timer = LoopTimer(0.1)
 
     def draw_charge(self, screen: Surface) -> None:
-        trans_surf = pygame.surface.Surface((2 * self.rad, 2 * self.rad), pygame.SRCALPHA)
-        pygame.draw.circle(trans_surf, (50, 100, 200), (self.rad, self.rad), self.rad)
+        trans_surf = pygame.surface.Surface(Vec(2 * self.rad), pygame.SRCALPHA)
+        pygame.draw.circle(trans_surf, WATER, Vec(self.rad), self.rad)
         trans_surf.set_alpha(int(255 * self.charging_time.progress))
         self.set_screen_pos(screen)
-        screen.blit(trans_surf, self.screen_pos - (self.rad, self.rad))
+        screen.blit(trans_surf, self.screen_pos - Vec(self.rad))
 
     def draw_spell(self, screen: Surface) -> None:
         self.set_screen_pos(screen)
-        pygame.draw.circle(screen, (50, 100, 200), self.screen_pos, self.rad)
-        trans_surf = pygame.surface.Surface((2 * self.rad, 2 * self.rad), pygame.SRCALPHA)
+        pygame.draw.circle(screen, WATER, self.screen_pos, self.rad)
+        trans_surf = pygame.surface.Surface(Vec(2 * self.rad), pygame.SRCALPHA)
         for circle in self.circle_offsets:
-            pygame.draw.circle(trans_surf, (220, 220, 220, 200), Vec(self.rad, self.rad) + circle, 10)
-        screen.blit(trans_surf, self.screen_pos - (self.rad, self.rad))
+            pygame.draw.circle(trans_surf, (220, 220, 220, 200), Vec(self.rad) + circle, 10)
+        screen.blit(trans_surf, self.screen_pos - Vec(self.rad))
 
     def update_spell(self, dt: float) -> None:
         player = self.scene.player
@@ -42,7 +42,7 @@ class Whirlpool(AreaSpell):
             circle = self.circle_offsets[i]
             dist = Vec(circle).distance_to((0, 0))
             circle = circle + (dist / self.rad) * (-circle).normalize() * 90 * dt
-            circle = circle + (circle).normalize().rotate(90) * 240 * dt
+            circle = circle + (circle).normalize().rotate(-90) * 240 * dt
             self.circle_offsets[i] = circle
         if self.new_circle_timer.done:
             self.circle_offsets.append(self.random_circle_point())
@@ -51,7 +51,7 @@ class Whirlpool(AreaSpell):
     def random_circle_point(self) -> Vec:
         angle = uniform(0, 2*pi)
         scalar = self.rad
-        return Vec(cos(angle) * scalar, sin(angle) * scalar)
+        return scalar * Vec(cos(angle), sin(angle))
 
     def trigger_spell(self) -> None:
         for _ in range(10):

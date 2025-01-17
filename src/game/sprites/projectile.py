@@ -36,7 +36,6 @@ class Projectile(Spell):
 
     def trigger_spell(self) -> None:
         self.vel = (self.game.mouse_pos - self.scene.player.screen_pos).normalize() * self.speed
-        self.vel.y *= -1
         self.lifespan.reset()
         super().trigger_spell()
 
@@ -45,7 +44,7 @@ class Projectile(Spell):
         self.pos += self.vel * dt
         self.external_acc = Vec()
 
-        self.rect = pygame.Rect(self.pos - (self.rad, self.rad), (self.rad * 2, self.rad * 2))
+        self.rect = pygame.Rect(self.pos - Vec(self.rad), Vec(self.rad * 2))
         if self.lifespan.done:
             self.kill()
             return
@@ -60,8 +59,7 @@ class Projectile(Spell):
                 self.collide(projectile)
 
     def set_screen_pos(self, screen: Surface) -> None:
-        self.screen_pos = Vec(self.pos.x - self.scene.player.pos.x, self.scene.player.pos.y - self.pos.y)
-        self.screen_pos += (screen.width / 2, screen.height / 2)
+        self.screen_pos = self.pos - self.scene.player.pos + self.scene.player.screen_pos
 
     def take_damage(self, dmg: int) -> int:
         """

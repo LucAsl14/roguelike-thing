@@ -9,7 +9,7 @@ from .steam import Steam
 from .mud import Mud
 from .whirlpool import Whirlpool
 
-# TODO: gust has a broken hitbox
+# TODO: rectangular objects have an oversized hitbox when diagonal
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, Layer.HUD)
@@ -46,13 +46,13 @@ class SpellQueue(Sprite):
             color = (0, 0, 0)
             match self.queue[i]:
                 case "water":
-                    color = (50, 100, 200, 200)
+                    color = WATER + (200,)
                 case "air":
-                    color = (200, 200, 200, 200)
+                    color = AIR + (200,)
                 case "earth":
-                    color = (100, 60, 30, 200)
+                    color = EARTH + (200,)
                 case "fire":
-                    color = (200, 100, 50, 200)
+                    color = FIRE + (200,)
             pygame.draw.rect(trans_surf, color, pygame.Rect(draw_pos, (50, 50)))
         draw_pos = Vec(10 + 60 * len(self.queue), 10)
         screen.blit(trans_surf, self.screen_pos)

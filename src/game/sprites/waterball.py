@@ -13,7 +13,7 @@ class Waterball(Projectile):
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
         self.set_screen_pos(screen)
-        pygame.draw.circle(screen, (50, 100, 200), self.screen_pos, self.rad * self.charging_time.progress)
+        pygame.draw.circle(screen, WATER, self.screen_pos, self.rad * self.charging_time.progress)
 
     def update_spell(self, dt: float) -> None:
         super().update_spell(dt)
@@ -35,7 +35,7 @@ class Waterball(Projectile):
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
         self.set_screen_pos(screen)
-        pygame.draw.circle(screen, (50, 100, 200), self.screen_pos, self.rad)
+        pygame.draw.circle(screen, WATER, self.screen_pos, self.rad)
 
     def kill(self) -> None:
         if self.aiming:

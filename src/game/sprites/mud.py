@@ -9,15 +9,15 @@ class Mud(AreaSpell):
         super().__init__(scene, 1, "earth", 20, 125, Layer.GROUND)
 
     def draw_charge(self, screen: Surface) -> None:
-        trans_surf = pygame.surface.Surface((2 * self.rad, 2 * self.rad), pygame.SRCALPHA)
-        pygame.draw.circle(trans_surf, (100, 60, 30), (self.rad, self.rad), self.rad)
+        trans_surf = pygame.surface.Surface(Vec(2 * self.rad), pygame.SRCALPHA)
+        pygame.draw.circle(trans_surf, EARTH, Vec(self.rad), self.rad)
         trans_surf.set_alpha(int(255 * self.charging_time.progress))
         self.set_screen_pos(screen)
-        screen.blit(trans_surf, self.screen_pos - (self.rad, self.rad))
+        screen.blit(trans_surf, self.screen_pos - Vec(self.rad))
 
     def draw_spell(self, screen: Surface) -> None:
         self.set_screen_pos(screen)
-        pygame.draw.circle(screen, (100, 60, 30), self.screen_pos, self.rad)
+        pygame.draw.circle(screen, EARTH, self.screen_pos, self.rad)
 
     def update_spell(self, dt: float) -> None:
         if self.scene.player.pos.distance_to(self.pos) < self.rad:

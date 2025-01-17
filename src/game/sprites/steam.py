@@ -7,7 +7,7 @@ from .area_spell import AreaSpell
 class Steam(AreaSpell):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, 0, "water", 20, 250, Layer.SKY)
-        self.circle_offsets: list[tuple[float, float]] = []
+        self.circle_offsets: list[Vec] = []
         self.new_circle = LoopTimer(0.1)
 
     def draw_charge(self, screen: Surface) -> None:
@@ -19,10 +19,10 @@ class Steam(AreaSpell):
             screen_pos = self.screen_pos + point
             pygame.draw.circle(screen, (195, 195, 255), screen_pos, 100)
 
-    def random_circle_point(self) -> tuple[float, float]:
+    def random_circle_point(self) -> Vec:
         angle = uniform(0, 2*pi)
         scalar = uniform(0, self.rad)
-        return (cos(angle) * scalar, sin(angle) * scalar)
+        return scalar * Vec(cos(angle), sin(angle))
 
     def update_spell(self, dt: float) -> None:
         if self.new_circle.done:

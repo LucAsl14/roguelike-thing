@@ -6,7 +6,6 @@ from random import uniform
 from .inventory import Inventory
 from .test_decoration import TestDecoration
 from .spell_queue import SpellQueue
-from .construct import Construct # there are so many questionable things i'm doing
 
 class Player(Sprite):
     def __init__(self, scene: MainScene) -> None:
@@ -59,9 +58,9 @@ class Player(Sprite):
         if self.keys[K_w] and self.keys[K_s]:
             self.acc.y = -sign(self.vel.y) * self.CONST_ACCEL
         elif self.keys[K_w]:
-            self.acc.y = self.CONST_ACCEL
-        elif self.keys[K_s]:
             self.acc.y = -self.CONST_ACCEL
+        elif self.keys[K_s]:
+            self.acc.y = self.CONST_ACCEL
         else:
             self.acc.y = 0
 

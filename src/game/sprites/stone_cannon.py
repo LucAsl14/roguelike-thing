@@ -27,6 +27,12 @@ class StoneCannon(Projectile):
 
     def update_spell(self, dt: float) -> None:
         self.vel = Vec(self.speed * cos(self.angle), -self.speed * sin(self.angle))
+        # custom external acc handling
+        self.vel += self.external_acc
+        if self.external_acc.magnitude() > 0:
+            self.angle = atan2(self.vel.y, self.vel.x)
+            self.speed = self.vel.magnitude()
+        self.external_acc = Vec()
         posdiff = self.target_pos - self.pos
         target_angle = atan2(-posdiff.y, posdiff.x)
         degdiff = ((((self.angle - target_angle) * 180 / pi) % 360) + 360) % 360

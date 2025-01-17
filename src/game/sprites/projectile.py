@@ -9,6 +9,7 @@ class Projectile(Spell):
     def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
         super().__init__(scene, charge_time, elem)
         self.vel = Vec()
+        self.external_acc = Vec()
         self.pos = self.scene.player.pos.copy()
         self.speed = speed
         self.lifespan = Timer(lifespan)
@@ -40,7 +41,10 @@ class Projectile(Spell):
         super().trigger_spell()
 
     def update_spell(self, dt: float) -> None:
+        self.vel += self.external_acc
         self.pos += self.vel * dt
+        self.external_acc = Vec()
+
         self.rect = pygame.Rect(self.pos - (self.rad, self.rad), (self.rad * 2, self.rad * 2))
         if self.lifespan.done:
             self.kill()

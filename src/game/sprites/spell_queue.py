@@ -7,6 +7,9 @@ from .gust import Gust
 from .stone_cannon import StoneCannon
 from .steam import Steam
 from .mud import Mud
+from .whirlpool import Whirlpool
+
+# TODO: gust has a broken hitbox
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, Layer.HUD)
@@ -24,6 +27,7 @@ class SpellQueue(Sprite):
             "kl": StoneCannon, "lk": StoneCannon, # temporarily doubling up until Andrew teaches me
             "jl": Steam, "lj": Steam,
             "kj": Mud, "jk": Mud,
+            "ij": Whirlpool, "ji": Whirlpool
         }
 
     def update(self, dt: float) -> None:

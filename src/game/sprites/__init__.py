@@ -13,3 +13,4 @@ from .stone_cannon import StoneCannon
 from .area_spell import AreaSpell
 from .steam import Steam
 from .mud import Mud
+from .whirlpool import Whirlpool

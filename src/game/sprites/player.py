@@ -19,6 +19,7 @@ class Player(Sprite):
         self.pos = Vec()
         self.vel = Vec()
         self.acc = Vec()
+        self.ext_acc = Vec()
         self.CONST_ACCEL = 3300
 
         # inventory
@@ -35,6 +36,7 @@ class Player(Sprite):
         self.scene.add(self.spell_queue)
 
         self.image = Images.player
+        self.rect = self.image.get_rect()
         self.angle = 0
 
     def update(self, dt: float) -> None:
@@ -50,6 +52,8 @@ class Player(Sprite):
         self.screen_pos = Vec(screen.get_width() / 2, screen.get_height() / 2)
         self.image = pygame.transform.rotate(Images.player, self.angle)
         screen.blit(self.image, self.screen_pos - Vec(self.image.size) / 2)
+        # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
+
 
     def update_keys(self, dt: float) -> None:
         self.keys = pygame.key.get_pressed()
@@ -105,8 +109,11 @@ class Player(Sprite):
 
     def update_position(self, dt: float) -> None:
         self.vel += self.acc * dt
+        self.vel += self.ext_acc
+        self.ext_acc = Vec()
         self.vel *= 0.004 ** dt
         self.pos += self.vel * dt
+        self.rect.update(self.pos - Vec(self.rect.size) / 2, self.rect.size)
 
     def update_surroundings(self) -> None:
         # something something about generating decorations im too lazy

@@ -25,6 +25,8 @@ class Construct(Spell):
         pass
 
     def update_spell(self, dt: float) -> None:
+        if self.rect.colliderect(self.scene.player.rect):
+            self.collide_player()
         if self.lifespan.done:
             self.kill()
             return
@@ -36,6 +38,9 @@ class Construct(Spell):
         screen_pos = self.game.mouse_pos - self.scene.player.screen_pos
         self.pos = self.scene.player.pos + screen_pos
         super().trigger_spell()
+
+    def collide_player(self) -> None:
+        self.scene.player.vel = Vec((self.scene.player.pos - self.pos))
 
     def take_damage(self, dmg: int) -> int:
         """

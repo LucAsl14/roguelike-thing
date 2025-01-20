@@ -32,6 +32,7 @@ class Gust(Spell):
         pygame.draw.rect(origimg, (120, 120, 120, 100), origimg.get_rect())
         rotimg = pygame.transform.rotate(origimg, rotangle)
         self.rect = pygame.Rect(player.pos + 190 * Vec(cos(self.angle), sin(self.angle)) - Vec(rotimg.size) / 2, rotimg.get_rect().size)
+        # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
         screen.blit(rotimg, player.screen_pos + 190 * Vec(cos(self.angle), sin(self.angle)) - Vec(rotimg.size) / 2)
 
     def draw_spell(self, screen: Surface) -> None:
@@ -47,5 +48,5 @@ class Gust(Spell):
             if projectile.element != "air" and projectile.rect.colliderect(self.rect):
                 change = Vec(cos(self.angle), sin(self.angle)) * (400 * 10 / projectile.rad)
                 projectile.external_acc += change
-        self.scene.player.vel += -2000 * Vec(cos(self.angle), sin(self.angle))
+        self.scene.player.ext_acc = -2000 * Vec(cos(self.angle), sin(self.angle))
         self.anim_timer.reset()

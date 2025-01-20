@@ -51,9 +51,6 @@ class EarthBlock(Construct):
         rotimg = pygame.transform.rotate(origimg, self.angle)
         screen.blit(rotimg, self.screen_pos - self.size / 2)
 
-    def trigger_spell(self) -> None:
-        super().trigger_spell()
-
     def take_damage(self, dmg: int) -> int:
         dmg_taken = super().take_damage(dmg)
         if self.hp <= 10:

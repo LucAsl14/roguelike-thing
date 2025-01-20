@@ -8,6 +8,7 @@ from .stone_cannon import StoneCannon
 from .steam import Steam
 from .mud import Mud
 from .whirlpool import Whirlpool
+from .rollout import Rollout
 
 # TODO: rectangular objects have an oversized hitbox when diagonal
 class SpellQueue(Sprite):
@@ -27,7 +28,8 @@ class SpellQueue(Sprite):
             "kl": StoneCannon, "lk": StoneCannon, # temporarily doubling up until Andrew teaches me
             "jl": Steam, "lj": Steam,
             "kj": Mud, "jk": Mud,
-            "ij": Whirlpool, "ji": Whirlpool
+            "ij": Whirlpool, "ji": Whirlpool,
+            "ik": Rollout, "ki": Rollout,
         }
 
     def update(self, dt: float) -> None:

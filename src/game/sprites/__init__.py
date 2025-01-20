@@ -14,3 +14,4 @@ from .area_spell import AreaSpell
 from .steam import Steam
 from .mud import Mud
 from .whirlpool import Whirlpool
+from .rollout import Rollout

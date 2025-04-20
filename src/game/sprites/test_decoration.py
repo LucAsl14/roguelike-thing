@@ -14,5 +14,4 @@ class TestDecoration(Sprite):
     def draw(self, target: pygame.Surface) -> None:
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
-        screen_pos = self.pos - self.scene.player.pos + self.scene.player.screen_pos
-        pygame.draw.circle(target, (10, 10, 10), screen_pos, 20)
+        pygame.draw.circle(target, (10, 10, 10), self.screen_pos, 20)

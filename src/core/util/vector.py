@@ -8,7 +8,7 @@ class Vec(Vector2):
     """A 2D vector class with more utility methods and modified behavior."""
 
     @property
-    def itup(self) -> IntCoord:
+    def itup(self) -> tuple[int, int]:
         """Return the vector as a tuple of ints.
 
         Returns:

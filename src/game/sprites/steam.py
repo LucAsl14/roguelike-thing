@@ -14,7 +14,6 @@ class Steam(AreaSpell):
         pass
 
     def draw_spell(self, screen: Surface) -> None:
-        self.set_screen_pos(screen)
         for point in self.circle_offsets:
             screen_pos = self.screen_pos + point
             pygame.draw.circle(screen, (195, 195, 255), screen_pos, 100)

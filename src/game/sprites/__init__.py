@@ -15,3 +15,4 @@ from .steam import Steam
 from .mud import Mud
 from .whirlpool import Whirlpool
 from .rollout import Rollout
+from .camera import Camera

@@ -14,6 +14,8 @@ class Sprite(AbstractClass):
         self.game = ref_proxy(scene.game)
         self.scene = ref_proxy(scene)
         self.layer = layer
+        self.pos = Vec()
+        self.size = Vec()
 
     @abstractmethod
     def update(self, dt: float) -> None:
@@ -22,6 +24,20 @@ class Sprite(AbstractClass):
     @abstractmethod
     def draw(self, target: pygame.Surface) -> None:
         pass
+
+    @property
+    def center_pos(self) -> Vec:
+        return self.pos + self.size / 2
+
+    @property
+    def screen_pos(self) -> Vec:
+        if not hasattr(self.scene, "camera"):
+            return self.pos
+        return self.pos - self.scene.camera.pos # type: ignore
+
+    @property
+    def screen_center_pos(self) -> Vec:
+        return self.screen_pos + self.size / 2
 
     def kill(self) -> None:
         self.scene.remove(self)

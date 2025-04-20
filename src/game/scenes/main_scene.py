@@ -16,7 +16,9 @@ class MainScene(Scene):
     def __init__(self, game: Game) -> None:
         super().__init__(game)
         self.player = Player(self)
+        self.camera = Camera(self, self.player)
         self.add(self.player)
+        self.add(self.camera)
         self.constructs: list[Construct] = []
         self.projectiles: list[Projectile] = []
 

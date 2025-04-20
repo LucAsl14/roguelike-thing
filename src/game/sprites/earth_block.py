@@ -35,10 +35,8 @@ class EarthBlock(Construct):
             pygame.draw.circle(screen, EARTH, self.screen_pos + dpos, 10)
 
     def draw_spell(self, screen: Surface) -> None:
-        posdiff = self.pos - self.scene.player.pos
         self.rect = pygame.Rect(self.pos - Vec(self.size) / 2, self.size)
         # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
-        self.screen_pos = self.scene.player.screen_pos + posdiff
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
         # more rectangle rotating

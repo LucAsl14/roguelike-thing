@@ -22,9 +22,7 @@ class Rollout(Construct):
 
     def draw_charge(self, screen: Surface) -> None:
         pygame.draw.line(screen, (120, 120, 120), self.scene.player.screen_pos, self.game.mouse_pos, 3)
-        posdiff = self.pos - self.scene.player.pos
         # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
-        self.screen_pos = self.scene.player.screen_pos + posdiff
         # more rectangle rotating
         origimg = pygame.surface.Surface((30, 10))
         origimg.set_colorkey((0, 0, 0))
@@ -57,9 +55,7 @@ class Rollout(Construct):
 
 
     def draw_spell(self, screen: Surface) -> None:
-        posdiff = self.pos - self.scene.player.pos
         # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
-        self.screen_pos = self.scene.player.screen_pos + posdiff
         # even more rectangle rotating
         origimg = pygame.surface.Surface((30, 10))
         origimg.set_colorkey((0, 0, 0))

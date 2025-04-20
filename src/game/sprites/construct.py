@@ -36,8 +36,7 @@ class Construct(Spell):
     def trigger_spell(self) -> None:
         self.lifespan.reset()
         if self.aiming:
-            screen_pos = self.game.mouse_pos - self.scene.player.screen_pos
-            self.pos = self.scene.player.pos + screen_pos
+            self.pos = self.game.mouse_pos + self.scene.camera.pos
             super().trigger_spell()
 
     def collide_player(self) -> None:

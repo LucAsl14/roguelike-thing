@@ -21,7 +21,7 @@ class AbortGame(Exception):
 
 class Game(metaclass=Singleton):
     def __init__(self) -> None:
-        self.size = self.width, self.height = self.w, self.h = WIDTH, HEIGHT
+        self.size = self.width, self.height = self.w, self.h = Vec(WIDTH, HEIGHT)
         pygame.display.set_mode(self.size, OPENGL | DOUBLEBUF)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()

@@ -14,11 +14,9 @@ class Whirlpool(AreaSpell):
         trans_surf = pygame.surface.Surface(Vec(2 * self.rad), pygame.SRCALPHA)
         pygame.draw.circle(trans_surf, WATER, Vec(self.rad), self.rad)
         trans_surf.set_alpha(int(255 * self.charging_time.progress))
-        self.set_screen_pos(screen)
         screen.blit(trans_surf, self.screen_pos - Vec(self.rad))
 
     def draw_spell(self, screen: Surface) -> None:
-        self.set_screen_pos(screen)
         pygame.draw.circle(screen, WATER, self.screen_pos, self.rad)
         trans_surf = pygame.surface.Surface(Vec(2 * self.rad), pygame.SRCALPHA)
         for circle in self.circle_offsets:

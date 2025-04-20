@@ -16,7 +16,6 @@ class Projectile(Spell):
         self.rect = pygame.Rect()
         self.damage = dmg
         self.rad = radius
-        self.screen_pos = Vec()
         self.ignore_elem = []
         self.scene.projectiles.append(self)
 
@@ -57,9 +56,6 @@ class Projectile(Spell):
                projectile.element not in self.ignore_elem and \
                projectile != self:
                 self.collide(projectile)
-
-    def set_screen_pos(self, screen: Surface) -> None:
-        self.screen_pos = self.pos - self.scene.player.pos + self.scene.player.screen_pos
 
     def take_damage(self, dmg: int) -> int:
         """

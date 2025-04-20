@@ -1,7 +1,5 @@
 from __future__ import annotations
 from src.core import *
-from pygame.locals import K_w, K_a, K_s, K_d, K_q, K_p, KEYDOWN
-from random import uniform
 
 from .inventory import Inventory
 from .test_decoration import TestDecoration
@@ -12,8 +10,6 @@ class Player(Sprite):
         super().__init__(scene, "DEFAULT")
         # band-aid fix to scene not considered MainScene
         self.scene = scene
-
-        self.screen_pos = Vec()
 
         # movement-related variables
         self.pos = Vec()
@@ -45,9 +41,8 @@ class Player(Sprite):
         self.update_surroundings()
 
     def draw(self, target: pygame.Surface) -> None:
-        self.screen_pos = Vec(target.get_width() / 2, target.get_height() / 2)
         self.image = pygame.transform.rotate(Image.get("player"), self.angle)
-        target.blit(self.image, self.screen_pos - Vec(self.image.size) / 2)
+        target.blit(self.image, self.screen_pos - Vec(self.image.get_rect().size) / 2)
         # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
 
 

@@ -14,7 +14,6 @@ from .rollout import Rollout
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, "HUD")
-        self.screen_pos = Vec()
         self.queue = []
         self.scene = scene
         self.cursor_timer = LoopTimer(0.5, -1)
@@ -38,7 +37,7 @@ class SpellQueue(Sprite):
         self.parse_top_spell()
 
     def draw(self, target: pygame.Surface) -> None:
-        self.screen_pos = Vec(200, target.get_height() - 180)
+        self.pos = Vec(200, target.get_height() - 180)
         trans_surf = pygame.surface.Surface((target.get_width() - 400, 70), pygame.SRCALPHA)
         pygame.draw.rect(trans_surf, (120, 120, 120, 100), pygame.Rect((0, 0), (target.get_width() - 400, 70)))
         for i in range(len(self.queue)):
@@ -57,10 +56,10 @@ class SpellQueue(Sprite):
                     color = FIRE + (200,)
             pygame.draw.rect(trans_surf, color, pygame.Rect(draw_pos, (50, 50)))
         draw_pos = Vec(10 + 60 * len(self.queue), 10)
-        target.blit(trans_surf, self.screen_pos)
+        target.blit(trans_surf, self.pos)
         if draw_pos.x <= 400 and self.cursor_blink_on:
             pygame.draw.rect(trans_surf, (0, 0, 0, 200), pygame.Rect(draw_pos, (5, 50)))
-        target.blit(trans_surf, self.screen_pos)
+        target.blit(trans_surf, self.pos)
 
 
     def push(self, item: str) -> None:

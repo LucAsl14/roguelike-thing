@@ -38,7 +38,7 @@ class LayerGroup:
         self.frag = frag
         self.layers: list[Layer] = []
 
-        self.image = self.game.ctx.image(self.game.size, "rgba8unorm")
+        self.image = self.game.ctx.image(self.game.size.itup, "rgba8unorm")
         self.pipeline = self._create_pipeline()
         self.surface = pygame.Surface(self.game.size, pygame.SRCALPHA)
 
@@ -47,7 +47,7 @@ class LayerGroup:
             vertex_shader=VertShader.get(self.vert),
             fragment_shader=FragShader.get(self.frag),
             framebuffer=None,
-            viewport=(0, 0, *self.game.size),
+            viewport=(0, 0, *self.game.size.itup),
             topology="triangle_strip",
             vertex_count=4,
             blend={

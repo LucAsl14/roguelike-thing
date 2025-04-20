@@ -1,4 +1,3 @@
-from pygame.locals import OPENGL, DOUBLEBUF, FULLSCREEN, KEYDOWN, KEYUP, QUIT
 from src.game.resources import init_resources
 from src.core.util.resource import Resource
 from src.core.util.timer import Time

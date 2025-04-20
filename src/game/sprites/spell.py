@@ -1,7 +1,6 @@
 from __future__ import annotations
 from src.core import *
 from abc import abstractmethod
-from pygame.locals import MOUSEBUTTONDOWN
 
 class Spell(Sprite):
     def __init__(self, scene: MainScene, charge_time: float, elem: str, layer: str = "DEFAULT") -> None:

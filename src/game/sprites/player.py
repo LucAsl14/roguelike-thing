@@ -76,16 +76,16 @@ class Player(Sprite):
         # spell keys
         if KEYDOWN in self.game.events:
             match self.game.key_down:
-                case pygame.K_i:
-                    if self.inventory.take("air"):
-                        self.spell_queue.push("air")
-                case pygame.K_j:
+                case pygame.K_j | pygame.K_1:
                     if self.inventory.take("water"):
                         self.spell_queue.push("water")
-                case pygame.K_k:
+                case pygame.K_i | pygame.K_2:
+                    if self.inventory.take("air"):
+                        self.spell_queue.push("air")
+                case pygame.K_k | pygame.K_3:
                     if self.inventory.take("earth"):
                         self.spell_queue.push("earth")
-                case pygame.K_l:
+                case pygame.K_l | pygame.K_4:
                     if self.inventory.take("fire"):
                         self.spell_queue.push("fire")
                 case pygame.K_SPACE:

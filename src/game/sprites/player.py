@@ -43,10 +43,6 @@ class Player(Sprite):
         self.update_keys(dt)
         self.update_position(dt)
         self.update_surroundings()
-        if self.game.mouse_pressed[0]:
-            self.angle += 90 * dt
-        else:
-            self.angle -= 90 * dt
 
     def draw(self, target: pygame.Surface) -> None:
         self.screen_pos = Vec(target.get_width() / 2, target.get_height() / 2)

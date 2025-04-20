@@ -1,9 +1,13 @@
+from __future__ import annotations
 from src.core import *
 from src.game.sprites import *
 
 class %(name)s(Scene):
-    class Layer(Enum):
-        pass
+    _layers = [
+        LayerGroup.record().add(
+            Layer.record("DEFAULT"),
+        )
+    ]
 
     def __init__(self, game: Game) -> None:
         super().__init__(game)
@@ -11,7 +15,6 @@ class %(name)s(Scene):
     def update(self, dt: float) -> None:
         self.sprite_manager.update(dt)
 
-    def draw(self, screen: pygame.Surface) -> None:
+    def predraw(self, screen: pygame.Surface) -> None:
         screen.fill((0, 0, 0))
-
         self.sprite_manager.draw(screen)

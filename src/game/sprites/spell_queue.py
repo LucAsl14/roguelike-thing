@@ -13,7 +13,7 @@ from .rollout import Rollout
 # TODO: rectangular objects have an oversized hitbox when diagonal
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, Layer.HUD)
+        super().__init__(scene, "HUD")
         self.screen_pos = Vec()
         self.queue = []
         self.scene = scene
@@ -37,13 +37,13 @@ class SpellQueue(Sprite):
             self.cursor_blink_on = not self.cursor_blink_on
         self.parse_top_spell()
 
-    def draw(self, screen: pygame.Surface) -> None:
-        self.screen_pos = Vec(200, screen.get_height() - 180)
-        trans_surf = pygame.surface.Surface((screen.get_width() - 400, 70), pygame.SRCALPHA)
-        pygame.draw.rect(trans_surf, (120, 120, 120, 100), pygame.Rect((0, 0), (screen.get_width() - 400, 70)))
+    def draw(self, target: pygame.Surface) -> None:
+        self.screen_pos = Vec(200, target.get_height() - 180)
+        trans_surf = pygame.surface.Surface((target.get_width() - 400, 70), pygame.SRCALPHA)
+        pygame.draw.rect(trans_surf, (120, 120, 120, 100), pygame.Rect((0, 0), (target.get_width() - 400, 70)))
         for i in range(len(self.queue)):
             draw_pos = Vec(10 + 60 * i, 10)
-            if self.queue[i] == " " or draw_pos.x > screen.get_width() - 400:
+            if self.queue[i] == " " or draw_pos.x > target.get_width() - 400:
                 continue
             color = (0, 0, 0)
             match self.queue[i]:
@@ -57,10 +57,10 @@ class SpellQueue(Sprite):
                     color = FIRE + (200,)
             pygame.draw.rect(trans_surf, color, pygame.Rect(draw_pos, (50, 50)))
         draw_pos = Vec(10 + 60 * len(self.queue), 10)
-        screen.blit(trans_surf, self.screen_pos)
+        target.blit(trans_surf, self.screen_pos)
         if draw_pos.x <= 400 and self.cursor_blink_on:
             pygame.draw.rect(trans_surf, (0, 0, 0, 200), pygame.Rect(draw_pos, (5, 50)))
-        screen.blit(trans_surf, self.screen_pos)
+        target.blit(trans_surf, self.screen_pos)
 
 
     def push(self, item: str) -> None:

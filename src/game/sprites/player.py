@@ -9,7 +9,7 @@ from .spell_queue import SpellQueue
 
 class Player(Sprite):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, Layer.DEFAULT)
+        super().__init__(scene, "DEFAULT")
         # band-aid fix to scene not considered MainScene
         self.scene = scene
 
@@ -35,7 +35,7 @@ class Player(Sprite):
         self.spell_queue = SpellQueue(self.scene)
         self.scene.add(self.spell_queue)
 
-        self.image = Images.player
+        self.image = Image.get("player")
         self.rect = self.image.get_rect()
         self.angle = 0
 
@@ -48,10 +48,10 @@ class Player(Sprite):
         else:
             self.angle -= 90 * dt
 
-    def draw(self, screen: pygame.Surface) -> None:
-        self.screen_pos = Vec(screen.get_width() / 2, screen.get_height() / 2)
-        self.image = pygame.transform.rotate(Images.player, self.angle)
-        screen.blit(self.image, self.screen_pos - Vec(self.image.size) / 2)
+    def draw(self, target: pygame.Surface) -> None:
+        self.screen_pos = Vec(target.get_width() / 2, target.get_height() / 2)
+        self.image = pygame.transform.rotate(Image.get("player"), self.angle)
+        target.blit(self.image, self.screen_pos - Vec(self.image.size) / 2)
         # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
 
 

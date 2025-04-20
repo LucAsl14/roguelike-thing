@@ -2,6 +2,3 @@ debug = true
 info = true
 warn = true
 error = true
-snapshot-info = true
-
-[entries]

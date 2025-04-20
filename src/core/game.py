@@ -1,11 +1,15 @@
-from pygame.locals import SCALED, FULLSCREEN, KEYDOWN, KEYUP, QUIT
+from pygame.locals import OPENGL, DOUBLEBUF, FULLSCREEN, KEYDOWN, KEYUP, QUIT
+from src.game.resources import init_resources
+from src.core.util.resource import Resource
 from src.core.util.timer import Time
 from src.core.scene import Scene
 import src.game.scenes as scenes
 from src.game.settings import *
 from typing import cast, Never
 from src.core.util import *
+import asyncio
 import pygame
+import zengl
 
 class AbortScene(Exception):
     def __str__(self):
@@ -17,10 +21,8 @@ class AbortGame(Exception):
 
 class Game(metaclass=Singleton):
     def __init__(self) -> None:
-        pygame.init()
-        pygame.font.init()
         self.size = self.width, self.height = self.w, self.h = WIDTH, HEIGHT
-        self.screen = pygame.display.set_mode(self.size, SCALED | FULLSCREEN * (not Debug.on()))
+        pygame.display.set_mode(self.size, OPENGL | DOUBLEBUF)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.time = pygame.time.get_ticks() / 1000
@@ -28,12 +30,21 @@ class Game(metaclass=Singleton):
         self.fps = 0
         self.timestamp = 0
 
-    def run(self) -> None:
-        self.replayer = Replayer(self)
+        self.ctx = zengl.context()
+
+        init_resources()
+        Resource.preload()
+
+    async def run(self) -> None:
         self.scene = scenes.MainScene(self)
 
+        self.update_profiler = Profile(self.scene.update)
+        self.draw_profiler = Profile(self.scene.draw)
+
         while True:
-            self.time = pygame.time.get_ticks() / 1000 - Debug._pause_time - self.replayer.time
+            await asyncio.sleep(0)
+
+            self.time = pygame.time.get_ticks() / 1000 - Debug._pause_time
             Time.begin_frame(self)
             self.seed = time()
             seed(self.seed)
@@ -41,22 +52,21 @@ class Game(metaclass=Singleton):
             try:
                 self.update()
                 if not Debug.paused():
-                    self.scene.update(self.dt)
+                    self.update_profiler(self.dt)
             except AbortScene:
                 continue
             except AbortGame:
                 break
 
             if not Debug.paused():
-                self.scene.draw(self.screen)
-                Debug.draw(self)
+                self.ctx.new_frame()
+                self.draw_profiler()
+                self.ctx.end_frame()
             pygame.display.flip()
 
-            if not self.replayer.running and not Debug.paused():
-                self.replayer.record()
             self.dt = self.clock.tick(0) / 1000
             self.fps = self.clock.get_fps()
-            if not self.replayer.running and not Debug.paused():
+            if not Debug.paused():
                 self.timestamp += 1
 
         pygame.quit()
@@ -80,13 +90,12 @@ class Game(metaclass=Singleton):
         if KEYDOWN in self.events and Debug.on():
             match self.events[KEYDOWN].key:
                 case pygame.K_F1:
-                    if not self.replayer.running:
-                        Debug.toggle_paused(self)
-                case pygame.K_F2:
-                    if not self.replayer.running:
-                        self.replayer.replay()
+                    Debug.toggle_paused(self)
                 case pygame.K_F3:
-                    Debug.toggle_visibility()
+                    Debug.launch_tkinter_tree(self)
+
+        if Debug.on():
+            pygame.display.set_caption(f"{TITLE} - FPS: {self.fps:.1f}")
 
         Profile.update(self.key_down)
 
@@ -98,9 +107,3 @@ class Game(metaclass=Singleton):
     def set_scene(self, scene: Scene) -> Never:
         self.scene = scene
         raise AbortScene
-
-    def __getstate__(self) -> dict:
-        return {}
-
-    def __setstate__(self, state: dict) -> None:
-        self.__dict__.update(Game().__dict__)

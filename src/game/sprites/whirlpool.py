@@ -6,7 +6,7 @@ from .area_spell import AreaSpell
 
 class Whirlpool(AreaSpell):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 1, "air", 15, 145, Layer.GROUND)
+        super().__init__(scene, 1, "air", 15, 145, "GROUND")
         self.circle_offsets: list[Vec] = []
         self.new_circle_timer = LoopTimer(0.1)
 

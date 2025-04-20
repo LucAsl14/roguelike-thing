@@ -1,11 +1,10 @@
 from __future__ import annotations
-from multimethod import multimeta
-from pygame.math import Vector2
 from src.core.util.typing import *
-from typing import Self
+from pygame.math import Vector2
+from typing import overload
 from math import floor
 
-class Vec(Vector2, metaclass=multimeta):
+class Vec(Vector2):
     """A 2D vector class with more utility methods and modified behavior."""
 
     @property
@@ -111,7 +110,8 @@ class Vec(Vector2, metaclass=multimeta):
         except ValueError:
             pass
 
-    def clamp_magnitude(self, max_length: Number) -> Vec: # type: ignore
+    @overload
+    def clamp_magnitude(self, max_length: Number) -> Vec:
         """Return a vector with a magnitude clamped to a maximum length.
 
         This differs from the default `clamp_magnitude` method by returning a
@@ -123,12 +123,10 @@ class Vec(Vector2, metaclass=multimeta):
         Returns:
             The clamped vector.
         """
-        try:
-            return super().clamp_magnitude(max_length)
-        except ValueError:
-            return Vec(0, 0)
+        ...
 
-    def clamp_magnitude(self, min_length: Number, max_length: Number) -> Vec: # type: ignore
+    @overload
+    def clamp_magnitude(self, min_length: Number, max_length: Number) -> Vec:
         """Return a vector with a magnitude clamped to a range.
 
         This differs from the default `clamp_magnitude` method by returning a
@@ -141,11 +139,15 @@ class Vec(Vector2, metaclass=multimeta):
         Returns:
             The clamped vector.
         """
+        ...
+
+    def clamp_magnitude(self, *args: Number) -> Vec: # type: ignore
         try:
-            return super().clamp_magnitude(min_length, max_length)
+            return super().clamp_magnitude(*args)
         except ValueError:
             return Vec(0, 0)
 
+    @overload
     def clamp_magnitude_ip(self, max_length: Number) -> None: # type: ignore
         """Clamp the magnitude of the vector to a maximum length in place.
 
@@ -155,11 +157,9 @@ class Vec(Vector2, metaclass=multimeta):
         Args:
             max_length: The maximum length of the vector.
         """
-        try:
-            return super().clamp_magnitude_ip(max_length)
-        except ValueError:
-            pass
+        ...
 
+    @overload
     def clamp_magnitude_ip(self, min_length: Number, max_length: Number) -> None: # type: ignore
         """Clamp the magnitude of the vector to a range in place.
 
@@ -170,8 +170,11 @@ class Vec(Vector2, metaclass=multimeta):
             min_length: The minimum length of the vector.
             max_length: The maximum length of the vector.
         """
+        ...
+
+    def clamp_magnitude_ip(self, *args: Number) -> None: # type: ignore
         try:
-            return super().clamp_magnitude_ip(min_length, max_length)
+            return super().clamp_magnitude_ip(*args)
         except ValueError:
             pass
 

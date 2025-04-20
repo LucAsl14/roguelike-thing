@@ -1,5 +1,6 @@
 __pycache__/
-./build/
-./dist/
-.venv/
-debug.toml
+/build/
+/dist/
+/debug/
+/.venv/
+/debug.toml

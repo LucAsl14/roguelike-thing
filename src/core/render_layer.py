@@ -1,60 +1,125 @@
-from src.core.sprite import Sprite
-from enum import Enum, auto
-import pygame
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.core.scene import Scene
 
-class RenderLayer:
-    def __init__(self) -> None:
-        self.updating_sprites: list[Sprite] = []
-        self.rendering_sprites: list[Sprite] = []
-        self.bound_sprites: dict[Sprite, Sprite] = {}
+from typing import Protocol, Any, Callable, Optional, Type
+from src.game.resources import VertShader, FragShader
+from src.core.sprite import Sprite
+from dataclasses import dataclass
+from enum import Enum
+import pygame
+import zengl
+
+class LayerGroupRecord:
+    def __init__(self, type: Type[LayerGroup], vert: str, frag: str) -> None:
+        self.type = type
+        self.vert = vert
+        self.frag = frag
+        self.layers: list[LayerRecord] = []
+
+    def add(self, *layers: LayerRecord) -> LayerGroupRecord:
+        self.layers.extend(layers)
+        return self
+
+    def construct(self, scene: Scene) -> LayerGroup:
+        group = self.type(scene, vert=self.vert, frag=self.frag)
+        group.layers = [layer.construct(scene) for layer in self.layers]
+        return group
+
+class LayerGroup:
+    @classmethod
+    def record(cls, vert: str = "default", frag: str = "default") -> LayerGroupRecord:
+        return LayerGroupRecord(cls, vert, frag)
+
+    def __init__(self, scene: Scene, vert: str = "default", frag: str = "default") -> None:
+        self.game = scene.game
+        self.vert = vert
+        self.frag = frag
+        self.layers: list[Layer] = []
+
+        self.image = self.game.ctx.image(self.game.size, "rgba8unorm")
+        self.pipeline = self._create_pipeline()
+        self.surface = pygame.Surface(self.game.size, pygame.SRCALPHA)
+
+    def _create_pipeline(self) -> zengl.Pipeline:
+        return self.game.ctx.pipeline(
+            vertex_shader=VertShader.get(self.vert),
+            fragment_shader=FragShader.get(self.frag),
+            framebuffer=None,
+            viewport=(0, 0, *self.game.size),
+            topology="triangle_strip",
+            vertex_count=4,
+            blend={
+                "enable": True,
+                "src_color": "src_alpha",
+                "dst_color": "one_minus_src_alpha",
+                "src_alpha": "one",
+                "dst_alpha": "one_minus_src_alpha",
+            },
+            resources=[
+                {
+                    "type": "sampler",
+                    "binding": 0,
+                    "image": self.image,
+                    "min_filter": "nearest",
+                    "mag_filter": "nearest",
+                    "wrap_x": "clamp_to_edge",
+                    "wrap_y": "clamp_to_edge",
+                },
+            ],
+            layout=[
+                {
+                    "name": "u_texture",
+                    "binding": 0,
+                },
+            ]
+        )
 
     def update(self, dt: float) -> None:
-        for sprite in self.updating_sprites:
+        for layer in self.layers:
+            layer.update(dt)
+
+    def draw(self) -> None:
+        for layer in self.layers:
+            layer.draw(self.surface)
+
+        self.image.write(pygame.image.tobytes(self.surface, "RGBA", True))
+        self.pipeline.render()
+
+class LayerRecord:
+    def __init__(self, type: Type[Layer], *args: Any, **kwargs: dict[str, Any]) -> None:
+        self.type = type
+        self.args = args
+        self.kwargs = kwargs
+
+    def construct(self, scene: Scene) -> Layer:
+        return self.type(scene, *self.args, **self.kwargs)
+
+class Layer:
+    @classmethod
+    def record(cls, name: str, pixel_scale: int = 1) -> LayerRecord:
+        return LayerRecord(cls, name, pixel_scale)
+
+    def __init__(self, scene: Scene, name: str, pixel_scale: int = 1) -> None:
+        self.game = scene.game
+        self.name = name
+        self.pixel_scale = pixel_scale
+        self.updating: list[Sprite] = []
+        self.drawing: list[Sprite] = []
+
+    def update(self, dt: float) -> None:
+        for sprite in self.updating:
             sprite.update(dt)
 
-    def draw(self, screen: pygame.Surface) -> None:
-        for sprite in self.rendering_sprites:
-            self._draw_sprite(sprite, screen)
-
-    def _draw_sprite(self, sprite: Sprite, screen: pygame.Surface) -> None:
-        sprite.draw(screen)
-        # Recursively draw bound sprites
-        if sprite in self.bound_sprites:
-            self._draw_sprite(self.bound_sprites[sprite], screen)
-            self._draw_sprite(self.bound_sprites[sprite], screen)
+    def draw(self, target: pygame.Surface) -> None:
+        for sprite in self.drawing:
+            sprite.draw(target)
 
     def add(self, sprite: Sprite) -> None:
-        self.updating_sprites.append(sprite)
-        if isinstance(sprite, Sprite):
-            self.rendering_sprites.append(sprite)
+        self.updating.append(sprite)
+        self.drawing.append(sprite)
 
     def remove(self, sprite: Sprite) -> None:
-        self.updating_sprites.remove(sprite)
-        if isinstance(sprite, Sprite):
-            self.rendering_sprites.remove(sprite)
-
-    def bind(self, bottom: Sprite, top: Sprite) -> None:
-        if top in self.bound_sprites:
-            # Generate a trace of the cyclical binding
-            stack = [current := top]
-            while current in self.bound_sprites:
-                stack.append(current := self.bound_sprites[current])
-            trace = " -> ".join(map(str, stack))
-            raise ValueError(f"Cyclical binding detected: \n{trace}")
-
-        try:
-            self.remove(top)
-        except ValueError:
-            # top either doesn't exist in the layer or has been removed
-            # from being having been bound to another sprite
-            pass
-        self.bound_sprites[bottom] = top
-
-    def unbind(self, bottom: Sprite) -> bool:
-        if bottom in self.bound_sprites:
-            del self.bound_sprites[bottom]
-            return True
-        return False
-
-    def __len__(self) -> int:
-        return len(self.updating_sprites) + len(self.bound_sprites)
+        self.updating.remove(sprite)
+        self.drawing.remove(sprite)

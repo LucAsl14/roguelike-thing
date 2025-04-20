@@ -6,7 +6,7 @@ from .area_spell import AreaSpell
 
 class Steam(AreaSpell):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 0, "water", 20, 250, Layer.SKY)
+        super().__init__(scene, 0, "water", 20, 250, "SKY")
         self.circle_offsets: list[Vec] = []
         self.new_circle = LoopTimer(0.1)
 

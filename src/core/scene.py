@@ -3,38 +3,55 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.core.game import Game
 
+from src.core.render_layer import Layer, LayerGroup, LayerGroupRecord
 from abc import ABC as AbstractClass, abstractmethod
-from src.core.sprite_manager import SpriteManager
 from src.core.sprite import Sprite
+from typing import ClassVar
 from src.core.util import *
 import pygame
 
 class Scene(AbstractClass):
+    _layers: ClassVar[list[LayerGroupRecord]] = []
+
     def __init__(self, game: Game) -> None:
         self.game = ref_proxy(game)
-        self.sprite_manager = SpriteManager()
+        self.layer_groups = [
+            *map(lambda group: group.construct(self), self._layers),
+        ]
+        self.layers = {layer.name: layer for group in self.layer_groups for layer in group.layers}
 
-    @abstractmethod
+    def preupdate(self, dt: float) -> None:
+        pass
+
+    def postupdate(self, dt: float) -> None:
+        pass
+
     def update(self, dt: float) -> None:
+        self.preupdate(dt)
+        for layer in self.layers.values():
+            layer.update(dt)
+        self.postupdate(dt)
+
+    def predraw(self, screen: pygame.Surface) -> None:
         pass
 
-    @abstractmethod
-    def draw(self, screen: pygame.Surface) -> None:
+    def postdraw(self, screen: pygame.Surface) -> None:
         pass
+
+    def draw(self) -> None:
+        for group in self.layer_groups:
+            group.surface.fill((0, 0, 0, 0))
+        self.predraw(self.layer_groups[0].surface)
+        for group in self.layer_groups[:-1]:
+            group.draw()
+        self.postdraw(self.layer_groups[-1].surface)
+        self.layer_groups[-1].draw()
 
     def add(self, sprite: Sprite) -> None:
-        self.sprite_manager.add(sprite)
+        self.layers[sprite.layer].add(sprite)
 
     def remove(self, sprite: Sprite) -> None:
         try:
-            self.sprite_manager.remove(sprite)
+            self.layers[sprite.layer].remove(sprite)
         except ValueError:
-            Log.warn(f"Attempted to remove sprite {sprite} from scene {self}, but it was not found in the sprite manager.")
-
-    def __getstate__(self) -> dict:
-        state = self.__dict__.copy()
-        return state
-
-    def __setstate__(self, state: dict) -> None:
-        self.__dict__.update(state)
-        self.game = self.game.__class__()
+            Log.warn(f"Attempted to remove sprite {sprite} from scene {self}, but it was not found in the scene.")

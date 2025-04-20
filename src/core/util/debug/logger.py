@@ -1,5 +1,6 @@
 from datetime import datetime
 from .debugger import Debug
+from typing import Any
 
 class Log:
     """A simple logging class that can be used to log messages to the console.
@@ -21,25 +22,47 @@ class Log:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+    LOG_FILE = "debug/watch.txt"
+
     @staticmethod
     @Debug.requires_debug("debug")
-    def debug(message: str) -> None:
-        print(f"[{Log.OKBLUE}DEBUG{Log.ENDC} {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
+    def debug(*messages: str) -> None:
+        level = f"{Log.OKBLUE}DEBUG{Log.ENDC}"
+        timestamp = f"{Log.UNDERLINE}{Log.datetime()}{Log.ENDC}"
+        message = " ".join(map(str, messages))
+        print(f"[{level} {timestamp}] {message}")
 
     @staticmethod
     @Debug.requires_debug("info")
-    def info(message: str) -> None:
-        print(f"[{Log.OKGREEN}INFO{Log.ENDC} {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
+    def info(*messages: str) -> None:
+        level = f"{Log.OKGREEN}INFO{Log.ENDC}"
+        timestamp = f"{Log.UNDERLINE}{Log.datetime()}{Log.ENDC}"
+        message = " ".join(map(str, messages))
+        print(f"[{level} {timestamp}] {message}")
 
     @staticmethod
     @Debug.requires_debug("warn")
-    def warn(message: str) -> None:
-        print(f"[{Log.WARNING}WARNING{Log.ENDC} {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
+    def warn(*messages: str) -> None:
+        level = f"{Log.WARNING}WARNING{Log.ENDC}"
+        timestamp = f"{Log.UNDERLINE}{Log.datetime()}{Log.ENDC}"
+        message = " ".join(map(str, messages))
+        print(f"[{level} {timestamp}] {message}")
 
     @staticmethod
     @Debug.requires_debug("error")
-    def error(message: str) -> None:
-        print(f"[{Log.BOLD}{Log.FAIL}CRITICAL{Log.ENDC} {Log.UNDERLINE}{Log.datetime()}{Log.ENDC}] {message}")
+    def error(*messages: str) -> None:
+        level = f"{Log.FAIL}ERROR{Log.ENDC}"
+        timestamp = f"{Log.UNDERLINE}{Log.datetime()}{Log.ENDC}"
+        message = " ".join(map(str, messages))
+        print(f"[{level} {timestamp}] {message}")
+
+    @staticmethod
+    def watch(value: Any) -> None:
+        """Logs the given value to a file using the info log level."""
+        timestamp = Log.datetime()
+        message = f"[INFO {timestamp}] {value}"
+        with open(Log.LOG_FILE, "a") as log_file:
+            log_file.write(message + "\n")
 
     @staticmethod
     def datetime() -> str:

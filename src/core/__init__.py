@@ -1,7 +1,7 @@
 from src.game.settings import *
 
+from .render_layer import LayerGroup, Layer
 from .sprite import Sprite
-from .assets import Images
 from .scene import Scene
 from .util import *
 import pygame

@@ -10,13 +10,15 @@ readme = "README.md"
 python = "^3.12"
 pygame-ce = "^2.5.2"
 zengl = "^2.7.1"
+websockets = "^15.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pygbag = "^0.9.2"
 snakeviz = "^2.2.2"
 
 [tool.poe.tasks]
-run = "python main.py"
+client = "python src/client/main.py"
+server = "python src/server/main.py"
 new-scene = "python scripts/create_scene.py"
 new-sprite = "python scripts/create_sprite.py"
 init-debug = "python scripts/init_debug.py"

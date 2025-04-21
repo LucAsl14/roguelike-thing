@@ -1,6 +1,6 @@
 from __future__ import annotations
-from src.core import *
-from src.game.sprites import *
+from core import *
+from sprites import *
 
 class %(name)s(Scene):
     _layers = [

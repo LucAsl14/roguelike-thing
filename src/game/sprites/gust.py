@@ -9,7 +9,7 @@ class Gust(Spell):
         super().__init__(scene, 0, "air")
         self.angle: float
         self.rect = pygame.Rect()
-        self.anim_timer = Timer(0.1)
+        self.anim_timer = Timer(0.3)
 
     def draw_charge(self, screen: Surface) -> None:
         pass
@@ -37,10 +37,12 @@ class Gust(Spell):
 
     def draw_spell(self, screen: Surface) -> None:
         player = self.scene.player
-        screen_pos = player.screen_pos + 190 * self.anim_timer.progress * Vec(
+        screen_pos = player.screen_pos + 690 * self.anim_timer.progress * Vec(
                                    cos(self.angle), sin(self.angle)) + (
                                    uniform(-50, 50), uniform(-50, 50))
         pygame.draw.circle(screen, AIR, screen_pos, 10)
+        if self.anim_timer.done:
+            self.kill()
 
     def trigger_spell(self) -> None:
         super().trigger_spell()

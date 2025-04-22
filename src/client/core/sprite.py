@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from core.scene import Scene
+    from client.core.scene import Scene
 
 from abc import ABC as AbstractClass, abstractmethod
-from core.util import *
 from uuid import uuid4
+from util import *
 import pygame
 
 class Sprite(AbstractClass):

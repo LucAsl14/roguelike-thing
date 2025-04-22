@@ -17,8 +17,8 @@ pygbag = "^0.9.2"
 snakeviz = "^2.2.2"
 
 [tool.poe.tasks]
-client = "python src/client/main.py"
-server = "python src/server/main.py"
+client = {cmd = "python -m client.main", env = {PYTHONPATH = "src"}}
+server = {cmd = "python -m server.main", env = {PYTHONPATH = "src"}}
 new-scene = "python scripts/create_scene.py"
 new-sprite = "python scripts/create_sprite.py"
 init-debug = "python scripts/init_debug.py"

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from core import *
+from client.core import *
 
 class Inventory(Sprite):
     def __init__(self, scene: MainScene) -> None:

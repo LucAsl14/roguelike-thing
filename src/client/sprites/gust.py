@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pygame import Surface
-from core import *
+from client.core import *
 from .spell import Spell
 
 class Gust(Spell):

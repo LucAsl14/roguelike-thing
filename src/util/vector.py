@@ -1,7 +1,7 @@
 from __future__ import annotations
-from core.util.typing import *
 from pygame.math import Vector2
 from typing import overload
+from util.typing import *
 from math import floor
 
 class Vec(Vector2):

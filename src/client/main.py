@@ -5,7 +5,7 @@
 # ]
 # ///
 
-from core.game import Game
+from client.core.game import Game
 import asyncio
 import pygame
 

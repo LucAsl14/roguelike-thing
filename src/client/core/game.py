@@ -1,11 +1,12 @@
-from core.util.resource import Resource
-from resources import init_resources
-from core.util.timer import Time
-from core.scene import Scene
-import scenes as scenes
-from core.util import *
-from settings import *
+from client.resources import init_resources
+from client.core.scene import Scene
+from util.resource import Resource
 from typing import cast, Never
+import client.scenes as scenes
+from client.settings import *
+from util.timer import Time
+from .debug import *
+from util import *
 import asyncio
 import pygame
 import zengl

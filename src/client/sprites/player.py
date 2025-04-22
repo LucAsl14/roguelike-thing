@@ -1,5 +1,5 @@
 from __future__ import annotations
-from core import *
+from client.core import *
 
 from .inventory import Inventory
 from .test_decoration import TestDecoration

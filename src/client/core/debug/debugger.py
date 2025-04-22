@@ -1,11 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from core.game import Game
+    from client.core.game import Game
 
 from typing import Any, Callable, Optional
-from core.util.timer import Time
-from itertools import chain
+from util.timer import Time
 from functools import wraps
 from tkinter import ttk
 import tkinter as tk

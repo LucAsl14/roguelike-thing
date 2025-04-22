@@ -1,13 +1,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from core.game import Game
+    from client.core.game import Game
 
-from core.render_layer import Layer, LayerGroup, LayerGroupRecord
-from abc import ABC as AbstractClass, abstractmethod
-from core.sprite import Sprite
+from client.core.render_layer import LayerGroupRecord
+from client.core.sprite import Sprite
+from abc import ABC as AbstractClass
 from typing import ClassVar
-from core.util import *
+from .debug import *
+from util import *
 import pygame
 
 class Scene(AbstractClass):

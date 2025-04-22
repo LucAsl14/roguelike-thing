@@ -1,6 +1,6 @@
 from __future__ import annotations
-from core import *
-from sprites import *
+from client.sprites import *
+from client.core import *
 
 class MainScene(Scene):
     _layers = [

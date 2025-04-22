@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from core import Game
+    from client.core import Game
 
 from typing import Optional
 

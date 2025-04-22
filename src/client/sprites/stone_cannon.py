@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pygame import Surface
 from .construct import Construct
-from core import *
+from client.core import *
 from .projectile import Projectile
 
 class StoneCannon(Projectile):

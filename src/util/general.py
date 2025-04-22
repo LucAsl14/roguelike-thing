@@ -1,11 +1,10 @@
 from __future__ import annotations
-from typing import Iterable, TypeVar, cast, Optional, Any, Type, Generic
-from core.util.vector import Vec
-from core.util.typing import *
+from typing import Iterable, TypeVar, cast, Optional, Any, Generic
+from util.vector import Vec
+from util.typing import *
 from pathlib import Path
 from math import floor
 import weakref
-import pygame
 import sys
 import os
 

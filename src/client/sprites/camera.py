@@ -1,4 +1,4 @@
-from core import *
+from client.core import *
 
 class Camera(Sprite):
     def __init__(self, scene: Scene, target: Sprite) -> None:

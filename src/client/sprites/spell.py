@@ -1,5 +1,5 @@
 from __future__ import annotations
-from core import *
+from client.core import *
 from abc import abstractmethod
 
 class Spell(Sprite):

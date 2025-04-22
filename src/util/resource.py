@@ -1,7 +1,7 @@
 from __future__ import annotations
-from core.util.general import pathof, read_file
 from typing import TypeVar, Generic, Any, ClassVar
-from core.util.debug import Log
+from util.general import pathof, read_file
+from client.core.debug import Log
 from dataclasses import dataclass
 from abc import abstractmethod
 import pygame

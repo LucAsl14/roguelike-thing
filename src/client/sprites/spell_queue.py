@@ -1,5 +1,5 @@
 from __future__ import annotations
-from core import *
+from client.core import *
 from .fireball import Fireball
 from .earth_block import EarthBlock
 from .waterball import Waterball

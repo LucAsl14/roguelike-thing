@@ -1,13 +1,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from core.scene import Scene
+    from client.core.scene import Scene
 
-from typing import Protocol, Any, Callable, Optional, Type
-from resources import VertShader, FragShader
-from core.sprite import Sprite
-from dataclasses import dataclass
-from enum import Enum
+from client.resources import VertShader, FragShader
+from client.core.sprite import Sprite
+from typing import Any, Type
 import pygame
 import zengl
 

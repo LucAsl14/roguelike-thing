@@ -5,3 +5,4 @@ from .typing import *
 from .vector import *
 from .debug import *
 from .timer import *
+from .hitbox import *

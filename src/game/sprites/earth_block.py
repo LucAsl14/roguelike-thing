@@ -4,14 +4,15 @@ from pygame import Surface
 from src.core import *
 from .construct import Construct
 from random import uniform
+from src.core.util.hitbox import Hitbox
 
 class EarthBlock(Construct):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, 0.2, 15, 20)
-        self.angle: float
-        self.size: Vec
         # testing some graphic changing depending on damage
         self.extra_damaged = False
+        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox.set_size_rect(50, 40)
 
     def draw_aiming(self, screen: Surface) -> None:
         # all of this code just to rotate a rectangle?????
@@ -35,8 +36,6 @@ class EarthBlock(Construct):
             pygame.draw.circle(screen, EARTH, self.screen_pos + dpos, 10)
 
     def draw_spell(self, screen: Surface) -> None:
-        self.rect = pygame.Rect(self.pos - Vec(self.size) / 2, self.size)
-        # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
         # more rectangle rotating
@@ -48,6 +47,14 @@ class EarthBlock(Construct):
             pygame.draw.line(origimg, (40, 20, 10), (30, 0), (10, 40))
         rotimg = pygame.transform.rotate(origimg, self.angle)
         screen.blit(rotimg, self.screen_pos - self.size / 2)
+        # hitbox debugging
+        if Debug.on():
+            pygame.draw.polygon(screen, (255, 0, 0), [Vec(p) - self.scene.player.pos + self.scene.player.screen_pos for p in self.hitbox.get_hitbox()], 2)
+
+    def trigger_spell(self) -> None:
+        super().trigger_spell()
+        self.hitbox.set_rotation(self.angle)
+        self.hitbox.set_position(self.pos)
 
     def take_damage(self, dmg: int) -> int:
         dmg_taken = super().take_damage(dmg)

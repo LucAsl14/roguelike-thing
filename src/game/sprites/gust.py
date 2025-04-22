@@ -3,20 +3,27 @@ from __future__ import annotations
 from pygame import Surface
 from src.core import *
 from .spell import Spell
+from src.core.util.hitbox import Hitbox
 
 class Gust(Spell):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, 0, "air")
         self.angle: float
-        self.rect = pygame.Rect()
+        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox.set_size_rect(160, 380)
+        self.hitbox.translate(Vec(0, -190))
         self.anim_timer = Timer(0.3)
 
     def draw_charge(self, screen: Surface) -> None:
         pass
     def update_charge(self, dt: float) -> None:
         pass
+
     def update_aiming(self, dt: float) -> None:
-        pass
+        self.pos = self.scene.player.pos
+        self.hitbox.set_rotation(self.angle + pi / 2, False)
+        self.hitbox.set_position(self.pos)
+
     def update_spell(self, dt: float) -> None:
         pass
 
@@ -31,9 +38,10 @@ class Gust(Spell):
         origimg.set_colorkey((0, 0, 0))
         pygame.draw.rect(origimg, (120, 120, 120, 100), origimg.get_rect())
         rotimg = pygame.transform.rotate(origimg, rotangle)
-        self.rect = pygame.Rect(player.pos + 190 * Vec(cos(self.angle), sin(self.angle)) - Vec(rotimg.size) / 2, rotimg.get_rect().size)
-        # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
         screen.blit(rotimg, player.screen_pos + 190 * Vec(cos(self.angle), sin(self.angle)) - Vec(rotimg.size) / 2)
+        # hitbox debugging
+        if Debug.on():
+            pygame.draw.polygon(screen, (255, 0, 0), [Vec(p) - self.scene.player.pos + self.scene.player.screen_pos for p in self.hitbox.get_hitbox()], 2)
 
     def draw_spell(self, screen: Surface) -> None:
         player = self.scene.player
@@ -47,7 +55,7 @@ class Gust(Spell):
     def trigger_spell(self) -> None:
         super().trigger_spell()
         for projectile in self.scene.projectiles:
-            if projectile.element != "air" and projectile.rect.colliderect(self.rect):
+            if projectile.element != "air" and self.hitbox.is_colliding(projectile.hitbox):
                 change = Vec(cos(self.angle), sin(self.angle)) * (400 * 10 / projectile.rad)
                 projectile.external_acc += change
         self.scene.player.ext_acc = -2000 * Vec(cos(self.angle), sin(self.angle))

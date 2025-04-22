@@ -20,12 +20,12 @@ class Waterball(Projectile):
             self.rad = 20 + 180 * self.exploding_timer.progress
             if self.exploding_timer.done:
                 # testing an exploding mechanic
-                self.rect = pygame.Rect(self.pos - (200, 200), (400, 400))
+                self.hitbox.set_size_rad(200)
                 for construct in self.scene.constructs:
-                    if self.rect.colliderect(construct.rect):
+                    if self.hitbox.is_colliding(construct.hitbox):
                         construct.take_damage(10)
                 for projectile in self.scene.projectiles:
-                    if self.rect.colliderect(projectile.rect) and projectile.element != self.element:
+                    if self.hitbox.is_colliding(projectile.hitbox) and projectile.element != self.element and not projectile.aiming:
                         projectile.take_damage(10)
                 super().kill()
 
@@ -34,6 +34,9 @@ class Waterball(Projectile):
         if self.pos.distance_to(self.scene.player.pos) > 800:
             return
         pygame.draw.circle(screen, WATER, self.screen_pos, self.rad)
+        # hitbox debugging
+        if Debug.on():
+            pygame.draw.polygon(screen, (255, 0, 0), [Vec(p) - self.scene.player.pos + self.scene.player.screen_pos for p in self.hitbox.get_hitbox()], 2)
 
     def kill(self) -> None:
         if self.aiming:

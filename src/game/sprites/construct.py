@@ -3,6 +3,7 @@ from __future__ import annotations
 from pygame import Surface
 from src.core import *
 from .spell import Spell
+from src.core.util.hitbox import Hitbox # no idea why this needs to be imported
 
 class Construct(Spell):
     def __init__(self, scene: MainScene, charge_time: float, lifespan: float, hp: int) -> None:
@@ -15,9 +16,10 @@ class Construct(Spell):
         self.lifespan = Timer(lifespan)
         self.hp = hp
         self.pos: Vec
+        self.angle: float
+        self.size: Vec
         self.scene.constructs.append(self)
-        # pretty sure this is *not* how hitboxes are made
-        self.rect = pygame.Rect()
+        self.hitbox: Hitbox
 
     def update_charge(self, dt: float) -> None:
         pass
@@ -25,7 +27,7 @@ class Construct(Spell):
         pass
 
     def update_spell(self, dt: float) -> None:
-        if self.rect.colliderect(self.scene.player.rect):
+        if self.is_colliding_player():
             self.collide_player()
         if self.lifespan.done:
             self.kill()
@@ -40,7 +42,7 @@ class Construct(Spell):
             super().trigger_spell()
 
     def collide_player(self) -> None:
-        self.scene.player.vel = Vec((self.scene.player.pos - self.pos))
+        self.scene.player.vel = 100 * Vec((self.scene.player.pos - self.pos)).normalize()
 
     def take_damage(self, dmg: int) -> int:
         """
@@ -56,3 +58,8 @@ class Construct(Spell):
         if not self.killed:
             self.scene.constructs.remove(self)
         super().kill()
+
+    def is_colliding_player(self) -> bool:
+        if self.hitbox.is_colliding(self.scene.player.hitbox):
+            return True
+        return False

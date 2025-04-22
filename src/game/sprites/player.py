@@ -4,6 +4,7 @@ from src.core import *
 from .inventory import Inventory
 from .test_decoration import TestDecoration
 from .spell_queue import SpellQueue
+from src.core.util.hitbox import Hitbox # I actually don't get why this is necessary
 
 class Player(Sprite):
     def __init__(self, scene: MainScene) -> None:
@@ -31,8 +32,11 @@ class Player(Sprite):
         self.spell_queue = SpellQueue(self.scene)
         self.scene.add(self.spell_queue)
 
+        # player visuals and hitbox
         self.image = Image.get("player")
-        self.rect = self.image.get_rect()
+        rect = self.image.get_rect()
+        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox.set_size_rect(rect.width, rect.height)
         self.angle = 0
 
     def update(self, dt: float) -> None:
@@ -43,7 +47,6 @@ class Player(Sprite):
     def draw(self, target: pygame.Surface) -> None:
         self.image = pygame.transform.rotate(Image.get("player"), self.angle)
         target.blit(self.image, self.screen_pos - Vec(self.image.get_rect().size) / 2)
-        # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
 
 
     def update_keys(self, dt: float) -> None:
@@ -104,7 +107,8 @@ class Player(Sprite):
         self.ext_acc = Vec()
         self.vel *= 0.004 ** dt
         self.pos += self.vel * dt
-        self.rect.update(self.pos - Vec(self.rect.size) / 2, self.rect.size)
+        self.hitbox.set_position(self.pos)
+        self.hitbox.set_rotation(self.angle)
 
     def update_surroundings(self) -> None:
         # something something about generating decorations im too lazy

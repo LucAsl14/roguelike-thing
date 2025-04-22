@@ -4,6 +4,7 @@ from pygame import Surface
 from src.core import *
 from .spell import Spell
 from .construct import Construct
+from src.core.util.hitbox import Hitbox # @DaNub HELP ME I DONT WANT TO IMPORT THIS EVERYWHERE
 
 class Projectile(Spell):
     def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
@@ -13,9 +14,10 @@ class Projectile(Spell):
         self.pos = self.scene.player.pos.copy()
         self.speed = speed
         self.lifespan = Timer(lifespan)
-        self.rect = pygame.Rect()
-        self.damage = dmg
         self.rad = radius
+        self.damage = dmg
+        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox.set_size_rad(radius)
         self.ignore_elem = []
         self.scene.projectiles.append(self)
 
@@ -43,18 +45,19 @@ class Projectile(Spell):
         self.pos += self.vel * dt
         self.external_acc = Vec()
 
-        self.rect = pygame.Rect(self.pos - Vec(self.rad), Vec(self.rad * 2))
+        self.hitbox.set_position(self.pos)
+
         if self.lifespan.done:
             self.kill()
             return
         # collision with constructs and projectiles
         for construct in self.scene.constructs:
-            if self.rect.colliderect(construct.rect):
+            if self.hitbox.is_colliding(construct.hitbox):
                 self.collide(construct)
         for projectile in self.scene.projectiles:
-            if self.rect.colliderect(projectile.rect) and \
+            if self.hitbox.is_colliding(projectile.hitbox) and \
                projectile.element not in self.ignore_elem and \
-               projectile != self:
+               projectile != self and not projectile.aiming:
                 self.collide(projectile)
 
     def take_damage(self, dmg: int) -> int:

@@ -25,7 +25,8 @@ class Gust(Spell):
         self.hitbox.set_position(self.pos)
 
     def update_spell(self, dt: float) -> None:
-        pass
+        if self.anim_timer.done:
+            self.kill()
 
     def draw_aiming(self, screen: Surface) -> None:
         mpos = self.game.mouse_pos
@@ -49,8 +50,6 @@ class Gust(Spell):
                                    cos(self.angle), sin(self.angle)) + (
                                    uniform(-50, 50), uniform(-50, 50))
         pygame.draw.circle(screen, AIR, screen_pos, 10)
-        if self.anim_timer.done:
-            self.kill()
 
     def trigger_spell(self) -> None:
         super().trigger_spell()

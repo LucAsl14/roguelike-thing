@@ -9,8 +9,8 @@ from .steam import Steam
 from .mud import Mud
 from .whirlpool import Whirlpool
 from .rollout import Rollout
+from .wall_of_fire import WallOfFire
 
-# TODO: rectangular objects have an oversized hitbox when diagonal
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, "HUD")
@@ -29,6 +29,7 @@ class SpellQueue(Sprite):
             "kj": Mud, "jk": Mud,
             "ij": Whirlpool, "ji": Whirlpool,
             "ik": Rollout, "ki": Rollout,
+            "il": WallOfFire, "li": WallOfFire,
         }
 
     def update(self, dt: float) -> None:

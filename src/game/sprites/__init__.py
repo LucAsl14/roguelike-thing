@@ -16,3 +16,4 @@ from .mud import Mud
 from .whirlpool import Whirlpool
 from .rollout import Rollout
 from .camera import Camera
+from .wall_of_fire import WallOfFire

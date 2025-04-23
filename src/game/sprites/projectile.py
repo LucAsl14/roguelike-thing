@@ -57,8 +57,7 @@ class Projectile(Spell):
         for projectile in self.scene.projectiles:
             if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad and \
                projectile.element not in self.ignore_elem and \
-               projectile != self and not projectile.aiming and \
-               self.hitbox.is_colliding(projectile.hitbox):
+               projectile != self and self.hitbox.is_colliding(projectile.hitbox):
                 self.collide(projectile)
 
     def take_damage(self, dmg: int) -> int:
@@ -66,6 +65,8 @@ class Projectile(Spell):
         Returns:
             Amount of damage taken
         """
+        if self.aiming:
+            return 0
         prev_dmg = self.damage
         self.damage -= dmg
         if self.damage <= 0:

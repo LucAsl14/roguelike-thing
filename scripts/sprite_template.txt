@@ -2,7 +2,7 @@ from src.core import *
 
 class %(name)s(%(super)s):
     def __init__(self, scene: %(scene)s) -> None:
-        super().__init__(scene, "%(layer)")
+        super().__init__(scene, "%(layer)s")
 
     def update(self, dt: float) -> None:
         pass

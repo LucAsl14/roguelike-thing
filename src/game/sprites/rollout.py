@@ -17,8 +17,6 @@ class Rollout(Construct):
 
         self.hitbox = Hitbox(self.pos, [])
         self.hitbox.set_size_rect(10, 30)
-        # testing some graphic changing depending on damage
-        self.extra_damaged = False
 
     def draw_aiming(self, screen: Surface) -> None:
         pygame.draw.line(screen, (120, 120, 120), self.scene.player.screen_pos, self.game.mouse_pos, 3)
@@ -29,9 +27,6 @@ class Rollout(Construct):
         origimg = pygame.surface.Surface((30, 10))
         origimg.set_colorkey((0, 0, 0))
         pygame.draw.rect(origimg, EARTH, origimg.get_rect())
-        if self.extra_damaged:
-            pygame.draw.line(origimg, (40, 20, 10), (3, 0), (18, 6))
-            pygame.draw.line(origimg, (40, 20, 10), (5, 0), (5, 10))
         rotimg = pygame.transform.rotate(origimg, 90 - degrees(self.angle))
         self.size = Vec(rotimg.get_rect().size)
         screen.blit(rotimg, self.screen_pos - self.size / 2)
@@ -62,9 +57,6 @@ class Rollout(Construct):
         origimg = pygame.surface.Surface((30, 10))
         origimg.set_colorkey((0, 0, 0))
         pygame.draw.rect(origimg, EARTH, origimg.get_rect())
-        if self.extra_damaged:
-            pygame.draw.line(origimg, (40, 20, 10), (3, 0), (18, 6))
-            pygame.draw.line(origimg, (40, 20, 10), (5, 0), (5, 10))
         rotimg = pygame.transform.rotate(origimg, 90 - degrees(self.angle))
         self.size = Vec(rotimg.get_rect().size)
         screen.blit(rotimg, self.screen_pos - self.size / 2)

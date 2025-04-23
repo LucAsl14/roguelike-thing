@@ -47,6 +47,8 @@ class Construct(Spell):
         Returns:
             actual damage taken
         """
+        if self.aiming:
+            return 0
         prev_hp = self.hp
         if self.hp == -1: return dmg
         self.hp = max(self.hp - dmg, 0)

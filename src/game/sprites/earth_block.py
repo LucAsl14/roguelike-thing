@@ -4,7 +4,6 @@ from pygame import Surface
 from src.core import *
 from .construct import Construct
 from random import uniform
-from src.core.util.hitbox import Hitbox
 
 class EarthBlock(Construct):
     def __init__(self, scene: MainScene) -> None:

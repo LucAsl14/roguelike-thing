@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.core.game import Game
 
+from functools import lru_cache
 from typing import Any, Callable, Optional
 from src.core.util.timer import Time
 from itertools import chain
@@ -104,6 +105,7 @@ class Debug:
     _conf_cache = None
     _conf_last_modified = None
 
+    @lru_cache(maxsize=1000)
     @staticmethod
     def get_config_option(name: str) -> Optional[Any]:
         try:

@@ -1,6 +1,5 @@
 from .vector import Vec
 from typing import List, Self
-from src.core import *
 from math import radians, cos, sin, pi
 
 class Hitbox():

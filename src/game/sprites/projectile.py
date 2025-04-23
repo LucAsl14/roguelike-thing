@@ -4,7 +4,6 @@ from pygame import Surface
 from src.core import *
 from .spell import Spell
 from .construct import Construct
-from src.core.util.hitbox import Hitbox # @DaNub HELP ME I DONT WANT TO IMPORT THIS EVERYWHERE
 
 class Projectile(Spell):
     def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
@@ -52,12 +51,14 @@ class Projectile(Spell):
             return
         # collision with constructs and projectiles
         for construct in self.scene.constructs:
-            if self.hitbox.is_colliding(construct.hitbox):
+            if self.pos.distance_to(construct.pos) < self.rad + construct.size.magnitude() and \
+               self.hitbox.is_colliding(construct.hitbox):
                 self.collide(construct)
         for projectile in self.scene.projectiles:
-            if self.hitbox.is_colliding(projectile.hitbox) and \
+            if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad and \
                projectile.element not in self.ignore_elem and \
-               projectile != self and not projectile.aiming:
+               projectile != self and not projectile.aiming and \
+               self.hitbox.is_colliding(projectile.hitbox):
                 self.collide(projectile)
 
     def take_damage(self, dmg: int) -> int:

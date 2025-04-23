@@ -22,10 +22,12 @@ class Waterball(Projectile):
                 # testing an exploding mechanic
                 self.hitbox.set_size_rad(200)
                 for construct in self.scene.constructs:
-                    if self.hitbox.is_colliding(construct.hitbox):
+                    if self.pos.distance_to(construct.pos) < self.rad + construct.size.magnitude() and \
+                       self.hitbox.is_colliding(construct.hitbox):
                         construct.take_damage(10)
                 for projectile in self.scene.projectiles:
-                    if self.hitbox.is_colliding(projectile.hitbox) and projectile.element != self.element and not projectile.aiming:
+                    if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad and \
+                       projectile.element != self.element and not projectile.aiming and self.hitbox.is_colliding(projectile.hitbox):
                         projectile.take_damage(10)
                 super().kill()
 

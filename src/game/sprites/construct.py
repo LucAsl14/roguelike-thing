@@ -3,7 +3,6 @@ from __future__ import annotations
 from pygame import Surface
 from src.core import *
 from .spell import Spell
-from src.core.util.hitbox import Hitbox # no idea why this needs to be imported
 
 class Construct(Spell):
     def __init__(self, scene: MainScene, charge_time: float, lifespan: float, hp: int) -> None:
@@ -17,7 +16,6 @@ class Construct(Spell):
         self.hp = hp
         self.pos: Vec
         self.angle: float
-        self.size: Vec
         self.scene.constructs.append(self)
         self.hitbox: Hitbox
 
@@ -60,6 +58,7 @@ class Construct(Spell):
         super().kill()
 
     def is_colliding_player(self) -> bool:
-        if self.hitbox.is_colliding(self.scene.player.hitbox):
+        if self.scene.player.pos.distance_to(self.pos) < self.size.magnitude() + self.scene.player.size.magnitude() \
+        and self.hitbox.is_colliding(self.scene.player.hitbox):
             return True
         return False

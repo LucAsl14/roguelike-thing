@@ -4,7 +4,6 @@ from src.core import *
 from .inventory import Inventory
 from .test_decoration import TestDecoration
 from .spell_queue import SpellQueue
-from src.core.util.hitbox import Hitbox # I actually don't get why this is necessary
 
 class Player(Sprite):
     def __init__(self, scene: MainScene) -> None:
@@ -37,6 +36,7 @@ class Player(Sprite):
         rect = self.image.get_rect()
         self.hitbox = Hitbox(self.pos, [])
         self.hitbox.set_size_rect(rect.width, rect.height)
+        self.size = Vec(rect.width, rect.height)
         self.angle = 0
 
     def update(self, dt: float) -> None:

@@ -3,7 +3,6 @@ from __future__ import annotations
 from pygame import Surface
 from src.core import *
 from .spell import Spell
-from src.core.util.hitbox import Hitbox
 
 class Gust(Spell):
     def __init__(self, scene: MainScene) -> None:
@@ -11,6 +10,7 @@ class Gust(Spell):
         self.angle: float
         self.hitbox = Hitbox(self.pos, [])
         self.hitbox.set_size_rect(160, 380)
+        self.size = Vec(160, 380)
         self.hitbox.translate(Vec(0, -190))
         self.anim_timer = Timer(0.3)
 
@@ -55,7 +55,8 @@ class Gust(Spell):
     def trigger_spell(self) -> None:
         super().trigger_spell()
         for projectile in self.scene.projectiles:
-            if projectile.element != "air" and self.hitbox.is_colliding(projectile.hitbox):
+            if projectile.element != "air" and projectile.pos.distance_to(self.pos) < projectile.rad + self.size.magnitude() \
+            and self.hitbox.is_colliding(projectile.hitbox):
                 change = Vec(cos(self.angle), sin(self.angle)) * (400 * 10 / projectile.rad)
                 projectile.external_acc += change
         self.scene.player.ext_acc = -2000 * Vec(cos(self.angle), sin(self.angle))

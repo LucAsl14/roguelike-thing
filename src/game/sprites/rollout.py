@@ -14,6 +14,9 @@ class Rollout(Construct):
         self.pos = Vec()
         self.offset = Vec()
         self.size: Vec
+
+        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox.set_size_rect(10, 30)
         # testing some graphic changing depending on damage
         self.extra_damaged = False
 
@@ -71,11 +74,16 @@ class Rollout(Construct):
 
     def update_spell(self, dt: float) -> None:
         self.angle += radians(2)
-        self.scene.player.vel = 1050 * Vec(cos(self.target_angle), sin(self.target_angle))
+        blocked = False
+        for construct in self.scene.constructs:
+            if construct.is_colliding_player():
+                blocked = True
+        if not blocked:
+            self.scene.player.vel = 1050 * Vec(cos(self.target_angle), sin(self.target_angle))
         self.offset = 50 * Vec(cos(self.angle), sin(self.angle))
         self.pos = self.scene.player.pos + self.offset
         self.hitbox.set_position(self.pos)
-        self.hitbox.set_rotation(self.angle)
+        self.hitbox.set_rotation(self.angle, False)
         super().update_spell(dt)
 
     def trigger_spell(self) -> None:

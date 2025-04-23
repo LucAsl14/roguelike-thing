@@ -9,9 +9,9 @@ class Gust(Spell):
         super().__init__(scene, 0, "air")
         self.angle: float
         self.hitbox = Hitbox(self.pos, [])
-        self.hitbox.set_size_rect(160, 380)
-        self.size = Vec(160, 380)
-        self.hitbox.translate(Vec(0, -190))
+        self.hitbox.set_size_rect(380, 160)
+        self.size = Vec(380, 160)
+        self.hitbox.translate(Vec(190, 0))
         self.anim_timer = Timer(0.3)
 
     def draw_charge(self, screen: Surface) -> None:
@@ -21,7 +21,7 @@ class Gust(Spell):
 
     def update_aiming(self, dt: float) -> None:
         self.pos = self.scene.player.pos
-        self.hitbox.set_rotation(self.angle + pi / 2, False)
+        self.hitbox.set_rotation(self.angle, False)
         self.hitbox.set_position(self.pos)
 
     def update_spell(self, dt: float) -> None:

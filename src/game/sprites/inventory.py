@@ -10,9 +10,13 @@ class Inventory(Sprite):
             "earth": 0,
             "fire": 0
         }
+        self.spent_elements: List[tuple[Timer, str, int]] = []
 
     def update(self, dt: float) -> None:
-        pass
+        for (timer, elem, num) in self.spent_elements:
+            if timer.done:
+                self.spent_elements.remove((timer, elem, num))
+                self.add(elem, num = num)
 
     def draw(self, target: pygame.Surface) -> None:
         self.pos = Vec(300, target.get_height() - 100)
@@ -34,9 +38,12 @@ class Inventory(Sprite):
             target.blit(Font.get("font18").render(str(self.elements["fire"]), False, (0, 0, 0)), (self.pos + (230, 45)))
             target.blit(Font.get("font18").render("L", False, (16, 16, 0)), (self.pos + (230 - 40, 15)))
 
-    def add(self, elem: str, num = 1) -> None:
+    def add(self, elem: str, cooldown: float = 0, num = 1) -> None:
         """Add an element to the inventory."""
-        self.elements[elem] += num
+        if cooldown == 0:
+            self.elements[elem] += num
+        else:
+            self.spent_elements.append((Timer(cooldown), elem, num))
 
     def take(self, elem: str, num = 1) -> bool:
         """

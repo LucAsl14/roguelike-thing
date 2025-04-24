@@ -3,13 +3,14 @@ from src.core import *
 from abc import abstractmethod
 
 class Spell(Sprite):
-    def __init__(self, scene: MainScene, charge_time: float, elem: str, layer: str = "DEFAULT") -> None:
+    def __init__(self, scene: MainScene, charge_time: float, elem: str, layer: str = "DEFAULT", cooldown: float = 5) -> None: # cooldown is very much temporary
         super().__init__(scene, layer)
         self.aiming = True
         self.scene = scene
         self.charging_time = Timer(charge_time)
         self.element = elem
         self.killed = False
+        self.cooldown = cooldown
 
     def update(self, dt: float) -> None:
         if self.killed:

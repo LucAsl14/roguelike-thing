@@ -126,8 +126,10 @@ class SpellQueue(Sprite):
             self.scene.add(self.aiming_spell)
 
     def spend_top_spell(self) -> None:
-        self.aiming_spell = None
         while len(self.queue) and self.queue[0] != " ":
-            self.scene.player.inventory.add(self.pop())
+            top_elem = self.pop()
+            if self.aiming_spell != None:
+                self.scene.player.inventory.add(top_elem, self.aiming_spell.cooldown)
         if len(self.queue):
             self.pop()
+        self.aiming_spell = None

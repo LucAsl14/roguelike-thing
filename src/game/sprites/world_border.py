@@ -1,5 +1,6 @@
 from __future__ import annotations
 from src.core import *
+from typing import List
 
 class WorldBorder(Sprite):
     def __init__(self, scene: MainScene) -> None:

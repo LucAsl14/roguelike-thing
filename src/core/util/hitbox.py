@@ -101,3 +101,5 @@ class Hitbox():
                 return False # a projection doesn't overlap
 
         return True # all projections overlap
+
+__all__ = ["Hitbox"]

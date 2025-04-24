@@ -44,7 +44,7 @@ class StoneCannon(Projectile):
             self.angle += self.turn_speed * dt
         if self.turn_speed != 0 and self.speed > 0:
             self.speed = max(0, self.speed / 20 ** dt - 100 * dt)
-            if self.speed < 1: self.speed = 0;
+            if self.speed < 1: self.speed = 0
         if self.speed == 0:
             self.turn_speed = 10
         super().update_spell(dt)

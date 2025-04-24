@@ -17,8 +17,10 @@ class MainScene(Scene):
         super().__init__(game)
         self.player = Player(self)
         self.camera = Camera(self, self.player)
+        self.border = WorldBorder(self)
         self.add(self.player)
         self.add(self.camera)
+        self.add(self.border)
         self.constructs: list[Construct] = []
         self.projectiles: list[Projectile] = []
 

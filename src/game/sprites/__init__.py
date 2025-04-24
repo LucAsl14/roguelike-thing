@@ -17,3 +17,4 @@ from .whirlpool import Whirlpool
 from .rollout import Rollout
 from .camera import Camera
 from .wall_of_fire import WallOfFire
+from .world_border import WorldBorder

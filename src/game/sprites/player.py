@@ -97,9 +97,20 @@ class Player(Sprite):
         # press a button to make decorations lol (NOT a feature)
         if self.keys[K_q]:
             self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-100, 100), uniform(-100, 100))))
-        # debug key
-        if self.keys[K_p]:
-            Log.debug(self.scene.projectiles)
+        if Debug.on():
+            # debug key
+            if self.keys[K_p]:
+                Log.debug(self.scene.projectiles)
+            # world border keys
+            if self.keys[K_r]:
+                self.scene.border.move_to(Vec(0), 1000, 1)
+            if self.keys[K_t]:
+                self.scene.border.move_to(None, 100, 10)
+            if self.keys[K_y]:
+                self.scene.border.move_to(Vec(1000, 0), None, 5)
+            if self.keys[K_u]:
+                self.scene.border.move_to(Vec(-1000, -1000), 50, 15)
+
 
     def update_position(self, dt: float) -> None:
         self.vel += self.acc * dt

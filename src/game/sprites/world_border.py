@@ -6,7 +6,7 @@ class WorldBorder(Sprite):
         super().__init__(scene, "SKY")
 
         self.pos = Vec(0)
-        self.rad = 1000
+        self.rad = 10000
 
         self.scene = scene
         self.old_pos = self.pos

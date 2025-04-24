@@ -7,10 +7,10 @@ from .projectile import Projectile
 
 class StoneCannon(Projectile):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 10, 300, 0, 5, "earth", 8)
+        super().__init__(scene, 10, 700, 0, 5, "earth", 8)
         self.iframe = Timer(0.75)
         self.angle = 0
-        self.turn_speed = 5
+        self.turn_speed = 2
         self.target_pos = Vec()
 
     def draw_charge(self, screen: Surface) -> None:
@@ -42,6 +42,11 @@ class StoneCannon(Projectile):
             self.angle -= self.turn_speed * dt
         else:
             self.angle += self.turn_speed * dt
+        if self.turn_speed != 0 and self.speed > 0:
+            self.speed = max(0, self.speed / 20 ** dt - 100 * dt)
+            if self.speed < 1: self.speed = 0;
+        if self.speed == 0:
+            self.turn_speed = 10
         super().update_spell(dt)
 
     def trigger_spell(self) -> None:
@@ -58,7 +63,7 @@ class StoneCannon(Projectile):
         self.target_pos = screen_pos_diff + player.pos
         posdiff = self.target_pos - self.pos
         target_angle = atan2(posdiff.y, posdiff.x)
-        self.angle = uniform(target_angle + pi/2 + pi/4, target_angle + 3*pi/2 - pi/4)
+        self.angle = uniform(target_angle + pi - pi/4, target_angle + pi + pi/4)
 
     def collide(self, target: Construct | Projectile) -> None:
         if isinstance(target, StoneCannon):

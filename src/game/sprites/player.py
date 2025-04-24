@@ -103,13 +103,13 @@ class Player(Sprite):
                 Log.debug(self.scene.projectiles)
             # world border keys
             if self.keys[K_r]:
-                self.scene.border.move_to(Vec(0), 1000, 1)
+                self.scene.border.schedule_move_to(Vec(0), 1000, 1, 10)
             if self.keys[K_t]:
-                self.scene.border.move_to(None, 100, 10)
+                self.scene.border.schedule_move_to(None, 100, 10, 10)
             if self.keys[K_y]:
-                self.scene.border.move_to(Vec(1000, 0), None, 5)
+                self.scene.border.schedule_move_to(Vec(1000, 0), None, 5, 10)
             if self.keys[K_u]:
-                self.scene.border.move_to(Vec(-1000, -1000), 50, 15)
+                self.scene.border.schedule_move_to(Vec(-1000, -1000), 50, 15, 10)
 
 
     def update_position(self, dt: float) -> None:

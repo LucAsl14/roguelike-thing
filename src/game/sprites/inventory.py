@@ -11,33 +11,45 @@ class Inventory(Sprite):
             "earth": 0,
             "fire": 0
         }
+        self.cooling = {
+            "air": 0,
+            "water": 0,
+            "earth": 0,
+            "fire": 0
+        }
         self.spent_elements: List[tuple[Timer, str, int]] = []
+
+        # trying to simplify the draw() redundancy
+        self.to_draw = [
+            ("water", WATER, "J"),
+            ("air",   AIR,   "I"),
+            ("earth", EARTH, "K"),
+            ("fire",  FIRE,  "L")
+        ]
 
     def update(self, dt: float) -> None:
         for (timer, elem, num) in self.spent_elements:
             if timer.done:
                 self.spent_elements.remove((timer, elem, num))
                 self.add(elem, num = num)
+                self.cooling[elem] -= num
 
     def draw(self, target: pygame.Surface) -> None:
         self.pos = Vec(300, target.get_height() - 100)
         # kinda redundant but it is what it is
-        if self.elements["water"] > 0:
-            pygame.draw.rect(target, WATER, pygame.Rect(self.pos.x, self.pos.y, 50, 50))
-            target.blit(Font.get("font18").render(str(self.elements["water"]), False, (0, 0, 0)), (self.pos + (50, 45)))
-            target.blit(Font.get("font18").render("J", False, (16, 16, 0)), (self.pos + (50 - 40, 15)))
-        if self.elements["air"] > 0:
-            pygame.draw.rect(target, AIR, pygame.Rect(self.pos.x + 60, self.pos.y, 50, 50))
-            target.blit(Font.get("font18").render(str(self.elements["air"]), False, (0, 0, 0)), (self.pos + (110, 45)))
-            target.blit(Font.get("font18").render("I", False, (16, 16, 0)), (self.pos + (110 - 40, 15)))
-        if self.elements["earth"] > 0:
-            pygame.draw.rect(target, EARTH, pygame.Rect(self.pos.x + 120, self.pos.y, 50, 50))
-            target.blit(Font.get("font18").render(str(self.elements["earth"]), False, (0, 0, 0)), (self.pos + (170, 45)))
-            target.blit(Font.get("font18").render("K", False, (16, 16, 0)), (self.pos + (170 - 40, 15)))
-        if self.elements["fire"] > 0:
-            pygame.draw.rect(target, FIRE, pygame.Rect(self.pos.x + 180, self.pos.y, 50, 50))
-            target.blit(Font.get("font18").render(str(self.elements["fire"]), False, (0, 0, 0)), (self.pos + (230, 45)))
-            target.blit(Font.get("font18").render("L", False, (16, 16, 0)), (self.pos + (230 - 40, 15)))
+        for i, (elem, color, tag) in enumerate(self.to_draw):
+            if self.cooling[elem] > 0:
+                # damn you pylance for causing these next 2 lines
+                darker = [c/2 for c in color]
+                new_darker: tuple[int, int, int] = (int(darker[0]), int(darker[1]), int(darker[2]))
+                pygame.draw.rect(target, new_darker, pygame.Rect(self.pos + Vec(60 * i, 0), Vec(50)))
+                target.blit(Font.get("font18").render(str(self.cooling[elem]), False, (80, 80, 80)), (self.pos + (60 * i + 5, 45)))
+            if self.elements[elem] > 0:
+                pygame.draw.rect(target, color, pygame.Rect(self.pos + Vec(60 * i, 0), Vec(50)))
+                target.blit(Font.get("font18").render(str(self.elements[elem]), False, (0, 0, 0)), (self.pos + (60 * i + 35, 45)))
+                target.blit(Font.get("font18").render(tag, False, (16, 16, 0)), (self.pos + (60 * i + 10, 15)))
+
+
 
     def add(self, elem: str, cooldown: float = 0, num = 1) -> None:
         """Add an element to the inventory."""
@@ -45,6 +57,7 @@ class Inventory(Sprite):
             self.elements[elem] += num
         else:
             self.spent_elements.append((Timer(cooldown), elem, num))
+            self.cooling[elem] += num
 
     def take(self, elem: str, num = 1) -> bool:
         """

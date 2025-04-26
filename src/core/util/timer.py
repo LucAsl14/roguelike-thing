@@ -31,6 +31,7 @@ class Timer():
         self.paused = False
         self.pause_start = 0
         self.paused_duration = 0
+        self.has_been_done = False
 
     @property
     def elapsed(self) -> float:
@@ -57,7 +58,9 @@ class Timer():
     @property
     def done(self) -> bool:
         """Whether the timer is done."""
-        return self.elapsed >= self.duration and not self.paused
+        if self.has_been_done: return True
+        self.has_been_done = self.elapsed >= self.duration and not self.paused
+        return self.has_been_done
 
     def reset(self, duration: Optional[float] = None) -> None:
         """Reset the timer to a new duration. If no duration is provided, the
@@ -70,6 +73,7 @@ class Timer():
             self.duration = duration
         self.time = time()
         self.paused_duration = 0
+        self.has_been_done = False
 
     def pause(self) -> None:
         """Pause the timer."""

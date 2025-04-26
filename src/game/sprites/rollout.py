@@ -4,9 +4,12 @@ from pygame import Surface
 from src.core import *
 from .construct import Construct
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class Rollout(Construct):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 2, 4, 20)
+    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
+        super().__init__(scene, owner, 2, 4, 20)
         self.copy_timer = LoopTimer(0.2, -1)
         self.copies_made = 0
         self.angle: float = 0
@@ -35,7 +38,7 @@ class Rollout(Construct):
         mousediff = self.game.mouse_pos - self.scene.player.screen_pos
         self.target_angle = atan2(mousediff.y, mousediff.x)
         if self.copy_timer.done and self.copies_made < 5:
-            spell = Rollout(self.scene)
+            spell = Rollout(self.scene, self.owner)
             self.scene.add(spell)
             self.copies_made += 1
             spell.angle = self.angle + pi/3 * (self.copies_made)

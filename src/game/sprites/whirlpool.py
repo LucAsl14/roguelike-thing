@@ -4,9 +4,12 @@ from pygame import Surface
 from src.core import *
 from .area_spell import AreaSpell
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class Whirlpool(AreaSpell):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 1, "air", 15, 145, "GROUND")
+    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
+        super().__init__(scene, owner, 1, "air", 15, 145, "GROUND")
         self.circle_offsets: list[Vec] = []
         self.new_circle_timer = LoopTimer(0.1)
 

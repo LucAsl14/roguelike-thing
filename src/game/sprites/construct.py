@@ -4,14 +4,17 @@ from pygame import Surface
 from src.core import *
 from .spell import Spell
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class Construct(Spell):
-    def __init__(self, scene: MainScene, charge_time: float, lifespan: float, hp: int) -> None:
+    def __init__(self, scene: MainScene, owner: Optional[Player], charge_time: float, lifespan: float, hp: int) -> None:
         """
         Notes: \n
         A lifespan of -1 grants the construct infinite duration \n
         An hp amount of -1 makes it indestructible
         """
-        super().__init__(scene, charge_time, "earth")
+        super().__init__(scene, owner, charge_time, "earth")
         self.lifespan = Timer(lifespan)
         self.endless = False
         if lifespan == -1: self.endless = True

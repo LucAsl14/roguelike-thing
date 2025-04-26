@@ -4,9 +4,12 @@ from pygame import Surface
 from src.core import *
 from .spell import Spell
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class Gust(Spell):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 0, "air")
+    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
+        super().__init__(scene, owner, 0, "air")
         self.angle: float
         self.hitbox = Hitbox(Vec(100000), []) # send this so far away... to avoid that ONE frame of ugliness
         self.hitbox.set_size_rect(380, 160)

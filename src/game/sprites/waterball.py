@@ -3,9 +3,12 @@ from src.core import *
 from .projectile import Projectile
 from pygame import Surface
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class Waterball(Projectile):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 5, 400, 1.5, 10, "water", 20)
+    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
+        super().__init__(scene, owner, 5, 400, 1.5, 10, "water", 20)
         self.exploding = False
         self.exploding_timer = Timer(0.1)
 
@@ -27,6 +30,9 @@ class Waterball(Projectile):
                     if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad and \
                        projectile.element != self.element and not projectile.aiming and self.hitbox.is_colliding(projectile.hitbox):
                         projectile.take_damage(10)
+                if self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
+                   self.hitbox.is_colliding(self.scene.player.hitbox):
+                    self.scene.player.take_damage(10)
                 super().kill()
 
 

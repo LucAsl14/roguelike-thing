@@ -5,7 +5,7 @@ from src.core import *
 from .construct import Construct
 class TestDecoration(Construct):
     def __init__(self, scene: MainScene, pos: Vec) -> None:
-        super().__init__(scene, -1, -1, 10)
+        super().__init__(scene, None, -1, -1, 10)
         self.pos = pos
         self.hitbox = Hitbox(self.pos, [])
         self.hitbox.set_size_rad(20)

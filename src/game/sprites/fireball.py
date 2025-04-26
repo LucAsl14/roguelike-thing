@@ -5,9 +5,12 @@ from .construct import Construct
 from src.core import *
 from .projectile import Projectile
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class Fireball(Projectile):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 10, 800, 0.5, 10, "fire", 10)
+    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
+        super().__init__(scene, owner, 10, 800, 0.5, 10, "fire", 10)
 
     def draw_charge(self, screen: Surface) -> None:
         pygame.draw.circle(screen, FIRE, self.screen_pos, self.rad * self.charging_time.progress)
@@ -15,6 +18,6 @@ class Fireball(Projectile):
     def draw_spell(self, screen: Surface) -> None:
         pygame.draw.circle(screen, FIRE, self.screen_pos, self.rad)
 
-    def collide(self, target: Construct | Projectile) -> None:
+    def collide(self, target: Construct | Projectile | Player) -> None:
         super().collide(target)
         self.kill()

@@ -4,9 +4,12 @@ from src.core import *
 from .area_spell import AreaSpell
 from pygame import Surface
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class WallOfFire(AreaSpell):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 200, "fire", 15, 20, "GROUND")
+    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
+        super().__init__(scene, owner, 200, "fire", 15, 20, "GROUND")
         self.is_original = True
         self.wall_segments = 20
         self.prev_pos = Vec()
@@ -34,7 +37,7 @@ class WallOfFire(AreaSpell):
 
             # on first wall
             if self.wall_segments == 20:
-                spell = WallOfFire(self.scene)
+                spell = WallOfFire(self.scene, self.owner)
                 self.scene.add(spell)
                 spell.pos = self.pos.copy()
                 spell.aiming = False
@@ -51,7 +54,7 @@ class WallOfFire(AreaSpell):
                 self.prev_pos += diff.normalize() * self.rad
                 diff = self.pos - self.prev_pos
                 temp_pos = self.pos - diff
-                spell = WallOfFire(self.scene)
+                spell = WallOfFire(self.scene, self.owner)
                 self.scene.add(spell)
                 spell.pos = temp_pos
                 spell.aiming = False

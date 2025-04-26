@@ -5,9 +5,12 @@ from .construct import Construct
 from src.core import *
 from .projectile import Projectile
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class StoneCannon(Projectile):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 10, 700, 0, 5, "earth", 8)
+    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
+        super().__init__(scene, owner, 10, 700, 0, 5, "earth", 8)
         self.iframe = Timer(0.75)
         self.angle = 0
         self.turn_speed = 2
@@ -50,7 +53,7 @@ class StoneCannon(Projectile):
     def trigger_spell(self) -> None:
         if self.aiming:
             for _ in range(4):
-                spell = StoneCannon(self.scene)
+                spell = StoneCannon(self.scene, self.owner)
                 self.scene.add(spell)
                 spell.aiming = False
                 spell.trigger_spell()
@@ -63,7 +66,7 @@ class StoneCannon(Projectile):
         target_angle = atan2(posdiff.y, posdiff.x)
         self.angle = uniform(target_angle + pi - pi/4, target_angle + pi + pi/4)
 
-    def collide(self, target: Construct | Projectile) -> None:
-        if isinstance(target, StoneCannon):
+    def collide(self, target: Construct | Projectile | Player) -> None:
+        if isinstance(target, StoneCannon) and target.owner == self.owner:
             return
         super().collide(target)

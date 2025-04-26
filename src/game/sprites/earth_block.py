@@ -5,9 +5,12 @@ from src.core import *
 from .construct import Construct
 from random import uniform
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class EarthBlock(Construct):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 0.2, 15, 20)
+    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
+        super().__init__(scene, owner, 0.2, 15, 20)
         # testing some graphic changing depending on damage
         self.extra_damaged = False
         self.hitbox = Hitbox(self.pos, [])

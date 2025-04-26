@@ -39,6 +39,9 @@ class Player(Sprite):
         self.size = Vec(rect.width, rect.height)
         self.angle = 0
 
+        # pvp
+        self.hp = 0
+
     def update(self, dt: float) -> None:
         self.update_keys(dt)
         self.update_position(dt)
@@ -47,6 +50,7 @@ class Player(Sprite):
     def draw(self, target: pygame.Surface) -> None:
         self.image = pygame.transform.rotate(Image.get("player"), self.angle)
         target.blit(self.image, self.screen_pos - Vec(self.image.get_rect().size) / 2)
+        target.blit(Font.get("font18").render(str(self.hp), False, (80, 80, 80)), (0, 0))
 
 
     def update_keys(self, dt: float) -> None:
@@ -120,6 +124,11 @@ class Player(Sprite):
         self.pos += self.vel * dt
         self.hitbox.set_position(self.pos)
         self.hitbox.set_rotation(self.angle)
+
+    def take_damage(self, dmg: int) -> int:
+        prev_hp = self.hp
+        self.hp -= dmg
+        return prev_hp - self.hp
 
     def update_surroundings(self) -> None:
         # something something about generating decorations im too lazy

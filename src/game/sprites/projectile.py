@@ -5,9 +5,12 @@ from src.core import *
 from .spell import Spell
 from .construct import Construct
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class Projectile(Spell):
-    def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
-        super().__init__(scene, charge_time, elem)
+    def __init__(self, scene: MainScene, owner: Optional[Player], lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
+        super().__init__(scene, owner, charge_time, elem)
         self.vel = Vec()
         self.external_acc = Vec()
         self.pos = self.scene.player.pos.copy()
@@ -49,7 +52,7 @@ class Projectile(Spell):
         if self.lifespan.done:
             self.kill()
             return
-        # collision with constructs and projectiles
+        # collision with anything collidable
         for construct in self.scene.constructs:
             if self.pos.distance_to(construct.pos) < self.rad + construct.size.magnitude() and \
                self.hitbox.is_colliding(construct.hitbox):
@@ -59,6 +62,10 @@ class Projectile(Spell):
                projectile.element not in self.ignore_elem and \
                projectile != self and self.hitbox.is_colliding(projectile.hitbox):
                 self.collide(projectile)
+        if self.owner != self.scene.player and \
+           self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
+           self.hitbox.is_colliding(self.scene.player.hitbox):
+            self.collide(self.scene.player)
 
     def take_damage(self, dmg: int) -> int:
         """
@@ -74,7 +81,7 @@ class Projectile(Spell):
             self.kill()
         return prev_dmg - self.damage
 
-    def collide(self, target: Construct | Projectile) -> None:
+    def collide(self, target: Construct | Projectile | Player) -> None:
         dmg_dealt = target.take_damage(self.damage)
         self.take_damage(dmg_dealt)
         if dmg_dealt > 0:

@@ -2,8 +2,11 @@ from __future__ import annotations
 from src.core import *
 from abc import abstractmethod
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import Player
 class Spell(Sprite):
-    def __init__(self, scene: MainScene, charge_time: float, elem: str, layer: str = "DEFAULT", cooldown: float = 5) -> None: # cooldown is very much temporary
+    def __init__(self, scene: MainScene, owner: Optional[Player], charge_time: float, elem: str, layer: str = "DEFAULT", cooldown: float = 0) -> None: # cooldown is very much temporary
         super().__init__(scene, layer)
         self.aiming = True
         self.scene = scene
@@ -11,6 +14,7 @@ class Spell(Sprite):
         self.element = elem
         self.killed = False
         self.cooldown = cooldown
+        self.owner = owner
 
     def update(self, dt: float) -> None:
         if self.killed:
@@ -65,6 +69,6 @@ class Spell(Sprite):
 
     @abstractmethod
     def trigger_spell(self) -> None:
-        if self.aiming:
-            self.scene.player.spell_queue.spend_top_spell()
+        if self.aiming and self.owner != None:
+            self.owner.spell_queue.spend_top_spell()
         self.charging_time.reset()

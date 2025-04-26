@@ -122,7 +122,7 @@ class SpellQueue(Sprite):
     def parse_top_spell(self) -> None:
         spell = self.spell_list.get(self.get_top_string())
         if spell != None and not self.aiming_spell:
-            self.aiming_spell = spell(self.scene)
+            self.aiming_spell = spell(self.scene, self.scene.player)
             self.scene.add(self.aiming_spell)
 
     def spend_top_spell(self) -> None:

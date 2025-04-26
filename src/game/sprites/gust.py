@@ -8,7 +8,7 @@ class Gust(Spell):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, 0, "air")
         self.angle: float
-        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox = Hitbox(Vec(100000), []) # send this so far away... to avoid that ONE frame of ugliness
         self.hitbox.set_size_rect(380, 160)
         self.size = Vec(380, 160)
         self.hitbox.translate(Vec(190, 0))

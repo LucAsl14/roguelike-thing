@@ -30,7 +30,8 @@ class Spell(Sprite):
             self.draw_aiming(target)
         elif not self.charging_time.done:
             self.draw_charge(target)
-        else:
+        if self.pos.distance_to(self.scene.player.pos) > 800: return
+        if not self.aiming and self.charging_time.done:
             self.draw_spell(target)
 
     def kill(self) -> None:

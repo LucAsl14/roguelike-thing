@@ -24,5 +24,8 @@ class MainScene(Scene):
         self.constructs: list[Construct] = []
         self.projectiles: list[Projectile] = []
 
+        for _ in range(10000):
+            self.add(TestDecoration(self, Vec(uniform(-self.border.rad, self.border.rad), uniform(-self.border.rad, self.border.rad))))
+
     def predraw(self, screen: pygame.Surface) -> None:
         screen.fill((120, 160, 80))

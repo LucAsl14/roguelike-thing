@@ -13,6 +13,8 @@ class Construct(Spell):
         """
         super().__init__(scene, charge_time, "earth")
         self.lifespan = Timer(lifespan)
+        self.endless = False
+        if lifespan == -1: self.endless = True
         self.hp = hp
         self.pos: Vec
         self.angle: float
@@ -27,11 +29,12 @@ class Construct(Spell):
     def update_spell(self, dt: float) -> None:
         if self.is_colliding_player():
             self.collide_player()
-        if self.lifespan.done:
+        if not self.endless and self.lifespan.done:
             self.kill()
             return
         if self.hp == 0:
             self.kill()
+        # if self.size == Vec(): Log.warn(f"This Construct ({self}) has no size and is likely causing lag")
 
     def trigger_spell(self) -> None:
         self.lifespan.reset()

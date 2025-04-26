@@ -10,8 +10,6 @@ class Waterball(Projectile):
         self.exploding_timer = Timer(0.1)
 
     def draw_charge(self, screen: Surface) -> None:
-        if self.pos.distance_to(self.scene.player.pos) > 800:
-            return
         pygame.draw.circle(screen, WATER, self.screen_pos, self.rad * self.charging_time.progress)
 
     def update_spell(self, dt: float) -> None:
@@ -33,8 +31,6 @@ class Waterball(Projectile):
 
 
     def draw_spell(self, screen: Surface) -> None:
-        if self.pos.distance_to(self.scene.player.pos) > 800:
-            return
         pygame.draw.circle(screen, WATER, self.screen_pos, self.rad)
         # hitbox debugging
         if Debug.on():

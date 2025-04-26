@@ -19,8 +19,6 @@ class StoneCannon(Projectile):
         pass
 
     def draw_spell(self, screen: Surface) -> None:
-        if self.pos.distance_to(self.scene.player.pos) > 800:
-            return
         pygame.draw.circle(screen, EARTH, self.screen_pos, self.rad)
         pygame.draw.circle(screen, EARTH, self.screen_pos + 8 * Vec(cos(self.angle), sin(self.angle)), self.rad / 2)
 

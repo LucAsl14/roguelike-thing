@@ -1,17 +1,24 @@
 from __future__ import annotations
+
+from pygame import Surface
 from src.core import *
-
-class TestDecoration(Sprite):
+from .construct import Construct
+class TestDecoration(Construct):
     def __init__(self, scene: MainScene, pos: Vec) -> None:
-        super().__init__(scene, "GROUND")
+        super().__init__(scene, -1, -1, 10)
         self.pos = pos
-        # once again, band-aid fix for scene not being properly cast
-        self.scene = scene
+        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox.set_size_rad(20)
+        self.size = Vec(20)
 
-    def update(self, dt: float) -> None:
+    def update_aiming(self, dt: float) -> None:
+        self.aiming = False
+
+    def draw_spell(self, screen: pygame.Surface) -> None:
+        pygame.draw.circle(screen, (10, 10, 10), self.screen_pos, 20)
+
+    def draw_aiming(self, screen: pygame.Surface) -> None:
         pass
 
-    def draw(self, target: pygame.Surface) -> None:
-        if self.pos.distance_to(self.scene.player.pos) > 800:
-            return
-        pygame.draw.circle(target, (10, 10, 10), self.screen_pos, 20)
+    def draw_charge(self, screen: Surface) -> None:
+        pass

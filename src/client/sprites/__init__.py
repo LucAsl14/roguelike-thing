@@ -1,4 +1,4 @@
-from .player import Player
+from .player import LocalPlayer, RemotePlayer
 from .test_decoration import TestDecoration
 from .inventory import Inventory
 from .spell_queue import SpellQueue
@@ -16,3 +16,8 @@ from .mud import Mud
 from .whirlpool import Whirlpool
 from .rollout import Rollout
 from .camera import Camera
+
+from client.core import Sprite
+sprite_classes: dict[str, type[Sprite]] = {
+    "Player": RemotePlayer,
+}

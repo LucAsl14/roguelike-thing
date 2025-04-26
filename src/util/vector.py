@@ -197,4 +197,7 @@ class Vec(Vector2):
             return self.y
         raise IndexError("Index out of range.")
 
+    def serialize(self) -> dict:
+        return {"_type": "Vec", "x": self.x, "y": self.y}
+
 __all__ = ["Vec"]

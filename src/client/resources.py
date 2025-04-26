@@ -1,4 +1,4 @@
-from util import Resource, Image, Sound, Font, VertShader, FragShader
+from client.core.resource import Resource, Image, Sound, Font, VertShader, FragShader
 
 def init_resources() -> None:
     Image("test", "test.png", scale=1)

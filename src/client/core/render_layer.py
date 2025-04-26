@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from client.core.scene import Scene
 
-from client.resources import VertShader, FragShader
+from client.core.resource import VertShader, FragShader
 from client.core.sprite import Sprite
 from typing import Any, Type
 import pygame

@@ -2,7 +2,7 @@ import os
 import re
 
 LOCAL_PATH = os.path.dirname(__file__)
-SPRITES_PATH = os.path.join(LOCAL_PATH, "..", "src", "game", "sprites")
+SPRITES_PATH = os.path.join(LOCAL_PATH, "..", "src", "client", "sprites")
 INIT_PATH = os.path.join(SPRITES_PATH, "__init__.py")
 TEMPLATE_PATH = os.path.join(LOCAL_PATH, "sprite_template.txt")
 

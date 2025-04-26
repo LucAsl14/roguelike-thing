@@ -1,6 +1,6 @@
 from client.resources import init_resources
 from client.core.scene import Scene
-from util.resource import Resource
+from client.core.resource import Resource
 from typing import cast, Never
 import client.scenes as scenes
 from client.settings import *

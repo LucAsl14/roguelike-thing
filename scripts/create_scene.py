@@ -2,7 +2,7 @@ import os
 import re
 
 LOCAL_PATH = os.path.dirname(__file__)
-SCENES_PATH = os.path.join(LOCAL_PATH, "..", "src", "game", "scenes")
+SCENES_PATH = os.path.join(LOCAL_PATH, "..", "src", "client", "scenes")
 INIT_PATH = os.path.join(SCENES_PATH, "__init__.py")
 TEMPLATE_PATH = os.path.join(LOCAL_PATH, "scene_template.txt")
 

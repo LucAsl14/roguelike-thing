@@ -10,7 +10,7 @@ import pygame
 
 class Sprite(AbstractClass):
     def __init__(self, scene: Scene, layer: str) -> None:
-        self.uuid = uuid4()
+        self.uuid = str(uuid4())
         self.game = ref_proxy(scene.game)
         self.scene = ref_proxy(scene)
         self.layer = layer

@@ -20,6 +20,7 @@ class Scene(AbstractClass):
             *map(lambda group: group.construct(self), self._layers),
         ]
         self.layers = {layer.name: layer for group in self.layer_groups for layer in group.layers}
+        self.sprite_mapping: dict[str, Sprite] = {}
 
     def preupdate(self, dt: float) -> None:
         pass
@@ -50,9 +51,11 @@ class Scene(AbstractClass):
 
     def add(self, sprite: Sprite) -> None:
         self.layers[sprite.layer].add(sprite)
+        self.sprite_mapping[sprite.uuid] = sprite
 
     def remove(self, sprite: Sprite) -> None:
         try:
             self.layers[sprite.layer].remove(sprite)
+            self.sprite_mapping.pop(sprite.uuid)
         except ValueError:
             Log.warn(f"Attempted to remove sprite {sprite} from scene {self}, but it was not found in the scene.")

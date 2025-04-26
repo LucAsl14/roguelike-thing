@@ -1,15 +1,31 @@
 from __future__ import annotations
 from client.core import *
+from shared import *
 
-from .inventory import Inventory
 from .test_decoration import TestDecoration
 from .spell_queue import SpellQueue
+from .inventory import Inventory
 
-class Player(Sprite):
+class BasePlayer(Sprite, T_Player):
+    """Base class for both local and remote players.
+    Defines shared behavior like rendering."""
+
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, "DEFAULT")
+        Sprite.__init__(self, scene, "DEFAULT")
         # band-aid fix to scene not considered MainScene
         self.scene = scene
+
+    def draw(self, target: pygame.Surface) -> None:
+        self.image = Image.get("player")
+        target.blit(self.image, self.screen_pos - Vec(self.image.get_rect().size) / 2)
+        # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
+
+class LocalPlayer(BasePlayer, Outgoing):
+    """Local player class. Handles the user controlled player.
+    Only logic that is relevant to the local player should be in this class."""
+
+    def __init__(self, scene: MainScene) -> None:
+        super().__init__(scene)
 
         # movement-related variables
         self.pos = Vec()
@@ -39,12 +55,6 @@ class Player(Sprite):
         self.update_keys(dt)
         self.update_position(dt)
         self.update_surroundings()
-
-    def draw(self, target: pygame.Surface) -> None:
-        self.image = pygame.transform.rotate(Image.get("player"), self.angle)
-        target.blit(self.image, self.screen_pos - Vec(self.image.get_rect().size) / 2)
-        # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.topleft + self.scene.player.screen_pos - self.scene.player.pos, self.rect.size))
-
 
     def update_keys(self, dt: float) -> None:
         self.keys = pygame.key.get_pressed()
@@ -109,3 +119,13 @@ class Player(Sprite):
     def update_surroundings(self) -> None:
         # something something about generating decorations im too lazy
         pass
+
+class RemotePlayer(BasePlayer):
+    def __init__(self, scene: MainScene, uuid: str, pos: Vec) -> None:
+        super().__init__(scene)
+        self.uuid = uuid
+        self.pos = pos
+
+    def update(self, dt: float) -> None:
+        # No special logic for remote players yet
+        super().update(dt)

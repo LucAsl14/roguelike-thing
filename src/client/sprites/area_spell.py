@@ -4,9 +4,13 @@ from pygame import Surface
 from client.core import *
 from .spell import Spell
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import LocalPlayer
+
 class AreaSpell(Spell):
-    def __init__(self, scene: MainScene, charge_time: float, elem: str, lifespan: float, radius: int, layer: str = "DEFAULT") -> None:
-        super().__init__(scene, charge_time, elem, layer)
+    def __init__(self, scene: MainScene, owner: Optional[LocalPlayer], charge_time: float, elem: str, lifespan: float, radius: int, layer: str = "DEFAULT") -> None:
+        super().__init__(scene, owner, charge_time, elem, layer)
         self.lifespan = Timer(lifespan)
         self.rad = radius
         self.pos = Vec()

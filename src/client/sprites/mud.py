@@ -1,12 +1,15 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import LocalPlayer
 
 from pygame import Surface
 from client.core import *
 from .area_spell import AreaSpell
 
 class Mud(AreaSpell):
-    def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 1, "earth", 20, 125, "GROUND")
+    def __init__(self, scene: MainScene, owner: Optional[LocalPlayer]) -> None:
+        super().__init__(scene, owner, 1, "earth", 20, 125, "GROUND")
 
     def draw_charge(self, screen: Surface) -> None:
         trans_surf = pygame.surface.Surface(Vec(2 * self.rad), pygame.SRCALPHA)

@@ -47,14 +47,27 @@ class LocalPlayer(BasePlayer, Outgoing):
         self.spell_queue = SpellQueue(self.scene)
         self.scene.add(self.spell_queue)
 
+        # player visuals and hitbox
         self.image = Image.get("player")
-        self.rect = self.image.get_rect()
+        rect = self.image.get_rect()
+        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox.set_size_rect(rect.width, rect.height)
+        self.size = Vec(rect.width, rect.height)
         self.angle = 0
+
+        # pvp
+        self.hp = 0
 
     def update(self, dt: float) -> None:
         self.update_keys(dt)
         self.update_position(dt)
         self.update_surroundings()
+
+    def draw(self, target: pygame.Surface) -> None:
+        self.image = pygame.transform.rotate(Image.get("player"), self.angle)
+        target.blit(self.image, self.screen_pos - Vec(self.image.get_rect().size) / 2)
+        target.blit(Font.get("font18").render(str(self.hp), False, (80, 80, 80)), (0, 0))
+
 
     def update_keys(self, dt: float) -> None:
         self.keys = pygame.key.get_pressed()
@@ -104,9 +117,20 @@ class LocalPlayer(BasePlayer, Outgoing):
         # press a button to make decorations lol (NOT a feature)
         if self.keys[K_q]:
             self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-100, 100), uniform(-100, 100))))
-        # debug key
-        if self.keys[K_p]:
-            Log.debug(self.scene.projectiles)
+        if Debug.on():
+            # debug key
+            if self.keys[K_p]:
+                Log.debug(self.scene.projectiles)
+            # world border keys
+            if self.keys[K_r]:
+                self.scene.border.schedule_move_to(Vec(0), 1000, 1, 10)
+            if self.keys[K_t]:
+                self.scene.border.schedule_move_to(None, 100, 10, 10)
+            if self.keys[K_y]:
+                self.scene.border.schedule_move_to(Vec(1000, 0), None, 5, 10)
+            if self.keys[K_u]:
+                self.scene.border.schedule_move_to(Vec(-1000, -1000), 50, 15, 10)
+
 
     def update_position(self, dt: float) -> None:
         self.vel += self.acc * dt
@@ -114,7 +138,13 @@ class LocalPlayer(BasePlayer, Outgoing):
         self.ext_acc = Vec()
         self.vel *= 0.004 ** dt
         self.pos += self.vel * dt
-        self.rect.update(self.pos - Vec(self.rect.size) / 2, self.rect.size)
+        self.hitbox.set_position(self.pos)
+        self.hitbox.set_rotation(self.angle)
+
+    def take_damage(self, dmg: int) -> int:
+        prev_hp = self.hp
+        self.hp -= dmg
+        return prev_hp - self.hp
 
     def update_surroundings(self) -> None:
         # something something about generating decorations im too lazy

@@ -9,8 +9,8 @@ from .steam import Steam
 from .mud import Mud
 from .whirlpool import Whirlpool
 from .rollout import Rollout
+from .wall_of_fire import WallOfFire
 
-# TODO: rectangular objects have an oversized hitbox when diagonal
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, "HUD")
@@ -29,6 +29,7 @@ class SpellQueue(Sprite):
             "kj": Mud, "jk": Mud,
             "ij": Whirlpool, "ji": Whirlpool,
             "ik": Rollout, "ki": Rollout,
+            "il": WallOfFire, "li": WallOfFire,
         }
 
     def update(self, dt: float) -> None:
@@ -121,12 +122,14 @@ class SpellQueue(Sprite):
     def parse_top_spell(self) -> None:
         spell = self.spell_list.get(self.get_top_string())
         if spell != None and not self.aiming_spell:
-            self.aiming_spell = spell(self.scene)
+            self.aiming_spell = spell(self.scene, self.scene.player)
             self.scene.add(self.aiming_spell)
 
     def spend_top_spell(self) -> None:
-        self.aiming_spell = None
         while len(self.queue) and self.queue[0] != " ":
-            self.scene.player.inventory.add(self.pop())
+            top_elem = self.pop()
+            if self.aiming_spell != None:
+                self.scene.player.inventory.add(top_elem, self.aiming_spell.cooldown)
         if len(self.queue):
             self.pop()
+        self.aiming_spell = None

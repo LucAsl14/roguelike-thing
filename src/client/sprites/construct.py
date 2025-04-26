@@ -4,20 +4,26 @@ from pygame import Surface
 from client.core import *
 from .spell import Spell
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import LocalPlayer
+
 class Construct(Spell):
-    def __init__(self, scene: MainScene, charge_time: float, lifespan: float, hp: int) -> None:
+    def __init__(self, scene: MainScene, owner: Optional[LocalPlayer], charge_time: float, lifespan: float, hp: int) -> None:
         """
         Notes: \n
         A lifespan of -1 grants the construct infinite duration \n
         An hp amount of -1 makes it indestructible
         """
-        super().__init__(scene, charge_time, "earth")
+        super().__init__(scene, owner, charge_time, "earth")
         self.lifespan = Timer(lifespan)
+        self.endless = False
+        if lifespan == -1: self.endless = True
         self.hp = hp
         self.pos: Vec
+        self.angle: float
         self.scene.constructs.append(self)
-        # pretty sure this is *not* how hitboxes are made
-        self.rect = pygame.Rect()
+        self.hitbox: Hitbox
 
     def update_charge(self, dt: float) -> None:
         pass
@@ -25,13 +31,14 @@ class Construct(Spell):
         pass
 
     def update_spell(self, dt: float) -> None:
-        if self.rect.colliderect(self.scene.player.rect):
+        if self.is_colliding_player():
             self.collide_player()
-        if self.lifespan.done:
+        if not self.endless and self.lifespan.done:
             self.kill()
             return
         if self.hp == 0:
             self.kill()
+        # if self.size == Vec(): Log.warn(f"This Construct ({self}) has no size and is likely causing lag")
 
     def trigger_spell(self) -> None:
         self.lifespan.reset()
@@ -40,13 +47,15 @@ class Construct(Spell):
             super().trigger_spell()
 
     def collide_player(self) -> None:
-        self.scene.player.vel = Vec((self.scene.player.pos - self.pos))
+        self.scene.player.vel = 100 * Vec((self.scene.player.pos - self.pos)).normalize()
 
     def take_damage(self, dmg: int) -> int:
         """
         Returns:
             actual damage taken
         """
+        if self.aiming:
+            return 0
         prev_hp = self.hp
         if self.hp == -1: return dmg
         self.hp = max(self.hp - dmg, 0)
@@ -56,3 +65,9 @@ class Construct(Spell):
         if not self.killed:
             self.scene.constructs.remove(self)
         super().kill()
+
+    def is_colliding_player(self) -> bool:
+        if self.scene.player.pos.distance_to(self.pos) < self.size.magnitude() + self.scene.player.size.magnitude() \
+        and self.hitbox.is_colliding(self.scene.player.hitbox):
+            return True
+        return False

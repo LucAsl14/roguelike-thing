@@ -25,10 +25,15 @@ class MainScene(Scene):
 
         self.player = LocalPlayer(self)
         self.camera = Camera(self, self.player)
+        self.border = WorldBorder(self)
         self.add(self.player)
         self.add(self.camera)
+        self.add(self.border)
         self.constructs: list[Construct] = []
         self.projectiles: list[Projectile] = []
+
+        for _ in range(1000):
+            self.add(TestDecoration(self, Vec(uniform(-self.border.rad, self.border.rad), uniform(-self.border.rad, self.border.rad))))
 
     def postupdate(self, dt: float) -> None:
         if self.send_timer.done:

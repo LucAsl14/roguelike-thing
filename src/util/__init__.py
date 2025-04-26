@@ -3,3 +3,4 @@ from .imports import *
 from .typing import *
 from .vector import *
 from .timer import *
+from .hitbox import *

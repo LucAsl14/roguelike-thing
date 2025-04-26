@@ -16,6 +16,8 @@ from .mud import Mud
 from .whirlpool import Whirlpool
 from .rollout import Rollout
 from .camera import Camera
+from .wall_of_fire import WallOfFire
+from .world_border import WorldBorder
 
 from client.core import Sprite
 sprite_classes: dict[str, type[Sprite]] = {

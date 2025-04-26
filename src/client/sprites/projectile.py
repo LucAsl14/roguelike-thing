@@ -1,4 +1,7 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .player import LocalPlayer
 
 from pygame import Surface
 from client.core import *
@@ -6,16 +9,17 @@ from .spell import Spell
 from .construct import Construct
 
 class Projectile(Spell):
-    def __init__(self, scene: MainScene, lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
-        super().__init__(scene, charge_time, elem)
+    def __init__(self, scene: MainScene, owner: Optional[LocalPlayer], lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
+        super().__init__(scene, owner, charge_time, elem)
         self.vel = Vec()
         self.external_acc = Vec()
         self.pos = self.scene.player.pos.copy()
         self.speed = speed
         self.lifespan = Timer(lifespan)
-        self.rect = pygame.Rect()
-        self.damage = dmg
         self.rad = radius
+        self.damage = dmg
+        self.hitbox = Hitbox(self.pos, [])
+        self.hitbox.set_size_rad(radius)
         self.ignore_elem = []
         self.scene.projectiles.append(self)
 
@@ -43,25 +47,33 @@ class Projectile(Spell):
         self.pos += self.vel * dt
         self.external_acc = Vec()
 
-        self.rect = pygame.Rect(self.pos - Vec(self.rad), Vec(self.rad * 2))
+        self.hitbox.set_position(self.pos)
+
         if self.lifespan.done:
             self.kill()
             return
-        # collision with constructs and projectiles
+        # collision with anything collidable
         for construct in self.scene.constructs:
-            if self.rect.colliderect(construct.rect):
+            if self.pos.distance_to(construct.pos) < self.rad + construct.size.magnitude() and \
+               self.hitbox.is_colliding(construct.hitbox):
                 self.collide(construct)
         for projectile in self.scene.projectiles:
-            if self.rect.colliderect(projectile.rect) and \
+            if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad and \
                projectile.element not in self.ignore_elem and \
-               projectile != self:
+               projectile != self and self.hitbox.is_colliding(projectile.hitbox):
                 self.collide(projectile)
+        if self.owner != self.scene.player and \
+           self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
+           self.hitbox.is_colliding(self.scene.player.hitbox):
+            self.collide(self.scene.player)
 
     def take_damage(self, dmg: int) -> int:
         """
         Returns:
             Amount of damage taken
         """
+        if self.aiming:
+            return 0
         prev_dmg = self.damage
         self.damage -= dmg
         if self.damage <= 0:
@@ -69,7 +81,7 @@ class Projectile(Spell):
             self.kill()
         return prev_dmg - self.damage
 
-    def collide(self, target: Construct | Projectile) -> None:
+    def collide(self, target: Construct | Projectile | LocalPlayer) -> None:
         dmg_dealt = target.take_damage(self.damage)
         self.take_damage(dmg_dealt)
         if dmg_dealt > 0:

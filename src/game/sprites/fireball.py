@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class Fireball(Projectile):
-    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
-        super().__init__(scene, owner, 10, 800, 0.5, 10, "fire", 10)
+    def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
+        super().__init__(scene, target_posdiff, 10, 800, 0.5, 10, "fire", 10)
 
     def draw_charge(self, screen: Surface) -> None:
         pygame.draw.circle(screen, FIRE, self.screen_pos, self.rad * self.charging_time.progress)

@@ -9,12 +9,14 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class StoneCannon(Projectile):
-    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
-        super().__init__(scene, owner, 10, 700, 0, 5, "earth", 8)
+    def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
+        super().__init__(scene, target_posdiff, 10, 700, 0, 5, "earth", 8)
         self.iframe = Timer(0.75)
         self.angle = 0
         self.turn_speed = 2
         self.target_pos = Vec()
+        self.target_posdiff = target_posdiff
+        self.is_original = True
 
     def draw_charge(self, screen: Surface) -> None:
         pass
@@ -51,14 +53,13 @@ class StoneCannon(Projectile):
         super().update_spell(dt)
 
     def trigger_spell(self) -> None:
-        if self.aiming:
+        if self.is_original:
             for _ in range(4):
-                spell = StoneCannon(self.scene, self.owner)
+                spell = StoneCannon(self.scene, self.target_posdiff)
                 self.scene.add(spell)
-                spell.aiming = False
+                spell.is_original = False
                 spell.trigger_spell()
                 spell.speed += int(uniform(-200, 201))
-        super().trigger_spell()
         player = self.scene.player
         screen_pos_diff = self.game.mouse_pos - player.screen_pos
         self.target_pos = screen_pos_diff + player.pos
@@ -67,6 +68,6 @@ class StoneCannon(Projectile):
         self.angle = uniform(target_angle + pi - pi/4, target_angle + pi + pi/4)
 
     def collide(self, target: Construct | Projectile | Player) -> None:
-        if isinstance(target, StoneCannon) and target.owner == self.owner:
+        if isinstance(target, StoneCannon):
             return
         super().collide(target)

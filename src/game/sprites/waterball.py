@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class Waterball(Projectile):
-    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
-        super().__init__(scene, owner, 5, 400, 1.5, 10, "water", 20)
+    def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
+        super().__init__(scene, target_posdiff, 5, 400, 1.5, 10, "water", 20)
         self.exploding = False
         self.exploding_timer = Timer(0.1)
 
@@ -28,7 +28,7 @@ class Waterball(Projectile):
                         construct.take_damage(10)
                 for projectile in self.scene.projectiles:
                     if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad and \
-                       projectile.element != self.element and not projectile.aiming and self.hitbox.is_colliding(projectile.hitbox):
+                       projectile.element != self.element and self.hitbox.is_colliding(projectile.hitbox):
                         projectile.take_damage(10)
                 if self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
                    self.hitbox.is_colliding(self.scene.player.hitbox):
@@ -43,8 +43,6 @@ class Waterball(Projectile):
             pygame.draw.polygon(screen, (255, 0, 0), [Vec(p) - self.scene.player.pos + self.scene.player.screen_pos for p in self.hitbox.get_hitbox()], 2)
 
     def kill(self) -> None:
-        if self.aiming:
-            super().kill()
         if not self.exploding:
             self.exploding_timer.reset()
         self.exploding = True

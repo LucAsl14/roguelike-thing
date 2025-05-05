@@ -9,9 +9,18 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class Projectile(Spell):
-    def __init__(self, scene: MainScene, owner: Optional[Player], lifespan: float, speed: float, charge_time: float, dmg: int, elem: str, radius: int) -> None:
-        super().__init__(scene, owner, charge_time, elem)
-        self.vel = Vec()
+    def __init__(self,
+                 scene: MainScene,
+                 target_posdiff: Vec,
+                 lifespan: float,
+                 speed: float,
+                 charge_time: float,
+                 dmg: int,
+                 elem: str,
+                 radius: int,
+                 max_damage_per_target: int = 9999) -> None:
+        super().__init__(scene, charge_time, elem)
+        self.vel = target_posdiff.normalize() * speed
         self.external_acc = Vec()
         self.pos = self.scene.player.pos.copy()
         self.speed = speed
@@ -20,6 +29,7 @@ class Projectile(Spell):
         self.damage = dmg
         self.hitbox = Hitbox(self.pos, [])
         self.hitbox.set_size_rad(radius)
+        self.max_dmg_per_target = max_damage_per_target
         self.ignore_elem = []
         self.scene.projectiles.append(self)
 
@@ -30,17 +40,6 @@ class Projectile(Spell):
 
     def update_charge(self, dt: float) -> None:
         pass
-
-    def update_aiming(self, dt: float) -> None:
-        self.pos = self.scene.player.pos.copy()
-
-    def draw_aiming(self, screen: Surface) -> None:
-        pygame.draw.line(screen, (120, 120, 120), self.scene.player.screen_pos, self.game.mouse_pos, 3)
-
-    def trigger_spell(self) -> None:
-        self.vel = (self.game.mouse_pos - self.scene.player.screen_pos).normalize() * self.speed
-        self.lifespan.reset()
-        super().trigger_spell()
 
     def update_spell(self, dt: float) -> None:
         self.vel += self.external_acc
@@ -62,18 +61,16 @@ class Projectile(Spell):
                projectile.element not in self.ignore_elem and \
                projectile != self and self.hitbox.is_colliding(projectile.hitbox):
                 self.collide(projectile)
-        if self.owner != self.scene.player and \
-           self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
-           self.hitbox.is_colliding(self.scene.player.hitbox):
-            self.collide(self.scene.player)
+        # player collision (do we still need that?)
+        # if self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
+        #    self.hitbox.is_colliding(self.scene.player.hitbox):
+        #     self.collide(self.scene.player)
 
     def take_damage(self, dmg: int) -> int:
         """
         Returns:
             Amount of damage taken
         """
-        if self.aiming:
-            return 0
         prev_dmg = self.damage
         self.damage -= dmg
         if self.damage <= 0:
@@ -82,7 +79,7 @@ class Projectile(Spell):
         return prev_dmg - self.damage
 
     def collide(self, target: Construct | Projectile | Player) -> None:
-        dmg_dealt = target.take_damage(self.damage)
+        dmg_dealt = min(self.max_dmg_per_target, target.take_damage(self.damage))
         self.take_damage(dmg_dealt)
         if dmg_dealt > 0:
             Log.debug(f"{self} dealt {dmg_dealt} dmg to {target}")

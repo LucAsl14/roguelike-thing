@@ -8,13 +8,13 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class Construct(Spell):
-    def __init__(self, scene: MainScene, owner: Optional[Player], charge_time: float, lifespan: float, hp: int) -> None:
+    def __init__(self, scene: MainScene, charge_time: float, lifespan: float, hp: int) -> None:
         """
         Notes: \n
         A lifespan of -1 grants the construct infinite duration \n
         An hp amount of -1 makes it indestructible
         """
-        super().__init__(scene, owner, charge_time, "earth")
+        super().__init__(scene, charge_time, "earth")
         self.lifespan = Timer(lifespan)
         self.endless = False
         if lifespan == -1: self.endless = True
@@ -25,8 +25,6 @@ class Construct(Spell):
         self.hitbox: Hitbox
 
     def update_charge(self, dt: float) -> None:
-        pass
-    def update_aiming(self, dt: float) -> None:
         pass
 
     def update_spell(self, dt: float) -> None:
@@ -39,12 +37,6 @@ class Construct(Spell):
             self.kill()
         # if self.size == Vec(): Log.warn(f"This Construct ({self}) has no size and is likely causing lag")
 
-    def trigger_spell(self) -> None:
-        self.lifespan.reset()
-        if self.aiming:
-            self.pos = self.game.mouse_pos + self.scene.camera.pos
-            super().trigger_spell()
-
     def collide_player(self) -> None:
         self.scene.player.vel = 100 * Vec((self.scene.player.pos - self.pos)).normalize()
 
@@ -53,8 +45,6 @@ class Construct(Spell):
         Returns:
             actual damage taken
         """
-        if self.aiming:
-            return 0
         prev_hp = self.hp
         if self.hp == -1: return dmg
         self.hp = max(self.hp - dmg, 0)

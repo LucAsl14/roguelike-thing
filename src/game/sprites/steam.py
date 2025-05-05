@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class Steam(AreaSpell):
-    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
-        super().__init__(scene, owner, 0, "water", 20, 250, "SKY")
+    def __init__(self, scene: MainScene, target_posdiff: Vec, rad: int) -> None:
+        super().__init__(scene, target_posdiff, 0, "water", 20, rad, "SKY")
         self.circle_offsets: list[Vec] = []
         self.new_circle = LoopTimer(0.1)
 
@@ -19,7 +19,7 @@ class Steam(AreaSpell):
     def draw_spell(self, screen: Surface) -> None:
         for point in self.circle_offsets:
             screen_pos = self.screen_pos + point
-            pygame.draw.circle(screen, (195, 195, 255), screen_pos, 100)
+            pygame.draw.circle(screen, (195, 195, 255), screen_pos, self.rad * 2 / 5)
 
     def random_circle_point(self) -> Vec:
         angle = uniform(0, 2*pi)

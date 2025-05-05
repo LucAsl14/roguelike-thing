@@ -8,24 +8,24 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class Rollout(Construct):
-    def __init__(self, scene: MainScene, owner: Optional[Player]) -> None:
-        super().__init__(scene, owner, 2, 4, 20)
+    def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
+        super().__init__(scene, 2, 4, 20)
         self.copy_timer = LoopTimer(0.2, -1)
         self.copies_made = 0
+        self.target_posdiff = target_posdiff
         self.angle: float = 0
-        self.target_angle: float
         self.pos = Vec()
         self.offset = Vec()
         self.size: Vec
+        self.is_original = True
+
+        self.target_angle = atan2(target_posdiff.y, target_posdiff.x)
 
         self.hitbox = Hitbox(self.pos, [])
         self.hitbox.set_size_rect(10, 30)
 
-    def draw_aiming(self, screen: Surface) -> None:
-        pygame.draw.line(screen, (120, 120, 120), self.scene.player.screen_pos, self.game.mouse_pos, 3)
-
     def draw_charge(self, screen: Surface) -> None:
-        pygame.draw.line(screen, (120, 120, 120), self.scene.player.screen_pos, self.game.mouse_pos, 3)
+        # pygame.draw.line(screen, (120, 120, 120), self.scene.player.screen_pos, self.game.mouse_pos, 3)
         # more rectangle rotating
         origimg = pygame.surface.Surface((30, 10))
         origimg.set_colorkey((0, 0, 0))
@@ -35,14 +35,15 @@ class Rollout(Construct):
         screen.blit(rotimg, self.screen_pos - self.size / 2)
 
     def update_charge(self, dt: float) -> None:
-        mousediff = self.game.mouse_pos - self.scene.player.screen_pos
-        self.target_angle = atan2(mousediff.y, mousediff.x)
+        # previously used to allow you to change directions while aiming...
+        # mousediff = self.game.mouse_pos - self.scene.player.screen_pos
+        # self.target_angle = atan2(mousediff.y, mousediff.x)
         if self.copy_timer.done and self.copies_made < 5:
-            spell = Rollout(self.scene, self.owner)
+            spell = Rollout(self.scene, self.target_posdiff)
             self.scene.add(spell)
             self.copies_made += 1
             spell.angle = self.angle + pi/3 * (self.copies_made)
-            spell.aiming = False
+            spell.is_original = False
             spell.trigger_spell()
             spell.copy_timer.pause()
             spell.charging_time = self.charging_time
@@ -50,6 +51,7 @@ class Rollout(Construct):
         if self.offset.magnitude() < 50:
             self.offset = 50 * Vec(cos(self.angle), sin(self.angle))
         self.pos = self.scene.player.pos + self.offset
+        # locks the player's movement
         self.scene.player.vel = Vec()
         self.hitbox.set_position(self.pos)
         self.hitbox.set_rotation(self.angle)

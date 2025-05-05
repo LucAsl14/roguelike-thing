@@ -100,7 +100,7 @@ class Player(Sprite):
 
         # press a button to make decorations lol (NOT a feature)
         if self.keys[K_q]:
-            self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-100, 100), uniform(-100, 100))))
+            self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
         if Debug.on():
             # debug key
             if self.keys[K_p]:

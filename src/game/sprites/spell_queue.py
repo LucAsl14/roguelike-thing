@@ -10,7 +10,10 @@ from .mud import Mud
 from .whirlpool import Whirlpool
 from .rollout import Rollout
 from .wall_of_fire import WallOfFire
-
+from .line_aiming import LineAiming
+from .area_aiming import AreaAiming
+from .rect_aiming import RectAiming
+from .gust_aiming import GustAiming
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, "HUD")
@@ -20,16 +23,86 @@ class SpellQueue(Sprite):
         self.cursor_blink_on = True
         self.aiming_spell = None
         self.spell_list = {
-            "j": Waterball,
-            "k": EarthBlock,
-            "i": Gust,
-            "l": Fireball,
-            "kl": StoneCannon, "lk": StoneCannon, # temporarily doubling up until Andrew teaches me
-            "jl": Steam, "lj": Steam,
-            "kj": Mud, "jk": Mud,
-            "ij": Whirlpool, "ji": Whirlpool,
-            "ik": Rollout, "ki": Rollout,
-            "il": WallOfFire, "li": WallOfFire,
+            "j": {
+                "aiming": {
+                    "type": LineAiming,
+                    "cooldown": 5,
+                    "args": [],
+                },
+                "spell": Waterball
+            },
+            "k": {
+                "aiming": {
+                        "type": RectAiming,
+                        "cooldown": 5,
+                        "args": [Vec(50, 40)],
+                    },
+                    "spell": EarthBlock
+            },
+            "i": {
+                "aiming": {
+                        "type": GustAiming,
+                        "cooldown": 5,
+                        "args": [Vec(160, 380), 50],
+                    },
+                    "spell": Gust
+            },
+            "l":  {
+                "aiming": {
+                        "type": LineAiming,
+                        "cooldown": 5,
+                        "args": [],
+                    },
+                    "spell": Fireball
+            },
+            "kl": {
+                "aiming": {
+                        "type": LineAiming,
+                        "cooldown": 5,
+                        "args": [],
+                    },
+                    "spell": StoneCannon
+            },
+            "jl": {
+                "aiming": {
+                        "type": AreaAiming,
+                        "cooldown": 5,
+                        "args": [250],
+                    },
+                    "spell": Steam
+            },
+            "jk": {
+                "aiming": {
+                        "type": AreaAiming,
+                        "cooldown": 5,
+                        "args": [125],
+                    },
+                    "spell": Mud
+            },
+            "ij": {
+                "aiming": {
+                        "type": AreaAiming,
+                        "cooldown": 5,
+                        "args": [145],
+                    },
+                    "spell": Whirlpool
+            },
+            "ik": {
+                "aiming": {
+                        "type": LineAiming,
+                        "cooldown": 5,
+                        "args": [],
+                    },
+                    "spell": Rollout
+            },
+            "il": {
+                "aiming": {
+                        "type": AreaAiming,
+                        "cooldown": 5,
+                        "args": [20],
+                    },
+                    "spell": WallOfFire
+            },
         }
 
     def update(self, dt: float) -> None:
@@ -120,16 +193,16 @@ class SpellQueue(Sprite):
         return string
 
     def parse_top_spell(self) -> None:
-        spell = self.spell_list.get(self.get_top_string())
+        spell = self.spell_list.get(''.join(sorted(self.get_top_string())))
         if spell != None and not self.aiming_spell:
-            self.aiming_spell = spell(self.scene, self.scene.player)
+            self.aiming_spell = spell["aiming"]["type"](self.scene, spell["spell"], spell["aiming"]["cooldown"], spell["aiming"]["args"]) #type: ignore
             self.scene.add(self.aiming_spell)
 
     def spend_top_spell(self) -> None:
         while len(self.queue) and self.queue[0] != " ":
             top_elem = self.pop()
             if self.aiming_spell != None:
-                self.scene.player.inventory.add(top_elem, self.aiming_spell.cooldown)
+                self.scene.player.inventory.add(top_elem, self.aiming_spell.cooldown) #type: ignore
         if len(self.queue):
             self.pop()
         self.aiming_spell = None

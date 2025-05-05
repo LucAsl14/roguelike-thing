@@ -18,3 +18,8 @@ from .rollout import Rollout
 from .camera import Camera
 from .wall_of_fire import WallOfFire
 from .world_border import WorldBorder
+from .aiming_spell import AimingSpell
+from .line_aiming import LineAiming
+from .area_aiming import AreaAiming
+from .rect_aiming import RectAiming
+from .gust_aiming import GustAiming

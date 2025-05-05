@@ -6,46 +6,33 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class Spell(Sprite):
-    def __init__(self, scene: MainScene, owner: Optional[Player], charge_time: float, elem: str, layer: str = "DEFAULT", cooldown: float = 0) -> None: # cooldown is very much temporary
+    def __init__(self, scene: MainScene, charge_time: float, elem: str, layer: str = "DEFAULT", cooldown: float = 0) -> None: # cooldown is very much temporary
         super().__init__(scene, layer)
-        self.aiming = True
+        # self.aiming = True
         self.scene = scene
         self.charging_time = Timer(charge_time)
         self.element = elem
         self.killed = False
-        self.cooldown = cooldown
-        self.owner = owner
 
     def update(self, dt: float) -> None:
         if self.killed:
             return
-        if self.aiming:
-            self.update_aiming(dt)
-            if MOUSEBUTTONDOWN in self.game.events:
-                self.trigger_spell()
-                self.aiming = False
-        elif not self.charging_time.done:
+        if not self.charging_time.done:
             self.update_charge(dt)
         else:
             self.update_spell(dt)
 
     def draw(self, target: pygame.Surface) -> None:
-        if self.aiming:
-            self.draw_aiming(target)
-        elif not self.charging_time.done:
+        if not self.charging_time.done:
             self.draw_charge(target)
         if self.pos.distance_to(self.scene.player.pos) > 800: return
-        if not self.aiming and self.charging_time.done:
+        if self.charging_time.done:
             self.draw_spell(target)
 
     def kill(self) -> None:
         if not self.killed:
             super().kill()
         self.killed = True
-
-    @abstractmethod
-    def draw_aiming(self, screen: pygame.Surface) -> None:
-        pass
 
     @abstractmethod
     def draw_spell(self, screen: pygame.Surface) -> None:
@@ -56,10 +43,6 @@ class Spell(Sprite):
         pass
 
     @abstractmethod
-    def update_aiming(self, dt: float) -> None:
-        pass
-
-    @abstractmethod
     def update_spell(self, dt: float) -> None:
         pass
 
@@ -67,8 +50,5 @@ class Spell(Sprite):
     def update_charge(self, dt: float) -> None:
         pass
 
-    @abstractmethod
     def trigger_spell(self) -> None:
-        if self.aiming and self.owner != None:
-            self.owner.spell_queue.spend_top_spell()
-        self.charging_time.reset()
+        pass

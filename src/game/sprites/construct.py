@@ -3,10 +3,7 @@ from __future__ import annotations
 from pygame import Surface
 from src.core import *
 from .spell import Spell
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .player import Player
+from .entity import Entity
 class Construct(Spell):
     def __init__(self, scene: MainScene, charge_time: float, lifespan: float, hp: int) -> None:
         """
@@ -28,8 +25,8 @@ class Construct(Spell):
         pass
 
     def update_spell(self, dt: float) -> None:
-        if self.is_colliding_player():
-            self.collide_player()
+        if len((entities := self.colliding_entities())) > 0:
+            self.collide(entities)
         if not self.endless and self.lifespan.done:
             self.kill()
             return
@@ -37,8 +34,9 @@ class Construct(Spell):
             self.kill()
         # if self.size == Vec(): Log.warn(f"This Construct ({self}) has no size and is likely causing lag")
 
-    def collide_player(self) -> None:
-        self.scene.player.vel = 100 * Vec((self.scene.player.pos - self.pos)).normalize()
+    def collide(self, entities: list[Entity]) -> None:
+        for entity in entities:
+            entity.vel = 100 * Vec((entity.pos - self.pos)).normalize()
 
     def take_damage(self, dmg: int) -> int:
         """
@@ -55,8 +53,16 @@ class Construct(Spell):
             self.scene.constructs.remove(self)
         super().kill()
 
-    def is_colliding_player(self) -> bool:
+    def colliding_entities(self) -> list[Entity]:
+        entities = []
+        # the player
         if self.scene.player.pos.distance_to(self.pos) < self.size.magnitude() + self.scene.player.size.magnitude() \
         and self.hitbox.is_colliding(self.scene.player.hitbox):
-            return True
-        return False
+            entities.append(self.scene.player)
+        # enemies
+        for enemy in self.scene.enemies:
+         if enemy.pos.distance_to(self.pos) < self.size.magnitude() + enemy.size.magnitude() \
+         and self.hitbox.is_colliding(enemy.hitbox):
+            entities.append(enemy)
+
+        return entities

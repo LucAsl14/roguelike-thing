@@ -64,7 +64,7 @@ class WallOfFire(AreaSpell):
         pygame.draw.circle(screen, tuple(map(sum, zip(FIRE, (10, -40, -40)))), self.screen_pos, self.rad)
         # fire particles?
 
-    # TODO: should probably also make player take damage
+    # TODO: should probably also make player take damage?
     def update_spell(self, dt: float) -> None:
         # reduces damage of all projectiles coming into contact
         # should it buff "fire" type projectiles?
@@ -72,4 +72,7 @@ class WallOfFire(AreaSpell):
             for proj in self.scene.projectiles:
                 if proj.pos.distance_to(self.pos) <= proj.rad + self.rad:
                     proj.take_damage(1)
+            for enemy in self.scene.enemies:
+                if enemy.pos.distance_to(self.pos) <= enemy.size.magnitude()/2 + self.rad:
+                    enemy.take_damage(1)
         super().update_spell(dt)

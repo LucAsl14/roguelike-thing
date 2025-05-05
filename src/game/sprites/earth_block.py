@@ -4,10 +4,6 @@ from pygame import Surface
 from src.core import *
 from .construct import Construct
 from random import uniform
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .player import Player
 class EarthBlock(Construct):
     def __init__(self, scene: MainScene, target_posdiff: Vec, size: Vec, angle: float) -> None:
         super().__init__(scene, 0.2, 15, 20)
@@ -18,18 +14,6 @@ class EarthBlock(Construct):
         self.angle = angle
         self.pos = self.scene.player.pos + target_posdiff
         self.original_size = size
-
-    # def draw_aiming(self, screen: Surface) -> None:
-    #     # all of this code just to rotate a rectangle?????
-    #     mpos = self.game.mouse_pos
-    #     player = self.scene.player
-    #     self.angle = 90 - 180 / pi * atan2((mpos.y - player.screen_pos.y), (mpos.x - player.screen_pos.x))
-    #     origimg = pygame.surface.Surface((50, 40))
-    #     origimg.set_colorkey((0, 0, 0))
-    #     pygame.draw.rect(origimg, (120, 120, 120), origimg.get_rect())
-    #     rotimg = pygame.transform.rotate(origimg, self.angle)
-    #     self.size = Vec(rotimg.get_rect().size)
-    #     screen.blit(rotimg, mpos - Vec(rotimg.size) / 2)
 
     def draw_charge(self, screen: Surface) -> None:
         self.draw_spell(screen)

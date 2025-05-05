@@ -37,6 +37,11 @@ class Whirlpool(AreaSpell):
                 projectile.vel *= ((1 - dist / self.rad) / 4) ** dt
                 projectile.vel += (1 - dist / self.rad) * (self.pos - projectile.pos).normalize() * 2000 * dt
                 projectile.vel += (1.1 - dist / self.rad) * (self.pos - projectile.pos).normalize().rotate(90) * 1500 * dt
+        for enemy in self.scene.enemies:
+            if dist := enemy.pos.distance_to(self.pos) < self.rad:
+                enemy.vel *= ((1 - dist / self.rad) / 4) ** dt
+                enemy.vel += (1 - dist / self.rad) * (self.pos - enemy.pos).normalize() * 2000 * dt
+                enemy.vel += (1.1 - dist / self.rad) * (self.pos - enemy.pos).normalize().rotate(90) * 1500 * dt
 
         # art part
         for i in range(len(self.circle_offsets)):

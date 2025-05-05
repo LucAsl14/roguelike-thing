@@ -19,4 +19,7 @@ class Mud(AreaSpell):
     def update_spell(self, dt: float) -> None:
         if self.scene.player.pos.distance_to(self.pos) < self.rad:
             self.scene.player.vel *= 0.0000004 ** dt
+        for enemy in self.scene.enemies:
+            if enemy.pos.distance_to(self.pos) < self.rad:
+                enemy.vel *= 0.0000004 ** dt
         super().update_spell(dt)

@@ -4,8 +4,6 @@ from .projectile import Projectile
 from pygame import Surface
 
 from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .player import Player
 class Waterball(Projectile):
     def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
         super().__init__(scene, target_posdiff, 5, 400, 1.5, 10, "water", 20)
@@ -30,17 +28,19 @@ class Waterball(Projectile):
                     if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad and \
                        projectile.element != self.element and self.hitbox.is_colliding(projectile.hitbox):
                         projectile.take_damage(10)
-                if self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
-                   self.hitbox.is_colliding(self.scene.player.hitbox):
-                    self.scene.player.take_damage(10)
+                for enemy in self.scene.enemies:
+                    if self.pos.distance_to(enemy.pos) < self.rad + enemy.size.magnitude() and \
+                       self.hitbox.is_colliding(enemy.hitbox):
+                        enemy.take_damage(10)
+                # self-damage. Remove this?
+                # if self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
+                #    self.hitbox.is_colliding(self.scene.player.hitbox):
+                #     self.scene.player.take_damage(10)
                 super().kill()
 
 
     def draw_spell(self, screen: Surface) -> None:
         pygame.draw.circle(screen, WATER, self.screen_pos, self.rad)
-        # hitbox debugging
-        if Debug.on():
-            pygame.draw.polygon(screen, (255, 0, 0), [Vec(p) - self.scene.player.pos + self.scene.player.screen_pos for p in self.hitbox.get_hitbox()], 2)
 
     def kill(self) -> None:
         if not self.exploding:

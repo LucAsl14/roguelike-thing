@@ -4,9 +4,7 @@ from pygame import Surface
 from src.core import *
 from .area_spell import AreaSpell
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .player import Player
+# TODO: probably change this spell because it's useless in pve
 class Steam(AreaSpell):
     def __init__(self, scene: MainScene, target_posdiff: Vec, rad: int) -> None:
         super().__init__(scene, target_posdiff, 0, "water", 20, rad, "SKY")

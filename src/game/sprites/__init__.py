@@ -23,3 +23,6 @@ from .line_aiming import LineAiming
 from .area_aiming import AreaAiming
 from .rect_aiming import RectAiming
 from .gust_aiming import GustAiming
+from .enemy import Enemy
+from .entity import Entity
+from .basic_enemy import BasicEnemy

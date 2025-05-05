@@ -7,7 +7,7 @@ from .projectile import Projectile
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .player import Player
+    from .enemy import Enemy
 class StoneCannon(Projectile):
     def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
         super().__init__(scene, target_posdiff, 10, 700, 0, 5, "earth", 8)
@@ -67,7 +67,8 @@ class StoneCannon(Projectile):
         target_angle = atan2(posdiff.y, posdiff.x)
         self.angle = uniform(target_angle + pi - pi/4, target_angle + pi + pi/4)
 
-    def collide(self, target: Construct | Projectile | Player) -> None:
-        if isinstance(target, StoneCannon):
-            return
-        super().collide(target)
+    # def collide(self, target: Construct | Projectile | Enemy) -> None:
+    #     # redundant for now
+    #     # if isinstance(target, StoneCannon):
+    #     #     return
+    #     super().collide(target)

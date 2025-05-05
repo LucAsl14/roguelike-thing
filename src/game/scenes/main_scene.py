@@ -23,6 +23,7 @@ class MainScene(Scene):
         self.add(self.border)
         self.constructs: list[Construct] = []
         self.projectiles: list[Projectile] = []
+        self.enemies: list[Enemy] = []
 
         for _ in range(1000):
             self.add(TestDecoration(self, Vec(uniform(-self.border.rad, self.border.rad), uniform(-self.border.rad, self.border.rad))))

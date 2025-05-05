@@ -7,7 +7,7 @@ from .projectile import Projectile
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .player import Player
+    from .enemy import Enemy
 class Fireball(Projectile):
     def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
         super().__init__(scene, target_posdiff, 10, 800, 0.5, 10, "fire", 10)
@@ -18,6 +18,6 @@ class Fireball(Projectile):
     def draw_spell(self, screen: Surface) -> None:
         pygame.draw.circle(screen, FIRE, self.screen_pos, self.rad)
 
-    def collide(self, target: Construct | Projectile | Player) -> None:
+    def collide(self, target: Construct | Projectile | Enemy) -> None:
         super().collide(target)
         self.kill()

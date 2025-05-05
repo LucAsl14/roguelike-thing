@@ -7,7 +7,7 @@ from .construct import Construct
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .player import Player
+    from .enemy import Enemy
 class Projectile(Spell):
     def __init__(self,
                  scene: MainScene,
@@ -61,10 +61,10 @@ class Projectile(Spell):
                projectile.element not in self.ignore_elem and \
                projectile != self and self.hitbox.is_colliding(projectile.hitbox):
                 self.collide(projectile)
-        # player collision (do we still need that?)
-        # if self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
-        #    self.hitbox.is_colliding(self.scene.player.hitbox):
-        #     self.collide(self.scene.player)
+        for enemy in self.scene.enemies:
+            if self.pos.distance_to(enemy.pos) < self.rad + enemy.size.magnitude() and \
+            self.hitbox.is_colliding(enemy.hitbox):
+                self.collide(enemy)
 
     def take_damage(self, dmg: int) -> int:
         """
@@ -78,7 +78,8 @@ class Projectile(Spell):
             self.kill()
         return prev_dmg - self.damage
 
-    def collide(self, target: Construct | Projectile | Player) -> None:
+    def collide(self, target: Construct | Projectile | Enemy) -> None:
+        if isinstance(target, type(self)): return # prevent self-collision (we might want this?)
         dmg_dealt = min(self.max_dmg_per_target, target.take_damage(self.damage))
         self.take_damage(dmg_dealt)
         if dmg_dealt > 0:

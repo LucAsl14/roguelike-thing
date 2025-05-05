@@ -3,19 +3,15 @@ from src.core import *
 
 from .inventory import Inventory
 from .test_decoration import TestDecoration
+from .basic_enemy import BasicEnemy
 from .spell_queue import SpellQueue
-
-class Player(Sprite):
+from .entity import Entity
+class Player(Entity):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, "DEFAULT")
+        super().__init__(scene, 0, Image.get("player"), Vec())
         # band-aid fix to scene not considered MainScene
         self.scene = scene
 
-        # movement-related variables
-        self.pos = Vec()
-        self.vel = Vec()
-        self.acc = Vec()
-        self.ext_acc = Vec()
         self.CONST_ACCEL = 3300
 
         # inventory
@@ -31,26 +27,14 @@ class Player(Sprite):
         self.spell_queue = SpellQueue(self.scene)
         self.scene.add(self.spell_queue)
 
-        # player visuals and hitbox
-        self.image = Image.get("player")
-        rect = self.image.get_rect()
-        self.hitbox = Hitbox(self.pos, [])
-        self.hitbox.set_size_rect(rect.width, rect.height)
-        self.size = Vec(rect.width, rect.height)
-        self.angle = 0
-
-        # pvp
-        self.hp = 0
-
     def update(self, dt: float) -> None:
         self.update_keys(dt)
         self.update_position(dt)
         self.update_surroundings()
 
     def draw(self, target: pygame.Surface) -> None:
-        self.image = pygame.transform.rotate(Image.get("player"), self.angle)
-        target.blit(self.image, self.screen_pos - Vec(self.image.get_rect().size) / 2)
         target.blit(Font.get("font18").render(str(self.hp), False, (80, 80, 80)), (0, 0))
+        super().draw(target)
 
 
     def update_keys(self, dt: float) -> None:
@@ -101,6 +85,7 @@ class Player(Sprite):
         # press a button to make decorations lol (NOT a feature)
         if self.keys[K_q]:
             self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
+            if uniform(0, 10) < 1: self.scene.add(BasicEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
         if Debug.on():
             # debug key
             if self.keys[K_p]:
@@ -114,21 +99,6 @@ class Player(Sprite):
                 self.scene.border.schedule_move_to(Vec(1000, 0), None, 5, 10)
             if self.keys[K_u]:
                 self.scene.border.schedule_move_to(Vec(-1000, -1000), 50, 15, 10)
-
-
-    def update_position(self, dt: float) -> None:
-        self.vel += self.acc * dt
-        self.vel += self.ext_acc
-        self.ext_acc = Vec()
-        self.vel *= 0.004 ** dt
-        self.pos += self.vel * dt
-        self.hitbox.set_position(self.pos)
-        self.hitbox.set_rotation(self.angle)
-
-    def take_damage(self, dmg: int) -> int:
-        prev_hp = self.hp
-        self.hp -= dmg
-        return prev_hp - self.hp
 
     def update_surroundings(self) -> None:
         # something something about generating decorations im too lazy

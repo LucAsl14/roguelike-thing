@@ -3,8 +3,6 @@ from src.core import *
 from abc import abstractmethod
 
 from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .player import Player
 class Spell(Sprite):
     def __init__(self, scene: MainScene, charge_time: float, elem: str, layer: str = "DEFAULT", cooldown: float = 0) -> None: # cooldown is very much temporary
         super().__init__(scene, layer)

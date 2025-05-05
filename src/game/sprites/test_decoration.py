@@ -11,14 +11,8 @@ class TestDecoration(Construct):
         self.hitbox.set_size_rad(20)
         self.size = Vec(20)
 
-    def update_aiming(self, dt: float) -> None:
-        self.aiming = False
-
     def draw_spell(self, screen: pygame.Surface) -> None:
         pygame.draw.circle(screen, tuple(map(sum, zip((150, 50, 50), (-6*self.hp, 2*self.hp, 2*self.hp)))), self.screen_pos, 20)
-
-    def draw_aiming(self, screen: pygame.Surface) -> None:
-        pass
 
     def draw_charge(self, screen: Surface) -> None:
         pass

@@ -6,7 +6,7 @@ from .construct import Construct
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .player import Player
+    from .entity import Entity
 class Rollout(Construct):
     def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
         super().__init__(scene, 2, 4, 20)
@@ -70,10 +70,10 @@ class Rollout(Construct):
             pygame.draw.polygon(screen, (255, 0, 0), [Vec(p) - self.scene.player.pos + self.scene.player.screen_pos for p in self.hitbox.get_hitbox()], 2)
 
     def update_spell(self, dt: float) -> None:
-        self.angle += radians(2)
+        self.angle += 2
         blocked = False
         for construct in self.scene.constructs:
-            if construct.is_colliding_player():
+            if self.scene.player in construct.colliding_entities():
                 blocked = True
         if not blocked:
             self.scene.player.vel = 1050 * Vec(cos(self.target_angle), sin(self.target_angle))
@@ -88,3 +88,7 @@ class Rollout(Construct):
         super().trigger_spell()
         self.offset = 320 * Vec(cos(self.angle), sin(self.angle))
         self.pos = self.scene.player.pos + self.offset
+
+    def collide(self, entities: list[Entity]) -> None:
+        for entity in entities:
+            entity.vel = 100 * 10 * Vec((entity.pos - self.pos)).normalize()

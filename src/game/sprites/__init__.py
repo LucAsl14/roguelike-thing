@@ -26,3 +26,4 @@ from .gust_aiming import GustAiming
 from .enemy import Enemy
 from .entity import Entity
 from .basic_enemy import BasicEnemy
+from .terrain_background import TerrainBackground

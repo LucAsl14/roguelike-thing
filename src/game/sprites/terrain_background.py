@@ -14,9 +14,9 @@ class TerrainBackground(Sprite):
             # pos, rad, color
             # (Vec(50, 50), 100, (153, 68, 78)),
             # (Vec(-50, -50), 100, (138, 100, 219))
-            (Vec(-100, 0), 150, (255, 0, 0)),
-            (Vec(50, -86.6), 150, (0, 255, 0)),
-            (Vec(50, 86.6), 150, (0, 0, 255)),
+            # (Vec(-100, 0), 150, (255, 0, 0)),
+            # (Vec(50, -86.6), 150, (0, 255, 0)),
+            # (Vec(50, 86.6), 150, (0, 0, 255)),
         ]
 
     def update(self, dt: float) -> None:
@@ -55,7 +55,7 @@ class TerrainBackground(Sprite):
     def draw(self, target: pygame.Surface) -> None:
         self.pos = self.scene.camera.pos
 
-        small_size = (960 / self.SCALE_FACTOR, 540 / self.SCALE_FACTOR)
+        small_size = (WIDTH / self.SCALE_FACTOR, HEIGHT / self.SCALE_FACTOR)
         terrain_background = pygame.surface.Surface(small_size, pygame.SRCALPHA)
         self.draw_mixed_background(terrain_background)
         # terrain_background.fill(self.background)

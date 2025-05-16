@@ -4,7 +4,7 @@ from pygame import Surface
 from src.core import *
 from .area_spell import AreaSpell
 class Mud(AreaSpell):
-    def __init__(self, scene: MainScene, target_posdiff: Vec, rad: int) -> None:
+    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str, rad: int) -> None:
         super().__init__(scene, target_posdiff, 1, "earth", 20, rad, "GROUND")
 
     def draw_charge(self, screen: Surface) -> None:

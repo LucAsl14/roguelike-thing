@@ -4,6 +4,7 @@ from src.core import *
 from .inventory import Inventory
 from .test_decoration import TestDecoration
 from .basic_enemy import BasicEnemy
+from .waterball_enemy import WaterballEnemy
 from .spell_queue import SpellQueue
 from .entity import Entity
 class Player(Entity):
@@ -84,8 +85,12 @@ class Player(Entity):
 
         # press a button to make decorations lol (NOT a feature)
         if self.keys[K_q]:
-            self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
-            if uniform(0, 10) < 1: self.scene.add(BasicEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
+            if uniform(0, 10) < 3:
+                self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
+            if uniform(0, 10) < 1:
+                self.scene.add(BasicEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
+            if uniform(0, 100) < 4:
+                self.scene.add(WaterballEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
         if Debug.on():
             # debug key
             if self.keys[K_p]:

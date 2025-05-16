@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .enemy import Enemy
 class StoneCannon(Projectile):
-    def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
-        super().__init__(scene, target_posdiff, 10, 700, 0, 5, "earth", 8)
+    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str) -> None:
+        super().__init__(scene, target_posdiff, 10, 700, 0, 5, "earth", 8, origin)
         self.iframe = Timer(0.75)
         self.angle = 0
         self.turn_speed = 2
@@ -55,7 +55,7 @@ class StoneCannon(Projectile):
     def trigger_spell(self) -> None:
         if self.is_original:
             for _ in range(4):
-                spell = StoneCannon(self.scene, self.target_posdiff)
+                spell = StoneCannon(self.scene, self.target_posdiff, self.origin)
                 self.scene.add(spell)
                 spell.is_original = False
                 spell.trigger_spell()
@@ -69,6 +69,6 @@ class StoneCannon(Projectile):
 
     # def collide(self, target: Construct | Projectile | Enemy) -> None:
     #     # redundant for now
-    #     # if isinstance(target, StoneCannon):
-    #     #     return
+    #     if isinstance(target, StoneCannon):
+    #         return
     #     super().collide(target)

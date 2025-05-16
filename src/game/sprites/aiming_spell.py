@@ -19,6 +19,6 @@ class AimingSpell(Sprite):
 
     def trigger_spell(self) -> None:
         self.scene.player.spell_queue.spend_top_spell()
-        spell = self.spell(self.scene, self.game.mouse_pos - self.scene.player.screen_pos, *self.args)
+        spell = self.spell(self.scene, self.game.mouse_pos - self.scene.player.screen_pos, "player", *self.args)
         self.scene.add(spell)
         spell.trigger_spell()

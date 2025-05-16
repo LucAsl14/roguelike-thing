@@ -75,4 +75,7 @@ class WallOfFire(AreaSpell):
             for enemy in self.scene.enemies:
                 if enemy.pos.distance_to(self.pos) <= enemy.size.magnitude()/2 + self.rad:
                     enemy.take_damage(1)
+            player = self.scene.player
+            if player.pos.distance_to(self.pos) <= player.size.magnitude()/2 + self.rad:
+                player.take_damage(1)
         super().update_spell(dt)

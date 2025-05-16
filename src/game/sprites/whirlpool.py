@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class Whirlpool(AreaSpell):
-    def __init__(self, scene: MainScene, target_posdiff: Vec, rad: int) -> None:
+    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str, rad: int) -> None:
         super().__init__(scene, target_posdiff, 1, "air", 15, rad, "GROUND")
         self.circle_offsets: list[Vec] = []
         self.new_circle_timer = LoopTimer(0.1)

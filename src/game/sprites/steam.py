@@ -6,7 +6,7 @@ from .area_spell import AreaSpell
 
 # TODO: probably change this spell because it's useless in pve
 class Steam(AreaSpell):
-    def __init__(self, scene: MainScene, target_posdiff: Vec, rad: int) -> None:
+    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str, rad: int) -> None:
         super().__init__(scene, target_posdiff, 0, "water", 20, rad, "SKY")
         self.circle_offsets: list[Vec] = []
         self.new_circle = LoopTimer(0.1)

@@ -34,6 +34,9 @@ class Enemy(Entity):
     def get_player_direction(self) -> float:
         return atan2(self.scene.player.pos.y - self.pos.y, self.scene.player.pos.x - self.pos.x)
 
+    def get_player_distance(self) -> float:
+        return self.scene.player.pos.distance_to(self.pos)
+
     def collide_enemies(self) -> None:
         for enemy in self.scene.enemies:
          if enemy != self and enemy.pos.distance_to(self.pos) < self.size.magnitude() + enemy.size.magnitude() \

@@ -5,7 +5,7 @@ from src.core import *
 from .construct import Construct
 from random import uniform
 class EarthBlock(Construct):
-    def __init__(self, scene: MainScene, target_posdiff: Vec, size: Vec, angle: float) -> None:
+    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str, size: Vec, angle: float) -> None:
         super().__init__(scene, 0.2, 15, 20)
         # testing some graphic changing depending on damage
         self.extra_damaged = False

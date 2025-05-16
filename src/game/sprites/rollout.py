@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .entity import Entity
 class Rollout(Construct):
-    def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
+    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str) -> None:
         super().__init__(scene, 2, 4, 20)
         self.copy_timer = LoopTimer(0.2, -1)
         self.copies_made = 0
@@ -39,7 +39,7 @@ class Rollout(Construct):
         # mousediff = self.game.mouse_pos - self.scene.player.screen_pos
         # self.target_angle = atan2(mousediff.y, mousediff.x)
         if self.copy_timer.done and self.copies_made < 5:
-            spell = Rollout(self.scene, self.target_posdiff)
+            spell = Rollout(self.scene, self.target_posdiff, "")
             self.scene.add(spell)
             self.copies_made += 1
             spell.angle = self.angle + pi/3 * (self.copies_made)

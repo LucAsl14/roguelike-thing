@@ -5,8 +5,8 @@ from pygame import Surface
 
 from typing import TYPE_CHECKING
 class Waterball(Projectile):
-    def __init__(self, scene: MainScene, target_posdiff: Vec) -> None:
-        super().__init__(scene, target_posdiff, 5, 400, 1.5, 10, "water", 20)
+    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str) -> None:
+        super().__init__(scene, target_posdiff, 5, 400, 1.5, 10, "water", 20, origin)
         self.exploding = False
         self.exploding_timer = Timer(0.1)
 
@@ -21,21 +21,23 @@ class Waterball(Projectile):
                 # testing an exploding mechanic
                 self.hitbox.set_size_rad(200)
                 for construct in self.scene.constructs:
-                    if self.pos.distance_to(construct.pos) < self.rad + construct.size.magnitude() and \
-                       self.hitbox.is_colliding(construct.hitbox):
+                    if self.pos.distance_to(construct.pos) < self.rad + construct.size.magnitude() \
+                       and self.hitbox.is_colliding(construct.hitbox):
                         construct.take_damage(10)
                 for projectile in self.scene.projectiles:
-                    if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad and \
-                       projectile.element != self.element and self.hitbox.is_colliding(projectile.hitbox):
+                    if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad \
+                       and projectile.element != self.element and self.hitbox.is_colliding(projectile.hitbox):
                         projectile.take_damage(10)
-                for enemy in self.scene.enemies:
-                    if self.pos.distance_to(enemy.pos) < self.rad + enemy.size.magnitude() and \
-                       self.hitbox.is_colliding(enemy.hitbox):
-                        enemy.take_damage(10)
-                # self-damage. Remove this?
-                # if self.pos.distance_to(self.scene.player.pos) < self.rad + self.scene.player.size.magnitude() and \
-                #    self.hitbox.is_colliding(self.scene.player.hitbox):
-                #     self.scene.player.take_damage(10)
+                if self.origin != "enemy":
+                    for enemy in self.scene.enemies:
+                        if self.pos.distance_to(enemy.pos) < self.rad + enemy.size.magnitude() \
+                           and self.hitbox.is_colliding(enemy.hitbox):
+                            enemy.take_damage(10)
+                if self.origin != "player":
+                    player = self.scene.player
+                    if self.pos.distance_to(player.pos) < self.rad + player.size.magnitude() \
+                       and self.hitbox.is_colliding(player.hitbox):
+                        player.take_damage(10)
                 super().kill()
 
 

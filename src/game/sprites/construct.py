@@ -26,7 +26,7 @@ class Construct(Spell):
 
     def update_spell(self, dt: float) -> None:
         if len((entities := self.colliding_entities())) > 0:
-            self.collide(entities)
+            self.collide(entities, dt)
         if not self.endless and self.lifespan.done:
             self.kill()
             return
@@ -34,9 +34,12 @@ class Construct(Spell):
             self.kill()
         # if self.size == Vec(): Log.warn(f"This Construct ({self}) has no size and is likely causing lag")
 
-    def collide(self, entities: list[Entity]) -> None:
+    def collide(self, entities: list[Entity], dt: float) -> None:
         for entity in entities:
-            entity.vel = 100 * Vec((entity.pos - self.pos)).normalize()
+            normal = Vec((entity.pos - self.pos)).normalize()
+            entity.ext_acc += 5000 * normal * dt
+            entity.vel -= entity.vel.project(normal)
+            entity.vel *= 5e-9 ** dt
 
     def take_damage(self, dmg: int) -> int:
         """
@@ -55,14 +58,18 @@ class Construct(Spell):
 
     def colliding_entities(self) -> list[Entity]:
         entities = []
+        if self.pos.distance_to(self.scene.player.pos) > 1500: return entities
+        self_rad = (self.size.x + self.size.y) / 2
+
+        def is_close(other: Entity) -> bool:
+            other_rad = (other.size.x + other.size.y) / 2
+            return other.pos.distance_squared_to(self.pos) < (self_rad + other_rad) ** 2
         # the player
-        if self.scene.player.pos.distance_to(self.pos) < self.size.magnitude() + self.scene.player.size.magnitude() \
-        and self.hitbox.is_colliding(self.scene.player.hitbox):
+        if is_close(self.scene.player) and self.hitbox.is_colliding(self.scene.player.hitbox):
             entities.append(self.scene.player)
         # enemies
         for enemy in self.scene.enemies:
-         if enemy.pos.distance_to(self.pos) < self.size.magnitude() + enemy.size.magnitude() \
-         and self.hitbox.is_colliding(enemy.hitbox):
+         if is_close(enemy) and self.hitbox.is_colliding(enemy.hitbox):
             entities.append(enemy)
 
         return entities

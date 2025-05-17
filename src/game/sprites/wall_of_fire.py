@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .player import Player
 class WallOfFire(AreaSpell):
-    def __init__(self, scene: MainScene, target_posdiff: Vec, rad: int) -> None:
+    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str, rad: int) -> None:
         super().__init__(scene, target_posdiff, 9999, "fire", 15, rad, "GROUND")
         self.is_original = True
         self.wall_segments = 20
@@ -37,7 +37,7 @@ class WallOfFire(AreaSpell):
 
             # on first wall
             if self.wall_segments == 20:
-                spell = WallOfFire(self.scene, Vec(), self.rad)
+                spell = WallOfFire(self.scene, Vec(), "", self.rad)
                 self.scene.add(spell)
                 spell.pos = self.pos.copy()
                 spell.is_original = False
@@ -53,7 +53,7 @@ class WallOfFire(AreaSpell):
                 self.prev_pos += diff.normalize() * self.rad
                 diff = self.pos - self.prev_pos
                 temp_pos = self.pos - diff
-                spell = WallOfFire(self.scene, Vec(), self.rad)
+                spell = WallOfFire(self.scene, Vec(), "", self.rad)
                 self.scene.add(spell)
                 spell.pos = temp_pos
                 spell.is_original = False

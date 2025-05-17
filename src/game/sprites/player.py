@@ -13,7 +13,7 @@ class Player(Entity):
         # band-aid fix to scene not considered MainScene
         self.scene = scene
 
-        self.CONST_ACCEL = 3300
+        self.CONST_ACCEL = 3000
 
         # inventory
         self.inventory = Inventory(self.scene)

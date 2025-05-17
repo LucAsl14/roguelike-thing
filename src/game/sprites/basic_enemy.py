@@ -11,6 +11,6 @@ class BasicEnemy(Enemy):
 
     def update_attack(self, dt: float) -> None:
         if self.is_colliding_player() and self.damage_cooldown.done:
+            self.scene.player.ext_acc += 10000 * -Vec((self.pos - self.scene.player.pos)).normalize() * dt
             self.scene.player.take_damage(10)
-            self.vel = 100 * Vec((self.pos - self.scene.player.pos)).normalize()
             self.damage_cooldown.reset()

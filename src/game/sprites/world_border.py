@@ -7,7 +7,7 @@ class WorldBorder(Sprite):
         super().__init__(scene, "SKY")
 
         self.pos = Vec(0)
-        self.rad = 10000
+        self.rad = 3000
 
         self.scene = scene
         self.old_pos = self.pos
@@ -26,6 +26,11 @@ class WorldBorder(Sprite):
         self.rgba[1] = int( 50 - max(0, min(50, (distance_from_border - 500) // 10)))   # 50 to 0 (500 to 1000)
         self.rgba[2] = int(240 - max(0, min(240, (distance_from_border - 500) // 4)))   # 240 to 0 (500 to 1000)
         self.rgba[3] = int(155 + max(0, min(50, distance_from_border // 10)))           # from 155 to 205 (0 to 500)
+
+        if distance_from_border > 0:
+            player = self.scene.player
+            push_dir = atan2(player.pos.y - self.pos.y, player.pos.x - self.pos.x)
+            player.ext_acc += Vec(-1, 0).rotate(degrees(push_dir)) * distance_from_border * 50 * dt
 
         if self.scheduling and self.scheduling_timer.done:
             self.scheduling = False

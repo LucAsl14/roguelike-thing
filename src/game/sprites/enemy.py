@@ -13,7 +13,6 @@ class Enemy(Entity):
         self.update_movement(dt)
         self.update_attack(dt)
         self.update_position(dt)
-        self.collide_enemies()
         if self.hp <= 0:
             self.kill()
             return
@@ -36,12 +35,6 @@ class Enemy(Entity):
 
     def get_player_distance(self) -> float:
         return self.scene.player.pos.distance_to(self.pos)
-
-    def collide_enemies(self) -> None:
-        for enemy in self.scene.enemies:
-         if enemy != self and enemy.pos.distance_to(self.pos) < self.size.magnitude() + enemy.size.magnitude() \
-         and self.hitbox.is_colliding(enemy.hitbox):
-            enemy.vel = 100 * Vec((enemy.pos - self.pos)).normalize()
 
     def is_colliding_player(self) -> bool:
         if self.scene.player.pos.distance_to(self.pos) < self.size.magnitude() + self.scene.player.size.magnitude() \

@@ -37,12 +37,12 @@ class Gust(Spell):
         for projectile in self.scene.projectiles:
             if projectile.element != "air" and projectile.pos.distance_to(self.pos) < projectile.rad + self.size.magnitude() \
             and self.hitbox.is_colliding(projectile.hitbox):
-                change = (400 * 10 / projectile.rad) * Vec(1, 0).rotate(degrees(self.angle))
+                change = (800 * 10 / projectile.rad) * Vec(1, 0).rotate(degrees(self.angle))
                 projectile.external_acc += change
         for enemy in self.scene.enemies:
             if enemy.pos.distance_to(self.pos) < self.size.magnitude() + enemy.size.magnitude() \
             and self.hitbox.is_colliding(enemy.hitbox):
-                change = (400 * 70 / enemy.size.magnitude()) * Vec(1, 0).rotate(degrees(self.angle))
+                change = (800 * 70 / enemy.size.magnitude()) * Vec(1, 0).rotate(degrees(self.angle))
                 enemy.ext_acc += change
         self.scene.player.ext_acc = (-40 * self.push) * Vec(1, 0).rotate(degrees(self.angle))
         self.anim_timer.reset()

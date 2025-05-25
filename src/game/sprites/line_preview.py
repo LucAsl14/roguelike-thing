@@ -1,9 +1,9 @@
 from __future__ import annotations
 from src.core import *
 from .spell import Spell
-from .aiming_spell import AimingSpell
+from .spell_preview import SpellPreview
 
-class LineAiming(AimingSpell):
+class LinePreview(SpellPreview):
     def __init__(self, scene: MainScene, spell: Callable, cooldown: float, args: list) -> None:
         super().__init__(scene, spell, cooldown, args)
 

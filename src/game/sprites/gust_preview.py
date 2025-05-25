@@ -1,7 +1,7 @@
 from __future__ import annotations
 from src.core import *
-from .aiming_spell import AimingSpell
-class GustAiming(AimingSpell):
+from .spell_preview import SpellPreview
+class GustPreview(SpellPreview):
     def __init__(self, scene: MainScene, spell: Callable, cooldown: float, args: list) -> None:
         super().__init__(scene, spell, cooldown, args)
         self.size = args[0]

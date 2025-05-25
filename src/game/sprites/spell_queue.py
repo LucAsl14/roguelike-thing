@@ -10,10 +10,10 @@ from .mud import Mud
 from .whirlpool import Whirlpool
 from .rollout import Rollout
 from .wall_of_fire import WallOfFire
-from .line_aiming import LineAiming
-from .area_aiming import AreaAiming
-from .rect_aiming import RectAiming
-from .gust_aiming import GustAiming
+from .line_preview import LinePreview
+from .area_preview import AreaPreview
+from .rect_preview import RectPreview
+from .gust_preview import GustPreview
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, "HUD")
@@ -25,7 +25,7 @@ class SpellQueue(Sprite):
         self.spell_list = {
             "j": {
                 "aiming": {
-                    "type": LineAiming,
+                    "type": LinePreview,
                     "cooldown": 5,
                     "args": [],
                 },
@@ -33,7 +33,7 @@ class SpellQueue(Sprite):
             },
             "k": {
                 "aiming": {
-                        "type": RectAiming,
+                        "type": RectPreview,
                         "cooldown": 5,
                         "args": [Vec(50, 40)],
                     },
@@ -41,7 +41,7 @@ class SpellQueue(Sprite):
             },
             "i": {
                 "aiming": {
-                        "type": GustAiming,
+                        "type": GustPreview,
                         "cooldown": 5,
                         "args": [Vec(160, 380), 50],
                     },
@@ -49,7 +49,7 @@ class SpellQueue(Sprite):
             },
             "l":  {
                 "aiming": {
-                        "type": LineAiming,
+                        "type": LinePreview,
                         "cooldown": 5,
                         "args": [],
                     },
@@ -57,7 +57,7 @@ class SpellQueue(Sprite):
             },
             "kl": {
                 "aiming": {
-                        "type": LineAiming,
+                        "type": LinePreview,
                         "cooldown": 5,
                         "args": [],
                     },
@@ -65,7 +65,7 @@ class SpellQueue(Sprite):
             },
             "jl": {
                 "aiming": {
-                        "type": AreaAiming,
+                        "type": AreaPreview,
                         "cooldown": 5,
                         "args": [250],
                     },
@@ -73,7 +73,7 @@ class SpellQueue(Sprite):
             },
             "jk": {
                 "aiming": {
-                        "type": AreaAiming,
+                        "type": AreaPreview,
                         "cooldown": 5,
                         "args": [125],
                     },
@@ -81,7 +81,7 @@ class SpellQueue(Sprite):
             },
             "ij": {
                 "aiming": {
-                        "type": AreaAiming,
+                        "type": AreaPreview,
                         "cooldown": 5,
                         "args": [145],
                     },
@@ -89,7 +89,7 @@ class SpellQueue(Sprite):
             },
             "ik": {
                 "aiming": {
-                        "type": LineAiming,
+                        "type": LinePreview,
                         "cooldown": 5,
                         "args": [],
                     },
@@ -97,7 +97,7 @@ class SpellQueue(Sprite):
             },
             "il": {
                 "aiming": {
-                        "type": AreaAiming,
+                        "type": AreaPreview,
                         "cooldown": 5,
                         "args": [20],
                     },

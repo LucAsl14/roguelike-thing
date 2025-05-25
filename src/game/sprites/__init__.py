@@ -18,11 +18,11 @@ from .rollout import Rollout
 from .camera import Camera
 from .wall_of_fire import WallOfFire
 from .world_border import WorldBorder
-from .aiming_spell import AimingSpell
-from .line_aiming import LineAiming
-from .area_aiming import AreaAiming
-from .rect_aiming import RectAiming
-from .gust_aiming import GustAiming
+from .spell_preview import SpellPreview
+from .line_preview import LinePreview
+from .area_preview import AreaPreview
+from .rect_preview import RectPreview
+from .gust_preview import GustPreview
 from .enemy import Enemy
 from .entity import Entity
 from .basic_enemy import BasicEnemy

@@ -1,8 +1,8 @@
 from __future__ import annotations
 from src.core import *
-from .aiming_spell import AimingSpell
+from .spell_preview import SpellPreview
 
-class AreaAiming(AimingSpell):
+class AreaPreview(SpellPreview):
     def __init__(self, scene: MainScene, spell: Callable, cooldown: float, args: list) -> None:
         super().__init__(scene, spell, cooldown, args)
         self.rad = args[0] # fetching radius (probably the wrong way)

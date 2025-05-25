@@ -1,7 +1,7 @@
 from __future__ import annotations
 from src.core import *
 
-class AimingSpell(Sprite):
+class SpellPreview(Sprite):
     def __init__(self, scene: MainScene, spell: Callable, cooldown: float, args: list) -> None:
         super().__init__(scene, "DEFAULT")
         self.scene = scene

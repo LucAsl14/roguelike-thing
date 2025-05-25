@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .enemy import Enemy
     from .player import Player
+    from .entity import Entity
 class Projectile(Spell):
     def __init__(self,
                  scene: MainScene,
@@ -44,6 +45,30 @@ class Projectile(Spell):
     def update_charge(self, dt: float) -> None:
         pass
 
+    def get_nearby_entities(self) -> list[Entity]:
+        cx, cy = self.scene.spacial_hash_key(self.pos)
+        nearby: list[Entity] = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                nearby.extend(self.scene.collideable_buckets.get(Vec(cx+dx, cy+dy), {}).get("entity", []))
+        return nearby
+
+    def get_nearby_constructs(self) -> list[Construct]:
+        cx, cy = self.scene.spacial_hash_key(self.pos)
+        nearby: list[Construct] = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                nearby.extend(self.scene.collideable_buckets.get(Vec(cx+dx, cy+dy), {}).get("construct", []))
+        return nearby
+
+    def get_nearby_projectiles(self) -> list[Projectile]:
+        cx, cy = self.scene.spacial_hash_key(self.pos)
+        nearby: list[Projectile] = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                nearby.extend(self.scene.collideable_buckets.get(Vec(cx+dx, cy+dy), {}).get("projectile", []))
+        return nearby
+
     def update_spell(self, dt: float) -> None:
         self.vel += self.external_acc
         self.pos += self.vel * dt
@@ -55,20 +80,22 @@ class Projectile(Spell):
             self.kill()
             return
         # collision with anything collidable
-        for construct in self.scene.constructs:
+        for construct in self.get_nearby_constructs():
             if self.pos.distance_to(construct.pos) < self.rad + construct.size.magnitude() \
                and self.hitbox.is_colliding(construct.hitbox):
                 self.collide(construct)
-        for projectile in self.scene.projectiles:
+        for projectile in self.get_nearby_projectiles():
             if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad \
                and projectile.element not in self.ignore_elem \
                and projectile != self and self.hitbox.is_colliding(projectile.hitbox):
                 self.collide(projectile)
+        from .enemy import Enemy
         if self.origin != "enemy":
-            for enemy in self.scene.enemies:
-                if self.pos.distance_to(enemy.pos) < self.rad + enemy.size.magnitude() \
-                   and self.hitbox.is_colliding(enemy.hitbox):
-                    self.collide(enemy)
+            for enemy in self.get_nearby_entities():
+                if isinstance(enemy, Enemy):
+                    if self.pos.distance_to(enemy.pos) < self.rad + enemy.size.magnitude() \
+                    and self.hitbox.is_colliding(enemy.hitbox):
+                        self.collide(enemy)
         if self.origin != "player":
             player = self.scene.player
             if player.pos.distance_to(self.pos) < self.rad + player.size.magnitude() \

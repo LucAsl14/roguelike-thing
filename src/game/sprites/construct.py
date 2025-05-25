@@ -56,6 +56,15 @@ class Construct(Spell):
             self.scene.constructs.remove(self)
         super().kill()
 
+    def get_nearby_entities(self) -> list[Entity]:
+        cx, cy = self.scene.spacial_hash_key(self.pos)
+        buckets = self.scene.collideable_buckets
+        nearby: list[Entity] = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                nearby.extend(buckets.get(Vec(cx+dx, cy+dy), {}).get("entity", []))
+        return nearby
+
     def colliding_entities(self) -> list[Entity]:
         entities = []
         if self.pos.distance_to(self.scene.player.pos) > 1500: return entities
@@ -64,11 +73,11 @@ class Construct(Spell):
         def is_close(other: Entity) -> bool:
             other_rad = (other.size.x + other.size.y) / 2
             return other.pos.distance_squared_to(self.pos) < (self_rad + other_rad) ** 2
-        # the player
-        if is_close(self.scene.player) and self.hitbox.is_colliding(self.scene.player.hitbox):
-            entities.append(self.scene.player)
+        # # the player
+        # if is_close(self.scene.player) and self.hitbox.is_colliding(self.scene.player.hitbox):
+        #     entities.append(self.scene.player)
         # enemies
-        for enemy in self.scene.enemies:
+        for enemy in self.get_nearby_entities():
          if is_close(enemy) and self.hitbox.is_colliding(enemy.hitbox):
             entities.append(enemy)
 

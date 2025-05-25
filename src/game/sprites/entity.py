@@ -49,18 +49,31 @@ class Entity(Sprite):
     def draw(self, target: pygame.Surface) -> None:
         target.blit(self.image, self.screen_pos - Vec(self.image.get_rect().size) / 2)
 
+    def get_nearby_entities(self) -> list[Entity]:
+        cx, cy = self.scene.spacial_hash_key(self.pos)
+        nearby: list[Entity] = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                nearby.extend(self.scene.collideable_buckets.get(Vec(cx+dx, cy+dy), {}).get("entity", []))
+        return nearby
+
     def colliding_entities(self) -> list[Entity]:
         entities = []
-        # the player
-        if self != self.scene.player \
-           and self.scene.player.pos.distance_to(self.pos) < self.size.magnitude() + self.scene.player.size.magnitude() \
-           and self.hitbox.is_colliding(self.scene.player.hitbox):
-            entities.append(self.scene.player)
+        # # the player
+        # if self != self.scene.player \
+        #    and self.scene.player.pos.distance_to(self.pos) < self.size.magnitude() + self.scene.player.size.magnitude() \
+        #    and self.hitbox.is_colliding(self.scene.player.hitbox):
+        #     entities.append(self.scene.player)
+
+        self_rad = (self.size.x + self.size.y) / 2
+
+        def is_close(other: Entity) -> bool:
+            other_rad = (other.size.x + other.size.y) / 2
+            return other.pos.distance_squared_to(self.pos) < (self_rad + other_rad) ** 2
+
         # enemies
-        for enemy in self.scene.enemies:
-            if self != enemy \
-               and enemy.pos.distance_to(self.pos) < self.size.magnitude() + enemy.size.magnitude() \
-               and self.hitbox.is_colliding(enemy.hitbox):
-                entities.append(enemy)
+        for entity in self.get_nearby_entities():
+            if self != entity and is_close(entity) and self.hitbox.is_colliding(entity.hitbox):
+                entities.append(entity)
 
         return entities

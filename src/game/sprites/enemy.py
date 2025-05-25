@@ -36,8 +36,14 @@ class Enemy(Entity):
     def get_player_distance(self) -> float:
         return self.scene.player.pos.distance_to(self.pos)
 
+    def is_near_player(self) -> bool:
+        playerhash = self.scene.spacial_hash_key(self.scene.player.pos)
+        selfhash = self.scene.spacial_hash_key(self.pos)
+        if abs(playerhash.x - selfhash.x) <= 1 and abs(playerhash.y - selfhash.y) <= 1:
+            return True
+        return False
+
     def is_colliding_player(self) -> bool:
-        if self.scene.player.pos.distance_to(self.pos) < self.size.magnitude() + self.scene.player.size.magnitude() \
-        and self.hitbox.is_colliding(self.scene.player.hitbox):
+        if self.is_near_player() and self.hitbox.is_colliding(self.scene.player.hitbox):
             return True
         return False

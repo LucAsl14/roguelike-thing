@@ -6,7 +6,7 @@ from .spell import Spell
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .enemy import Enemy
+    from ..enemy import Enemy
 class Gust(Spell):
     def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str, size: Vec, push: float, angle: float, hitbox: Hitbox) -> None:
         super().__init__(scene, 0, "air")

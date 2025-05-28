@@ -1,7 +1,7 @@
 from __future__ import annotations
 from src.core import *
 from .enemy import Enemy
-from .waterball import Waterball
+from .spells import Waterball
 
 class WaterballEnemy(Enemy):
     def __init__(self, scene: MainScene, pos: Vec) -> None:

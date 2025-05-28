@@ -3,7 +3,7 @@ from __future__ import annotations
 from pygame import Surface
 from src.core import *
 from .spell import Spell
-from .entity import Entity
+from ..entity import Entity
 class Construct(Spell):
     def __init__(self, scene: MainScene, charge_time: float, lifespan: float, hp: int) -> None:
         """

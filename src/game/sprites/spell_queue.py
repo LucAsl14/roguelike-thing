@@ -1,19 +1,16 @@
 from __future__ import annotations
 from src.core import *
-from .fireball import Fireball
-from .earth_block import EarthBlock
-from .waterball import Waterball
-from .gust import Gust
-from .stone_cannon import StoneCannon
-from .steam import Steam
-from .mud import Mud
-from .whirlpool import Whirlpool
-from .rollout import Rollout
-from .wall_of_fire import WallOfFire
-from .line_preview import LinePreview
-from .area_preview import AreaPreview
-from .rect_preview import RectPreview
-from .gust_preview import GustPreview
+from .spells import Fireball
+from .spells import EarthBlock
+from .spells import Waterball
+from .spells import Gust
+from .spells import StoneCannon
+from .spells import Steam
+from .spells import Mud
+from .spells import Whirlpool
+from .spells import Rollout
+from .spells import WallOfFire
+from .spell_previews import LinePreview, AreaPreview, RectPreview, GustPreview
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, "HUD")
@@ -33,75 +30,75 @@ class SpellQueue(Sprite):
             },
             "k": {
                 "aiming": {
-                        "type": RectPreview,
-                        "cooldown": 5,
-                        "args": [Vec(50, 40)],
-                    },
-                    "spell": EarthBlock
+                    "type": RectPreview,
+                    "cooldown": 5,
+                    "args": [Vec(50, 40)],
+                },
+                "spell": EarthBlock
             },
             "i": {
                 "aiming": {
-                        "type": GustPreview,
-                        "cooldown": 5,
-                        "args": [Vec(160, 380), 50],
-                    },
-                    "spell": Gust
+                    "type": GustPreview,
+                    "cooldown": 5,
+                    "args": [Vec(160, 380), 50],
+                },
+                "spell": Gust
             },
             "l":  {
                 "aiming": {
-                        "type": LinePreview,
-                        "cooldown": 5,
-                        "args": [],
-                    },
-                    "spell": Fireball
+                    "type": LinePreview,
+                    "cooldown": 5,
+                    "args": [],
+                },
+                "spell": Fireball
             },
             "kl": {
                 "aiming": {
-                        "type": LinePreview,
-                        "cooldown": 5,
-                        "args": [],
-                    },
-                    "spell": StoneCannon
+                    "type": LinePreview,
+                    "cooldown": 5,
+                    "args": [],
+                },
+                "spell": StoneCannon
             },
             "jl": {
                 "aiming": {
-                        "type": AreaPreview,
-                        "cooldown": 5,
-                        "args": [250],
-                    },
-                    "spell": Steam
+                    "type": AreaPreview,
+                    "cooldown": 5,
+                    "args": [250],
+                },
+                "spell": Steam
             },
             "jk": {
                 "aiming": {
-                        "type": AreaPreview,
-                        "cooldown": 5,
-                        "args": [125],
-                    },
-                    "spell": Mud
+                    "type": AreaPreview,
+                    "cooldown": 5,
+                    "args": [125],
+                },
+                "spell": Mud
             },
             "ij": {
                 "aiming": {
-                        "type": AreaPreview,
-                        "cooldown": 5,
-                        "args": [145],
-                    },
-                    "spell": Whirlpool
+                    "type": AreaPreview,
+                    "cooldown": 5,
+                    "args": [145],
+                },
+                "spell": Whirlpool
             },
             "ik": {
                 "aiming": {
-                        "type": LinePreview,
-                        "cooldown": 5,
-                        "args": [],
-                    },
-                    "spell": Rollout
+                    "type": LinePreview,
+                    "cooldown": 5,
+                    "args": [],
+                },
+                "spell": Rollout
             },
             "il": {
                 "aiming": {
-                        "type": AreaPreview,
-                        "cooldown": 5,
-                        "args": [20],
-                    },
-                    "spell": WallOfFire
+                    "type": AreaPreview,
+                    "cooldown": 5,
+                    "args": [20],
+                },
+                "spell": WallOfFire
             },
         }
 

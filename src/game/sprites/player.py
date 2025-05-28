@@ -2,7 +2,7 @@ from __future__ import annotations
 from src.core import *
 
 from .inventory import Inventory
-from .test_decoration import TestDecoration
+from .spells import TestDecoration
 from .basic_enemy import BasicEnemy
 from .waterball_enemy import WaterballEnemy
 from .spell_queue import SpellQueue

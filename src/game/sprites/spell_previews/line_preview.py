@@ -1,6 +1,6 @@
 from __future__ import annotations
 from src.core import *
-from .spell import Spell
+from src.game.sprites.spells import Spell
 from .spell_preview import SpellPreview
 
 class LinePreview(SpellPreview):

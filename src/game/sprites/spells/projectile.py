@@ -7,9 +7,9 @@ from .construct import Construct
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .enemy import Enemy
-    from .player import Player
-    from .entity import Entity
+    from ..enemy import Enemy
+    from ..player import Player
+    from ..entity import Entity
 class Projectile(Spell):
     def __init__(self,
                  scene: MainScene,
@@ -89,7 +89,7 @@ class Projectile(Spell):
                and projectile.element not in self.ignore_elem \
                and projectile != self and self.hitbox.is_colliding(projectile.hitbox):
                 self.collide(projectile)
-        from .enemy import Enemy
+        from ..enemy import Enemy
         if self.origin != "enemy":
             for enemy in self.get_nearby_entities():
                 if isinstance(enemy, Enemy):

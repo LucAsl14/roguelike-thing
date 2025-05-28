@@ -6,7 +6,7 @@ from .construct import Construct
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .entity import Entity
+    from ..entity import Entity
 class Rollout(Construct):
     def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str) -> None:
         super().__init__(scene, 2, 4, 20)

@@ -1,28 +1,13 @@
 from .player import Player
-from .test_decoration import TestDecoration
 from .inventory import Inventory
 from .spell_queue import SpellQueue
-from .spell import Spell
-from .projectile import Projectile
-from .fireball import Fireball
-from .construct import Construct
-from .earth_block import EarthBlock
-from .waterball import Waterball
-from .gust import Gust
-from .stone_cannon import StoneCannon
-from .area_spell import AreaSpell
-from .steam import Steam
-from .mud import Mud
-from .whirlpool import Whirlpool
-from .rollout import Rollout
+from .spells import Spell, Projectile, AreaSpell, Construct
+from .spells import Fireball, Waterball, Gust, StoneCannon
+from .spells import Steam, Mud, Whirlpool, WallOfFire
+from .spells import EarthBlock, TestDecoration, Rollout
 from .camera import Camera
-from .wall_of_fire import WallOfFire
 from .world_border import WorldBorder
-from .spell_preview import SpellPreview
-from .line_preview import LinePreview
-from .area_preview import AreaPreview
-from .rect_preview import RectPreview
-from .gust_preview import GustPreview
+from .spell_previews import SpellPreview, LinePreview, AreaPreview, RectPreview, GustPreview
 from .enemy import Enemy
 from .entity import Entity
 from .basic_enemy import BasicEnemy

@@ -3,6 +3,7 @@ from __future__ import annotations
 from pygame import Surface
 from src.core import *
 from .construct import Construct
+
 class TestDecoration(Construct):
     def __init__(self, scene: MainScene, pos: Vec) -> None:
         super().__init__(scene, -1, -1, 10 + choice(range(0, 6)))

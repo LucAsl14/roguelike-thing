@@ -6,7 +6,7 @@ from pygame import Surface
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .player import Player
+    from ..player import Player
 class WallOfFire(AreaSpell):
     def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str, rad: int) -> None:
         super().__init__(scene, target_posdiff, 9999, "fire", 15, rad, "GROUND")

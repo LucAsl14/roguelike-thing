@@ -7,8 +7,8 @@ from .projectile import Projectile
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .enemy import Enemy
-    from .player import Player
+    from ..enemy import Enemy
+    from ..player import Player
 class Fireball(Projectile):
     def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str) -> None:
         super().__init__(scene, target_posdiff, 10, 800, 0.5, 10, "fire", 10, origin)

@@ -7,7 +7,7 @@ from .projectile import Projectile
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .enemy import Enemy
+    from ..enemy import Enemy
 class StoneCannon(Projectile):
     def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str) -> None:
         super().__init__(scene, target_posdiff, 10, 700, 0, 5, "earth", 8, origin)

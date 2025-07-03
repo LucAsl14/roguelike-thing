@@ -13,4 +13,5 @@
     "files.exclude": {
         "**/__pycache__": true
     },
+    "files.autoSave": "onFocusChange"
 }

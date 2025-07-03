@@ -11,5 +11,6 @@ from .spell_previews import SpellPreview, LinePreview, AreaPreview, RectPreview,
 from .enemy import Enemy
 from .entity import Entity
 from .basic_enemy import BasicEnemy
-from .terrain_background import TerrainBackground
+# from .terrain_background import TerrainBackground
 from .waterball_enemy import WaterballEnemy
+from .spawnpoint import Spawnpoint

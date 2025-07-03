@@ -27,6 +27,8 @@ class MainScene(Scene):
         self.collideable_buckets = defaultdict(lambda: defaultdict(list))
         self.BUCKET_GRID_SIZE = 64
 
+        for _ in range(30):
+            self.add(Spawnpoint(self, Vec(uniform(-1000, 1000), uniform(-1000, 1000))))
         # self.add(TerrainBackground(self))
 
     def predraw(self, screen: pygame.Surface) -> None:

@@ -1,3 +1,5 @@
+# my numpy is broken again
+"""
 from __future__ import annotations
 from src.core import *
 import numpy as np
@@ -113,3 +115,4 @@ class TerrainBackground(Sprite):
         final_rgb = final_rgb.swapaxes(0, 1)
 
         pygame.surfarray.blit_array(target, final_rgb)
+"""

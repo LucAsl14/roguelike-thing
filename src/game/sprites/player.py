@@ -7,6 +7,7 @@ from .basic_enemy import BasicEnemy
 from .waterball_enemy import WaterballEnemy
 from .spell_queue import SpellQueue
 from .entity import Entity
+from .spawnpoint import Spawnpoint
 class Player(Entity):
     def __init__(self, scene: MainScene) -> None:
         super().__init__(scene, 0, Image.get("player"), Vec())
@@ -27,6 +28,10 @@ class Player(Entity):
         # spell queue
         self.spell_queue = SpellQueue(self.scene)
         self.scene.add(self.spell_queue)
+
+        # spawnpoints
+        self.collected_spawns: list[Spawnpoint] = []
+        self.current_spawn: Optional[Spawnpoint] = None
 
     def update(self, dt: float) -> None:
         self.update_keys(dt)
@@ -108,3 +113,10 @@ class Player(Entity):
     def update_surroundings(self) -> None:
         # something something about generating decorations im too lazy
         pass
+
+    def update_spawnpoint(self, spawn: Spawnpoint):
+        if spawn not in self.collected_spawns:
+            self.collected_spawns.append(spawn)
+        if self.current_spawn != None:
+            self.current_spawn.selected = False
+        self.current_spawn = spawn

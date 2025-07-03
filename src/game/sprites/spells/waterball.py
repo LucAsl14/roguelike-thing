@@ -4,8 +4,8 @@ from .projectile import Projectile
 from pygame import Surface
 
 from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from ..enemy import Enemy
+# if TYPE_CHECKING:
+from ..enemy import Enemy
 class Waterball(Projectile):
     def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str) -> None:
         super().__init__(scene, target_posdiff, 5, 400, 1.5, 10, "water", 20, origin)

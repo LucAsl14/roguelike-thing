@@ -8,9 +8,10 @@ from .waterball_enemy import WaterballEnemy
 from .spell_queue import SpellQueue
 from .entity import Entity
 from .spawnpoint import Spawnpoint
+from .death_screen import DeathScreen
 class Player(Entity):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 0, Image.get("player"), Vec())
+        super().__init__(scene, 100, Image.get("player"), Vec())
         # band-aid fix to scene not considered MainScene
         self.scene = scene
 
@@ -37,6 +38,10 @@ class Player(Entity):
         self.update_keys(dt)
         self.update_position(dt)
         self.update_surroundings()
+        if self.hp <= 0:
+            self.hp = 100
+            self.kill()
+            self.open_death_screen()
 
     def draw(self, target: pygame.Surface) -> None:
         target.blit(Font.get("font18").render(str(self.hp), False, (80, 80, 80)), (0, 0))
@@ -88,18 +93,20 @@ class Player(Entity):
                     if removed != "" and removed != " ":
                         self.inventory.add(removed)
 
-        # press a button to make decorations lol (NOT a feature)
-        if self.keys[K_q]:
-            if uniform(0, 10) < 3:
-                self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
-            if uniform(0, 10) < 1:
-                self.scene.add(BasicEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
-            if uniform(0, 100) < 4:
-                self.scene.add(WaterballEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
         if Debug.on():
+            # press a button to make decorations lol (NOT a feature)
+            if self.keys[K_q]:
+                if uniform(0, 10) < 3:
+                    self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
+                if uniform(0, 10) < 1:
+                    self.scene.add(BasicEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
+                if uniform(0, 100) < 4:
+                    self.scene.add(WaterballEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
             # debug key
             if self.keys[K_p]:
                 Log.debug(self.scene.projectiles)
+            if self.keys[K_o]:
+                pass
             # world border keys
             if self.keys[K_r]:
                 self.scene.border.schedule_move_to(Vec(0), 1000, 1, 10)
@@ -114,7 +121,18 @@ class Player(Entity):
         # something something about generating decorations im too lazy
         pass
 
-    def update_spawnpoint(self, spawn: Spawnpoint):
+    def kill(self):
+        if self.current_spawn is not None:
+            self.pos = self.current_spawn.pos.copy()
+        else:
+            self.pos = Vec(0, 0)
+        self.vel = Vec(0, 0)
+        self.acc = Vec(0, 0)
+
+    def open_death_screen(self):
+        self.scene.add(DeathScreen(self.scene))
+
+    def change_spawnpoint(self, spawn: Spawnpoint):
         if spawn not in self.collected_spawns:
             self.collected_spawns.append(spawn)
         if self.current_spawn != None:

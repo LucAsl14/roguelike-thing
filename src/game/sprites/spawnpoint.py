@@ -40,7 +40,7 @@ class Spawnpoint(Sprite): # maybe also act as tp points?
             self.collected = True
             if not self.selected:
                 self.selected = True
-                self.scene.player.update_spawnpoint(self)
+                self.scene.player.change_spawnpoint(self)
                 # Log.debug(f"Spawnpoint at {self.pos} collected by player at {self.scene.player.pos}")
 
 

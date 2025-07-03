@@ -14,3 +14,4 @@ from .basic_enemy import BasicEnemy
 # from .terrain_background import TerrainBackground
 from .waterball_enemy import WaterballEnemy
 from .spawnpoint import Spawnpoint
+from .death_screen import DeathScreen

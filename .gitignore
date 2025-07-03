@@ -4,4 +4,3 @@ __pycache__/
 /debug/
 /.venv/
 /debug.toml
-/.vscode/settings.json

@@ -15,3 +15,5 @@ from .basic_enemy import BasicEnemy
 from .waterball_enemy import WaterballEnemy
 from .spawnpoint import Spawnpoint
 from .death_screen import DeathScreen
+from .city import City
+from .road import Road

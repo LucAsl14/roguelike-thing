@@ -27,8 +27,21 @@ class MainScene(Scene):
         self.collideable_buckets = defaultdict(lambda: defaultdict(list))
         self.BUCKET_GRID_SIZE = 64
 
+        #city and road testing
+        self.cities: list[City] = []
+        self.cities.append(City(self, Vec()))
+        for _ in range(100): # maybe check that the cities are not too close to each other
+            self.cities.append(City(self, Vec(uniform(-10000, 10000), uniform(-10000, 10000))))
+
+        for city in self.cities:
+            self.add(city)
+            for other_city in self.cities:
+                if city != other_city and city.pos.distance_to(other_city.pos) < 2000:
+                    self.add(Road(self, city, other_city))
+
+        # spawnpoint testing
         for _ in range(30):
-            self.add(Spawnpoint(self, Vec(uniform(-1000, 1000), uniform(-1000, 1000))))
+            self.add(Spawnpoint(self, Vec(uniform(-5000, 5000), uniform(-5000, 5000))))
         # self.add(TerrainBackground(self))
 
     def predraw(self, screen: pygame.Surface) -> None:

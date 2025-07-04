@@ -5,6 +5,7 @@ def init_resources() -> None:
     Image("player", "player.png", scale=1)
     Image("spawnpoint", "spawnpoint.png", scale=1)
     Image("death_screen", "death_screen.png", scale=1)
+    Image("city", "city.png", scale=1)
 
     VertShader("default", "default.vert")
     FragShader("default", "default.frag")

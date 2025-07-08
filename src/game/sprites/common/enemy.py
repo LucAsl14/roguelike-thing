@@ -2,6 +2,7 @@ from __future__ import annotations
 from src.core import *
 from .entity import Entity
 from abc import abstractmethod
+
 class Enemy(Entity):
     def __init__(self, scene: MainScene, hp: int, pos: Vec) -> None:
         super().__init__(scene, hp, pygame.transform.rotate(Image.get("test"), 180), pos)

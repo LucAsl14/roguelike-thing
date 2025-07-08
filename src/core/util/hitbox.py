@@ -1,52 +1,174 @@
+from __future__ import annotations
 from .vector import Vec
-from typing import List, Self
+from typing import List
 from math import radians, cos, sin, pi
+from abc import ABC as AbstractClass, abstractmethod
 
-class Hitbox():
+class Hitbox(AbstractClass):
+    def __init__(self, center: Vec, size: Vec) -> None:
+        self.center = center
+        self.size = size
+        self.rotation = 0
+
+    def set_position(self, center: Vec) -> None:
+        """Set the center of the hitbox to a new position."""
+        self.center = center
+
+    def set_rotation(self, angle: float) -> None:
+        self.rotation = angle
+        self.apply_rotation(angle)
+
+    def apply_rotation(self, angle: float) -> None:
+        # No default implementation
+        pass
+
+    @abstractmethod
+    def expand(self, factor: float) -> None:
+        """Expand the size of the hitbox by a factor."""
+        pass
+
+    @abstractmethod
+    def is_colliding(self, other: Hitbox) -> bool:
+        """Check if this hitbox is colliding with another hitbox."""
+        pass
+
+class SimpleCircleHitbox(Hitbox):
+    # Forces all other hitboxes to performance approx. circle-circle collision
+    def __init__(self, center: Vec, rad: int) -> None:
+        super().__init__(center, Vec(rad * 2, rad * 2))
+        self.radius = rad
+
+    def expand(self, factor: float) -> None:
+        self.radius *= factor
+        self.size = Vec(self.radius * 2, self.radius * 2)
+
+    def is_colliding(self, other: Hitbox) -> bool:
+        """Approximate circle-circle collision detection regardless of the type
+        of the other Hitbox."""
+        if isinstance(other, (SimpleCircleHitbox, CircleHitbox)):
+            dist = self.center.distance_to(other.center)
+            return dist < self.radius + other.radius
+        elif isinstance(other, (RectHitbox, PolygonalHitbox)):
+            dist = self.center.distance_to(other.center)
+            return dist < self.radius + (other.size.x + other.size.y) / 2
+        else:
+            raise TypeError(f"Uhhhhh... How did we get here?")
+
+class CircleHitbox(Hitbox):
+    # Actually performs proper circle-anything collision
+    def __init__(self, center: Vec, rad: int) -> None:
+        super().__init__(center, Vec(rad * 2, rad * 2))
+        self.radius = rad
+
+    def expand(self, factor: float) -> None:
+        self.radius *= factor
+        self.size = Vec(self.radius * 2, self.radius * 2)
+
+    def is_colliding(self, other: Hitbox) -> bool:
+        if isinstance(other, (SimpleCircleHitbox, CircleHitbox)):
+            dist = self.center.distance_to(other.center)
+            return dist < self.radius + other.radius
+        elif isinstance(other, RectHitbox):
+            return self._is_colliding_with_rect(other)
+        elif isinstance(other, PolygonalHitbox):
+            return self._is_colliding_with_polygon(other)
+        else:
+            raise TypeError(f"Uhhhhh... How did we get here?")
+
+    def _is_colliding_with_rect(self, other: RectHitbox) -> bool:
+        return False # TODO: Implement accurate circle-rect collision
+
+    def _is_colliding_with_polygon(self, other: PolygonalHitbox) -> bool:
+        return False # TODO: Implement accurate circle-polygon collision
+
+class RectHitbox(Hitbox):
+    def __init__(self, center: Vec, width: float, height: float) -> None:
+        super().__init__(center, Vec(width, height))
+        self.left = center.x - width / 2
+        self.top = center.y - height / 2
+        self.right = center.x + width / 2
+        self.bottom = center.y + height / 2
+
+    def expand(self, factor: float) -> None:
+        self.width *= factor
+        self.height *= factor
+        self.size = Vec(self.width, self.height)
+        self.left = self.center.x - self.width / 2
+        self.top = self.center.y - self.height / 2
+        self.right = self.center.x + self.width / 2
+        self.bottom = self.center.y + self.height / 2
+
+    def is_colliding(self, other: Hitbox) -> bool:
+        if isinstance(other, SimpleCircleHitbox):
+            return other.is_colliding(self)
+        elif isinstance(other, CircleHitbox):
+            return other._is_colliding_with_rect(self)
+        elif isinstance(other, RectHitbox):
+            return self._is_colliding_with_rect(other)
+        elif isinstance(other, PolygonalHitbox):
+            return self._is_colliding_with_polygon(other)
+        else:
+            raise TypeError(f"Uhhhhh... How did we get here?")
+
+    def _is_colliding_with_circle(self, other: CircleHitbox) -> bool:
+        return False # TODO: Implement accurate rect-circle collision
+
+    def _is_colliding_with_rect(self, other: RectHitbox) -> bool:
+        return not (self.left > other.right or self.right < other.left or
+                    self.top > other.bottom or self.bottom < other.top)
+
+    def _is_colliding_with_polygon(self, other: PolygonalHitbox) -> bool:
+        poly = PolygonalHitbox.from_rect(self.center, self.width, self.height)
+        return other.is_colliding(poly)
+
+class PolygonalHitbox(Hitbox):
     """
     A polygonal shape that detects collisions with other polygonal shapes
     """
     # hmm this description is kinda bad
 
+    @classmethod
+    def from_rect(cls, center: Vec, dx: float, dy: float) -> Hitbox:
+        """
+        Creates a Hitbox from a rectangle with the given center and size.
+        The rectangle is centered at the given center point.
+        """
+        return cls(center, [
+            Vec(-dx/2, -dy/2),
+            Vec( dx/2, -dy/2),
+            Vec( dx/2,  dy/2),
+            Vec(-dx/2,  dy/2),
+        ])
+
+    @classmethod
+    def from_circle(cls, center: Vec, rad: float) -> Hitbox:
+        """
+        Creates a Hitbox from a circle with the given center and radius.
+        The circle is centered at the given center point.
+        """
+        points = []
+        for i in range(6):
+            points.append(Vec(rad * cos(2 * pi * i / 6), rad * sin(2 * pi * i / 6)))
+        return cls(center, points)
+
     def __init__(self, center: Vec, vertices: List[Vec]) -> None:
+        super().__init__(center, Vec(
+            max((abs(v.x) for v in vertices), default=0) * 2,
+            max((abs(v.y) for v in vertices), default=0) * 2
+        ))
         # vertices in this case should be distance from 0 i think?
         self.center = center
         self.original_vertices = vertices
         self.vertices = vertices
         self.angle_rad = 0
 
-    def set_size_rect(self, dx: float, dy: float) -> None:
-        self.original_vertices = [
-            Vec(-dx/2, -dy/2),
-            Vec( dx/2, -dy/2),
-            Vec( dx/2,  dy/2),
-            Vec(-dx/2,  dy/2),
-        ]
-        self.vertices = self.original_vertices
-
-    def set_size_rad(self, rad: float) -> None:
-        points = []
-        for i in range(6):
-            points.append(Vec(rad * cos(2 * pi * i / 6), rad * sin(2 * pi * i / 6)))
-        self.original_vertices = points
-        self.vertices = points
-
-    def set_rotation(self, angle: float, degrees = True) -> None:
-        if degrees:
-            self.angle_rad = -radians(angle)
-        else:
-            self.angle_rad = angle
+    def apply_rotation(self, angle: float) -> None:
+        self.angle_rad = radians(angle)
         self.__update_rotation()
 
-    def rotate(self, angle: float, degrees = True) -> None:
-        if degrees:
-            self.angle_rad -= radians(angle)
-        else:
-            self.angle_rad -= angle
-        self.__update_rotation()
-
-    def set_position(self, new_center: Vec) -> None:
-        self.center = new_center
+    def rotate(self, angle: float) -> None:
+        self.angle += angle
+        self.set_rotation(self.angle)
 
     def translate(self, translation: Vec) -> None:
         """ This does not move the center """
@@ -57,15 +179,14 @@ class Hitbox():
             translated.append(Vec(trans_x, trans_y))
         self.original_vertices = translated
 
-
     def __update_rotation(self) -> None:
         cos_a = cos(self.angle_rad)
         sin_a = sin(self.angle_rad)
         rotated = []
 
         for p in self.original_vertices:
-            rotated_x = p.x * cos_a - p.y * sin_a
-            rotated_y = p.x * sin_a + p.y * cos_a
+            rotated_x = p.x * cos_a + p.y * sin_a
+            rotated_y = p.x * sin_a - p.y * cos_a
             rotated.append(Vec(rotated_x, rotated_y))
         self.vertices = rotated
 
@@ -80,7 +201,25 @@ class Hitbox():
         dots = [point.dot(axis) for point in self.get_hitbox()]
         return Vec(min(dots), max(dots))
 
-    def is_colliding(self, other: Self) -> bool:
+    def expand(self, factor: float) -> None:
+        new_vertices = []
+        for vertex in self.original_vertices:
+            new_vertices.append(vertex * factor)
+        self.original_vertices = new_vertices
+
+    def is_colliding(self, other: Hitbox) -> bool:
+        if isinstance(other, SimpleCircleHitbox):
+            return other.is_colliding(self)
+        elif isinstance(other, CircleHitbox):
+            return other._is_colliding_with_polygon(self)
+        elif isinstance(other, RectHitbox):
+            return other._is_colliding_with_polygon(self)
+        elif isinstance(other, PolygonalHitbox):
+            return self._is_colliding_with_polygon(other)
+        else:
+            raise TypeError(f"Uhhhhh... How did we get here?")
+
+    def _is_colliding_with_polygon(self, other: PolygonalHitbox) -> bool:
         # apparently this method is called the Separating Axis Theorem
         axies = []
 
@@ -102,4 +241,10 @@ class Hitbox():
 
         return True # all projections overlap
 
-__all__ = ["Hitbox"]
+__all__ = [
+    "Hitbox",
+    "SimpleCircleHitbox",
+    "CircleHitbox",
+    "RectHitbox",
+    "PolygonalHitbox"
+]

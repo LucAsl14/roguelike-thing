@@ -25,7 +25,7 @@ class Game(metaclass=Singleton):
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.time = pygame.time.get_ticks() / 1000
-        self.dt = self.clock.tick(0) / 1000
+        self.dt = 0.0167
         self.fps = 0
         self.timestamp = 0
 
@@ -63,7 +63,7 @@ class Game(metaclass=Singleton):
                 self.ctx.end_frame()
             pygame.display.flip()
 
-            self.dt = self.clock.tick(0) / 1000
+            self.dt = self.clock.tick(FPS) / 1000
             self.fps = self.clock.get_fps()
             if not Debug.paused():
                 self.timestamp += 1

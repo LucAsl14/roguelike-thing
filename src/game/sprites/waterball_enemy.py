@@ -1,7 +1,6 @@
 from __future__ import annotations
 from src.core import *
-from .enemy import Enemy
-from .spells import Waterball
+from src.game.sprites.common import Enemy
 
 class WaterballEnemy(Enemy):
     def __init__(self, scene: MainScene, pos: Vec) -> None:
@@ -22,7 +21,4 @@ class WaterballEnemy(Enemy):
 
     def update_attack(self, dt: float) -> None:
         if self.get_player_distance() > 100 and self.shooting_cooldown.done:
-            waterball = Waterball(self.scene, Vec(1, 0).rotate(degrees(self.get_player_direction())), "enemy")
-            self.scene.add(waterball)
-            waterball.pos = self.pos.copy()
             self.shooting_cooldown.reset()

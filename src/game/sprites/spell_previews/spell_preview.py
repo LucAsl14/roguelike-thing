@@ -18,7 +18,6 @@ class SpellPreview(Sprite):
         pass
 
     def trigger_spell(self) -> None:
+        # Only spend the spell from the queue, but don't spawn the actual spell
         self.scene.player.spell_queue.spend_top_spell()
-        spell = self.spell(self.scene, self.game.mouse_pos - self.scene.player.screen_pos, "player", *self.args)
-        self.scene.add(spell)
-        spell.trigger_spell()
+        # Removed spell spawning code

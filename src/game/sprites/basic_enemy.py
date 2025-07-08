@@ -1,6 +1,7 @@
 from __future__ import annotations
 from src.core import *
-from .enemy import Enemy
+from src.game.sprites.common import Enemy
+
 class BasicEnemy(Enemy):
     def __init__(self, scene: MainScene, pos: Vec) -> None:
         super().__init__(scene, 25, pos)

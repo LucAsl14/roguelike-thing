@@ -1,54 +1,62 @@
 from __future__ import annotations
 from src.core import *
-from .projectile import Projectile
-from pygame import Surface
+from src.game.sprites.common import *
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from ..enemy import Enemy
-class Waterball(Projectile):
-    def __init__(self, scene: MainScene, target_posdiff: Vec, origin: str) -> None:
-        super().__init__(scene, target_posdiff, 5, 400, 1.5, 10, "water", 20, origin)
+class Waterball(Spell):
+    def __init__(self, scene: MainScene) -> None:
+        super().__init__(scene)
+        self.set_charge_time(1.5)
+
+        player_pos = self.get(self.scene.player, "pos")
+        projectile = self.add_action("create", WaterProjectile, self.scene.player, player_pos)
+        self.add_action("charge", projectile)
+        self.add_action("call", projectile, "release", self["initial_mouse_pos"])
+
+# NOTE: explosion is done inside the WaterProjectile class as it is something
+# the projectile does of its own accord, not something the spell does. This is
+# NOT the case for charging, as a waterball can very well be summoned without
+# having been charged first. The spell MAY control the explosion if it is part
+# of the functionality of the spell (i.e. the spellcaster MAKES the ball
+# explode), and/or if there are situations where ball may not explode if it did
+# not come from a spell.
+
+# This is just a decision made somewhat arbitrarily, if you think the charging
+# behavior of the water projectile would never be decoupled from the projectile
+# itself, then it would make sense to move the charging behavior entirely to
+# within the WaterProjectile class.
+
+class WaterProjectile(Projectile):
+    def __init__(self, scene: MainScene, master: Entity, pos: Vec) -> None:
+        super().__init__(scene, master, pos, 1, 5)
+        self.set_kill_on_collision(True)
+        self.radius = 0
         self.exploding = False
         self.exploding_timer = Timer(0.1)
 
-    def draw_charge(self, screen: Surface) -> None:
-        pygame.draw.circle(screen, WATER, self.screen_pos, self.rad * self.charging_time.progress)
-
-    def update_spell(self, dt: float) -> None:
-        super().update_spell(dt)
+    def update(self, dt: float) -> None:
         if self.exploding:
-            self.rad = 20 + 180 * self.exploding_timer.progress
+            self.radius = 20 + 100 * self.exploding_timer.progress
             if self.exploding_timer.done:
-                # testing an exploding mechanic
-                self.hitbox.set_size_rad(200)
-                for construct in self.get_nearby_constructs():
-                    if self.pos.distance_to(construct.pos) < self.rad + construct.size.magnitude() \
-                       and self.hitbox.is_colliding(construct.hitbox):
-                        construct.take_damage(10)
-                for projectile in self.get_nearby_projectiles():
-                    if self.pos.distance_to(projectile.pos) < self.rad + projectile.rad \
-                       and projectile.element != self.element and self.hitbox.is_colliding(projectile.hitbox):
-                        projectile.take_damage(10)
-                if self.origin != "enemy":
-                    for enemy in self.get_nearby_entities():
-                        if isinstance(enemy, Enemy):
-                            if self.pos.distance_to(enemy.pos) < self.rad + enemy.size.magnitude() \
-                            and self.hitbox.is_colliding(enemy.hitbox):
-                                enemy.take_damage(10)
-                if self.origin != "player":
-                    player = self.scene.player
-                    if self.pos.distance_to(player.pos) < self.rad + player.size.magnitude() \
-                       and self.hitbox.is_colliding(player.hitbox):
-                        player.take_damage(10)
+                self.hitbox.expand(10)
+                for entity in self.get_colliding_entities():
+                    entity.take_damage(10)
                 super().kill()
+                return
 
+        super().update(dt)
 
-    def draw_spell(self, screen: Surface) -> None:
-        pygame.draw.circle(screen, WATER, self.screen_pos, self.rad)
+    def charge(self, progress: float) -> None:
+        self.radius = 20 * progress
+
+    def release(self, mouse_pos: Vec) -> None:
+        self.radius = 20
+        self.apply_impulse((mouse_pos - self.pos).normalize() * 400)
+
+    def draw(self, target: pygame.Surface) -> None:
+        pygame.draw.circle(target, WATER, self.screen_pos, self.radius)
 
     def kill(self) -> None:
         if not self.exploding:
+            self.exploding = True
             self.exploding_timer.reset()
-        self.exploding = True
-        self.vel = Vec()
+        self.apply_impulse(-self.vel)

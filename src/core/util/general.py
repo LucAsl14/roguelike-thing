@@ -92,7 +92,7 @@ def iter_rect(left: int, right: int, top: int, bottom: int) -> Iterable[IntCoord
     """
     for x in range(int(left), int(right) + 1):
         for y in range(int(top), int(bottom) + 1):
-            yield cast(IntCoord, Vec(x, y))
+            yield (x, y)
 
 def iter_square(size: int) -> Iterable[IntCoord]:
     """Iterate over the coordinates of a square.
@@ -117,6 +117,47 @@ class Singleton(Generic[T], type):
             cls._instance = super().__call__(*args, **kwargs)
         return cast(T, cls._instance)
 
+def circle_surface(radius: int, color: Color) -> pygame.Surface:
+    """Create a circular surface with a given radius and color.
+
+    Args:
+        radius: The radius of the circle.
+        color: The color of the circle.
+
+    Returns:
+        A pygame.Surface with the given circle inscribed in it.
+    """
+    surface = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+    pygame.draw.circle(surface, color, (radius, radius), radius)
+    return surface
+
+def rect_surface(width: int, height: int, color: Color) -> pygame.Surface:
+    """Create a rectangular surface with a given width, height, and color.
+
+    Args:
+        width: The width of the rectangle.
+        height: The height of the rectangle.
+        color: The color of the rectangle.
+
+    Returns:
+        A pygame.Surface of the specified size filled with the given color.
+    """
+    surface = pygame.Surface((width, height), pygame.SRCALPHA)
+    surface.fill(color)
+    return surface
+
+def square_surface(size: int, color: Color) -> pygame.Surface:
+    """Create a square surface with a given size and color.
+
+    Args:
+        size: The size of the square.
+        color: The color of the square.
+
+    Returns:
+        A pygame.Surface of the specified size filled with the given color.
+    """
+    return rect_surface(size, size, color)
+
 __all__ = [
     "pathof",
     "ref_proxy",
@@ -126,4 +167,7 @@ __all__ = [
     "iter_rect",
     "iter_square",
     "Singleton",
+    "circle_surface",
+    "rect_surface",
+    "square_surface",
 ]

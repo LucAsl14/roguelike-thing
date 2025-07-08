@@ -17,32 +17,24 @@ class MainScene(Scene):
         super().__init__(game)
         self.player = Player(self)
         self.camera = Camera(self, self.player)
-        self.border = WorldBorder(self)
         self.add(self.player)
         self.add(self.camera)
-        self.add(self.border)
-        self.constructs: list[Construct] = []
-        self.projectiles: list[Projectile] = []
-        self.enemies: list[Enemy] = []
-        self.collideable_buckets = defaultdict(lambda: defaultdict(list))
-        self.BUCKET_GRID_SIZE = 64
+        # self.constructs: list[Construct] = []
+        # self.projectiles: list[Projectile] = []
+        # self.enemies: list[Enemy] = []
+        self.entity_buckets = defaultdict(list)
 
         # self.add(TerrainBackground(self))
+
+    def preupdate(self, dt: float) -> None:
+        self.entity_buckets = defaultdict(list)
 
     def predraw(self, screen: pygame.Surface) -> None:
         screen.fill((120, 160, 80))
 
-        self.collideable_buckets = defaultdict(lambda: defaultdict(list))
-        for construct in self.constructs:
-            key = self.spacial_hash_key(construct.pos)
-            self.collideable_buckets[key]["construct"].append(construct)
-        for projectile in self.projectiles:
-            key = self.spacial_hash_key(projectile.pos)
-            self.collideable_buckets[key]["projectile"].append(projectile)
-        for enemy in self.enemies:
-            key = self.spacial_hash_key(enemy.pos)
-            self.collideable_buckets[key]["entity"].append(enemy)
-        self.collideable_buckets[self.spacial_hash_key(self.player.pos)]["entity"].append(self.player)
-
     def spacial_hash_key(self, pos: Vec) -> Vec:
-        return Vec(pos.x // self.BUCKET_GRID_SIZE, pos.y // self.BUCKET_GRID_SIZE)
+        return Vec(pos.x // BUCKET_GRID_SIZE, pos.y // BUCKET_GRID_SIZE)
+
+    @property
+    def world_mouse_pos(self) -> Vec:
+        return self.game.mouse_pos + self.camera.pos

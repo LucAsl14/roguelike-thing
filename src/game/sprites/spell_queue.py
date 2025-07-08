@@ -1,15 +1,5 @@
 from __future__ import annotations
 from src.core import *
-from .spells import Fireball
-from .spells import EarthBlock
-from .spells import Waterball
-from .spells import Gust
-from .spells import StoneCannon
-from .spells import Steam
-from .spells import Mud
-from .spells import Whirlpool
-from .spells import Rollout
-from .spells import WallOfFire
 from .spell_previews import LinePreview, AreaPreview, RectPreview, GustPreview
 class SpellQueue(Sprite):
     def __init__(self, scene: MainScene) -> None:
@@ -19,6 +9,9 @@ class SpellQueue(Sprite):
         self.cursor_timer = LoopTimer(0.5, -1)
         self.cursor_blink_on = True
         self.aiming_spell = None
+        def placeholder_spell(*args, **kwargs):
+            pass
+
         self.spell_list = {
             "j": {
                 "aiming": {
@@ -26,7 +19,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [],
                 },
-                "spell": Waterball
+                "spell": placeholder_spell
             },
             "k": {
                 "aiming": {
@@ -34,7 +27,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [Vec(50, 40)],
                 },
-                "spell": EarthBlock
+                "spell": placeholder_spell
             },
             "i": {
                 "aiming": {
@@ -42,7 +35,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [Vec(160, 380), 50],
                 },
-                "spell": Gust
+                "spell": placeholder_spell
             },
             "l":  {
                 "aiming": {
@@ -50,7 +43,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [],
                 },
-                "spell": Fireball
+                "spell": placeholder_spell
             },
             "kl": {
                 "aiming": {
@@ -58,7 +51,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [],
                 },
-                "spell": StoneCannon
+                "spell": placeholder_spell
             },
             "jl": {
                 "aiming": {
@@ -66,7 +59,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [250],
                 },
-                "spell": Steam
+                "spell": placeholder_spell
             },
             "jk": {
                 "aiming": {
@@ -74,7 +67,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [125],
                 },
-                "spell": Mud
+                "spell": placeholder_spell
             },
             "ij": {
                 "aiming": {
@@ -82,7 +75,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [145],
                 },
-                "spell": Whirlpool
+                "spell": placeholder_spell
             },
             "ik": {
                 "aiming": {
@@ -90,7 +83,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [],
                 },
-                "spell": Rollout
+                "spell": placeholder_spell
             },
             "il": {
                 "aiming": {
@@ -98,7 +91,7 @@ class SpellQueue(Sprite):
                     "cooldown": 5,
                     "args": [20],
                 },
-                "spell": WallOfFire
+                "spell": placeholder_spell
             },
         }
 

@@ -2,18 +2,20 @@ from __future__ import annotations
 from src.core import *
 
 from .inventory import Inventory
-from .spells import TestDecoration
 from .basic_enemy import BasicEnemy
 from .waterball_enemy import WaterballEnemy
 from .spell_queue import SpellQueue
-from .entity import Entity
+from src.game.sprites.common import Entity
+from .spells.waterball import Waterball
+from .spells.fireball import Fireball
+from .spells.wall_of_fire import WallOfFire
+
 class Player(Entity):
     def __init__(self, scene: MainScene) -> None:
-        super().__init__(scene, 0, Image.get("player"), Vec())
+        size = Vec(Image.get("player").size)
+        super().__init__(scene, "DEFAULT", PolygonalHitbox.from_rect(Vec(), size.x, size.y), 100)
         # band-aid fix to scene not considered MainScene
         self.scene = scene
-
-        self.CONST_ACCEL = 3000
 
         # inventory
         self.inventory = Inventory(self.scene)
@@ -35,30 +37,23 @@ class Player(Entity):
 
     def draw(self, target: pygame.Surface) -> None:
         target.blit(Font.get("font18").render(str(self.hp), False, (80, 80, 80)), (0, 0))
-        super().draw(target)
-
+        self.draw_centered(target, Image.get("player"))
 
     def update_keys(self, dt: float) -> None:
         self.keys = pygame.key.get_pressed()
 
         # movement keys
-        if self.keys[K_w] and self.keys[K_s]:
-            self.acc.y = -sign(self.vel.y) * self.CONST_ACCEL
-        elif self.keys[K_w]:
-            self.acc.y = -self.CONST_ACCEL
-        elif self.keys[K_s]:
-            self.acc.y = self.CONST_ACCEL
-        else:
-            self.acc.y = 0
-
-        if self.keys[K_a] and self.keys[K_d]:
-            self.acc.x = -sign(self.vel.x) * self.CONST_ACCEL
-        elif self.keys[K_d]:
-            self.acc.x = self.CONST_ACCEL
-        elif self.keys[K_a]:
-            self.acc.x = -self.CONST_ACCEL
-        else:
-            self.acc.x = 0
+        if self.keys[K_w]:
+            self.apply_force(Vec(0, -PLAYER_ACC))
+        if self.keys[K_s]:
+            self.apply_force(Vec(0, PLAYER_ACC))
+        if self.keys[K_a]:
+            self.apply_force(Vec(-PLAYER_ACC, 0))
+        if self.keys[K_d]:
+            self.apply_force(Vec(PLAYER_ACC, 0))
+        # Losing ~99.9% of the velocity after 1 second
+        # k = -ln(1 - 0.999) = ~6.9
+        self.apply_force(-self.vel * 6.9)
 
         # spell keys
         if KEYDOWN in self.game.events:
@@ -83,27 +78,8 @@ class Player(Entity):
                     if removed != "" and removed != " ":
                         self.inventory.add(removed)
 
-        # press a button to make decorations lol (NOT a feature)
-        if self.keys[K_q]:
-            if uniform(0, 10) < 3:
-                self.scene.add(TestDecoration(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
-            if uniform(0, 10) < 1:
-                self.scene.add(BasicEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
-            if uniform(0, 100) < 4:
-                self.scene.add(WaterballEnemy(self.scene, self.pos + (uniform(-1000, 1000), uniform(-1000, 1000))))
-        if Debug.on():
-            # debug key
-            if self.keys[K_p]:
-                Log.debug(self.scene.projectiles)
-            # world border keys
-            if self.keys[K_r]:
-                self.scene.border.schedule_move_to(Vec(0), 1000, 1, 10)
-            if self.keys[K_t]:
-                self.scene.border.schedule_move_to(None, 100, 10, 10)
-            if self.keys[K_y]:
-                self.scene.border.schedule_move_to(Vec(1000, 0), None, 5, 10)
-            if self.keys[K_u]:
-                self.scene.border.schedule_move_to(Vec(-1000, -1000), 50, 15, 10)
+        if self.game.key_down == pygame.K_q:
+            self.scene.add(WallOfFire(self.scene))
 
     def update_surroundings(self) -> None:
         # something something about generating decorations im too lazy

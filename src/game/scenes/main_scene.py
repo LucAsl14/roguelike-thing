@@ -1,7 +1,11 @@
 from __future__ import annotations
+
+from pygame import Surface
 from src.core import *
+from src.game.sprites.common import Entity
 from src.game.sprites import *
 from collections import defaultdict
+
 class MainScene(Scene):
     _layers = [
         LayerGroup.record().add(
@@ -22,15 +26,21 @@ class MainScene(Scene):
         # self.constructs: list[Construct] = []
         # self.projectiles: list[Projectile] = []
         # self.enemies: list[Enemy] = []
-        self.entity_buckets = defaultdict(list)
+        self.entity_buckets = defaultdict(list[Entity])
 
         # self.add(TerrainBackground(self))
 
     def preupdate(self, dt: float) -> None:
-        self.entity_buckets = defaultdict(list)
+        self.entity_buckets = defaultdict(list[Entity])
 
     def predraw(self, screen: pygame.Surface) -> None:
         screen.fill((120, 160, 80))
+
+    def postdraw(self, screen: Surface) -> None:
+        if Debug.on():
+            for bucket in self.entity_buckets.values():
+                for entity in bucket:
+                    entity.hitbox.draw(screen, self.camera.pos)
 
     def spacial_hash_key(self, pos: Vec) -> Vec:
         return Vec(pos.x // BUCKET_GRID_SIZE, pos.y // BUCKET_GRID_SIZE)

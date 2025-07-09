@@ -3,6 +3,7 @@ from .vector import Vec
 from typing import List
 from math import radians, cos, sin, pi
 from abc import ABC as AbstractClass, abstractmethod
+import pygame
 
 class Hitbox(AbstractClass):
     def __init__(self, center: Vec, size: Vec) -> None:
@@ -32,6 +33,11 @@ class Hitbox(AbstractClass):
         """Check if this hitbox is colliding with another hitbox."""
         pass
 
+    @abstractmethod
+    def draw(self, target: pygame.Surface, camera_pos: Vec) -> None:
+        """Draw the hitbox for debugging purposes."""
+        pass
+
 class SimpleCircleHitbox(Hitbox):
     # Forces all other hitboxes to performance approx. circle-circle collision
     def __init__(self, center: Vec, rad: int) -> None:
@@ -53,6 +59,9 @@ class SimpleCircleHitbox(Hitbox):
             return dist < self.radius + (other.size.x + other.size.y) / 2
         else:
             raise TypeError(f"Uhhhhh... How did we get here?")
+
+    def draw(self, target: pygame.Surface, camera_pos: Vec) -> None:
+        pygame.draw.circle(target, (255, 0, 0), self.center - camera_pos, self.radius, 2)
 
 class CircleHitbox(Hitbox):
     # Actually performs proper circle-anything collision
@@ -80,6 +89,9 @@ class CircleHitbox(Hitbox):
 
     def _is_colliding_with_polygon(self, other: PolygonalHitbox) -> bool:
         return False # TODO: Implement accurate circle-polygon collision
+
+    def draw(self, target: pygame.Surface, camera_pos: Vec) -> None:
+        pygame.draw.circle(target, (255, 0, 0), self.center - camera_pos, self.radius, 2)
 
 class RectHitbox(Hitbox):
     def __init__(self, center: Vec, width: float, height: float) -> None:
@@ -120,6 +132,9 @@ class RectHitbox(Hitbox):
     def _is_colliding_with_polygon(self, other: PolygonalHitbox) -> bool:
         poly = PolygonalHitbox.from_rect(self.center, self.width, self.height)
         return other.is_colliding(poly)
+
+    def draw(self, target: pygame.Surface, camera_pos: Vec) -> None:
+        pygame.draw.rect(target, (255, 0, 0), (self.left - camera_pos.x, self.top - camera_pos.y, self.width, self.height), 2)
 
 class PolygonalHitbox(Hitbox):
     """
@@ -240,6 +255,9 @@ class PolygonalHitbox(Hitbox):
                 return False # a projection doesn't overlap
 
         return True # all projections overlap
+
+    def draw(self, target: pygame.Surface, camera_pos: Vec) -> None:
+        pygame.draw.polygon(target, (255, 0, 0), [self.center + v - camera_pos for v in self.get_hitbox()], 2)
 
 __all__ = [
     "Hitbox",

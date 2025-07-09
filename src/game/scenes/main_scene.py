@@ -19,6 +19,7 @@ class MainScene(Scene):
 
     def __init__(self, game: Game) -> None:
         super().__init__(game)
+        self.entity_buckets = defaultdict(list[Entity])
         self.player = Player(self)
         self.camera = Camera(self, self.player)
         self.add(self.player)
@@ -26,12 +27,8 @@ class MainScene(Scene):
         # self.constructs: list[Construct] = []
         # self.projectiles: list[Projectile] = []
         # self.enemies: list[Enemy] = []
-        self.entity_buckets = defaultdict(list[Entity])
 
         # self.add(TerrainBackground(self))
-
-    def preupdate(self, dt: float) -> None:
-        self.entity_buckets = defaultdict(list[Entity])
 
     def predraw(self, screen: pygame.Surface) -> None:
         screen.fill((120, 160, 80))

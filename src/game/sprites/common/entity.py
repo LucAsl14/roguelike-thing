@@ -17,6 +17,9 @@ class Entity(Sprite):
 
         # movement-related variables
         self.pos = hitbox.center.copy()
+        self.prev_pos = self.pos.copy()
+        self.prev_hash = self.scene.spacial_hash_key(self.pos)
+        self.scene.entity_buckets[self.prev_hash].append(self)
         self.vel = Vec()
         self.acc = Vec()
 
@@ -42,9 +45,14 @@ class Entity(Sprite):
         self.pos += self.vel * dt
         self.hitbox.set_position(self.pos)
         self.hitbox.set_rotation(self.angle)
-        self.scene.entity_buckets[self.scene.spacial_hash_key(self.pos)].append(self)
+        hash = self.scene.spacial_hash_key(self.pos)
+        if hash != self.prev_hash:
+            self.scene.entity_buckets[self.prev_hash].remove(self)
+            self.scene.entity_buckets[hash].append(self)
 
         self.acc = Vec()
+        self.prev_pos = self.pos.copy()
+        self.prev_hash = hash
 
     def apply_force(self, force: Vec) -> None:
         self.acc += force

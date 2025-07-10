@@ -36,7 +36,6 @@ class Player(Entity):
         self.update_surroundings()
 
     def draw(self, target: pygame.Surface) -> None:
-        target.blit(Font.get("font18").render(str(self.hp), False, (80, 80, 80)), (0, 0))
         self.draw_centered(target, Image.get("player"))
 
     def update_keys(self, dt: float) -> None:

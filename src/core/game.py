@@ -90,8 +90,10 @@ class Game(metaclass=Singleton):
             match self.events[KEYDOWN].key:
                 case pygame.K_F1:
                     Debug.toggle_paused(self)
-                case pygame.K_F3:
+                case pygame.K_F2:
                     Debug.launch_tkinter_tree(self)
+                case pygame.K_F3:
+                    Debug.toggle_visibility()
 
         if Debug.on():
             pygame.display.set_caption(f"{TITLE} - FPS: {self.fps:.1f}")

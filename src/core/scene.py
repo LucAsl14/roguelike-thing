@@ -44,7 +44,10 @@ class Scene(AbstractClass):
         self.predraw(self.layer_groups[0].surface)
         for group in self.layer_groups[:-1]:
             group.draw()
-        self.layer_groups[-1].draw(self.postdraw)
+        if Debug.on():
+            self.layer_groups[-1].draw(self.postdraw, lambda scene: Debug.draw(self.game, scene))
+        else:
+            self.layer_groups[-1].draw(self.postdraw)
 
     def add(self, sprite: Sprite) -> None:
         self.layers[sprite.layer].add(sprite)

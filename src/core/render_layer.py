@@ -80,11 +80,11 @@ class LayerGroup:
         for layer in self.layers:
             layer.update(dt)
 
-    def draw(self, callback: Callable[[pygame.Surface], None] = None) -> None:
+    def draw(self, *callbacks: Callable[[pygame.Surface], None]) -> None:
         for layer in self.layers:
             layer.draw(self.surface)
 
-        if callback:
+        for callback in callbacks:
             callback(self.surface)
 
         self.image.write(pygame.image.tobytes(self.surface, "RGBA", True))

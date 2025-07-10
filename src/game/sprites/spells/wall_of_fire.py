@@ -48,7 +48,6 @@ class WallOfFireSegment(Entity):
         if self.damage_timer.done:
             for entity in self.get_colliding_entities():
                 entity.take_damage(1)
-                Log.debug("oisdjfsoidfjsdiojf why doesn't this print")
 
         super().update_position(dt)
 

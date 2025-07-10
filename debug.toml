@@ -1,0 +1,7 @@
+debug = true
+info = true
+warn = true
+error = true
+
+[entries]
+hp = "scene.player.hp"

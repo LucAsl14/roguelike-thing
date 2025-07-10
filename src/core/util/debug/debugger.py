@@ -126,6 +126,8 @@ class Debug:
         except KeyError:
             return False
 
+    _debug_entries: Optional[dict[str, str]] = {}
+    _debug_font = None
     _visible = True
     _paused = False
     _pause_start = 0
@@ -277,5 +279,30 @@ class Debug:
 
         root.protocol("WM_DELETE_WINDOW", on_close)
         root.mainloop()
+
+    @staticmethod
+    @requires_debug()
+    def draw(game: Game, target: pygame.Surface) -> None:
+        if not Debug._visible: return
+
+        Debug._debug_entries = Debug.get_config_option("entries")
+        if Debug._debug_entries is None: return
+
+        # Define locals
+        scene = game.scene
+
+        if Debug._debug_font is None:
+            Debug._debug_font = pygame.font.SysFont("monospace", 16)
+
+        lines = chain([("fps", f"{game.fps:.1f}")],
+                       Debug._debug_entries.items())
+        for i, (name, source) in enumerate(lines):
+            try:
+                value = eval(source)
+            except Exception as e:
+                value = f"ERROR: {e}"
+            text = Debug._debug_font.render(f"{name}: {value}", True, (255, 255, 255), (0, 0, 0))
+            text.set_alpha(150)
+            target.blit(text, (0, i * 19))
 
 __all__ = ["Debug"]

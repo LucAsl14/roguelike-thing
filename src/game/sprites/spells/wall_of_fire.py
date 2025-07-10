@@ -39,8 +39,8 @@ class WallOfFireSegment(Entity):
     # NOTE: This could just become a reusable fire area effect
     def __init__(self, scene: MainScene, pos: Vec) -> None:
         super().__init__(scene, "GROUND", SimpleCircleHitbox(pos, 15), 1)
-        self.set_movability(1.0) # immovable
-        self.set_solidness(1.0) # (does not push out other entities)
+        self.set_movability(0.0) # immovable
+        self.set_solidness(0.0) # (does not push out other entities)
         self.set_collision_ignore_classes(WallOfFireSegment)
         self.pos = pos
         self.damage_timer = LoopTimer(0.2)

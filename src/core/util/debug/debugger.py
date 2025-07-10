@@ -126,7 +126,6 @@ class Debug:
         except KeyError:
             return False
 
-    _debug_entries: Optional[dict[str, str]] = {}
     _debug_font = None
     _visible = True
     _paused = False
@@ -280,39 +279,26 @@ class Debug:
         root.protocol("WM_DELETE_WINDOW", on_close)
         root.mainloop()
 
-    _extra_lines = []
+    _entries: dict[str, Any] = {}
 
     @staticmethod
     @requires_debug()
     def add_entry(name: str, value: Any) -> None:
-        Debug._extra_lines.append((name, f"'{value}'"))
+        Debug._entries[name] = value
 
     @staticmethod
     @requires_debug()
-    def draw(game: Game, target: pygame.Surface) -> None:
+    def draw(target: pygame.Surface) -> None:
         if not Debug._visible: return
-
-        Debug._debug_entries = Debug.get_config_option("entries")
-        if Debug._debug_entries is None: return
-
-        # Define locals
-        scene = game.scene
 
         if Debug._debug_font is None:
             Debug._debug_font = pygame.font.SysFont("monospace", 16)
 
-        lines = chain([("fps", f"{game.fps:.1f}")],
-                       Debug._extra_lines,
-                       Debug._debug_entries.items())
-        for i, (name, source) in enumerate(lines):
-            try:
-                value = eval(source)
-            except Exception as e:
-                value = f"ERROR: {e}"
+        for i, (name, value) in enumerate(Debug._entries.items()):
             text = Debug._debug_font.render(f"{name}: {value}", True, (255, 255, 255), (0, 0, 0))
             text.set_alpha(150)
             target.blit(text, (0, i * 19))
 
-        Debug._extra_lines = []
+        Debug._entries.clear()
 
 __all__ = ["Debug"]

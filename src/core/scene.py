@@ -45,7 +45,7 @@ class Scene(AbstractClass):
         for group in self.layer_groups[:-1]:
             group.draw()
         if Debug.on():
-            self.layer_groups[-1].draw(self.postdraw, lambda scene: Debug.draw(self.game, scene))
+            self.layer_groups[-1].draw(self.postdraw, Debug.draw)
         else:
             self.layer_groups[-1].draw(self.postdraw)
 

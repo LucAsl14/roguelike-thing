@@ -3,4 +3,4 @@ __pycache__/
 /dist/
 /debug/
 /.venv/
-# /debug.toml
+/debug.toml

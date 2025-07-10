@@ -28,18 +28,19 @@ class Entity(Sprite):
         self.size = hitbox.size.copy()
         self.angle = 0
 
-        self.no_collision = False  # if True, the entity will not collide with others
-        self.collision_ignore_entities: set[Entity] = set() # entities to ignore collisions with
+        self.no_collision = False
+        self.collision_ignore_entities: set[Entity] = set()
         # NOTE: This will be removed in favor of a default-ignore system that would be more performant
         # See note at the top of this file
-        self.collision_ignore_classes: tuple[type[Entity], ...] = tuple() # classes of entities to ignore collisions with
-        self.soft_collision = 0.0  # percentage of collision response to reduce
+        self.collision_ignore_classes: tuple[type[Entity], ...] = tuple()
+        self.solidness = 1.0
+        self.movability = 1.0
 
     def update_position(self, dt: float) -> None:
         # All of vel, acc, ext_vel, etc. are measured in unit/s
         for entity in self.get_colliding_entities():
-            collision_force = Vec((entity.pos - self.pos)).normalize() * 6000
-            self.apply_impulse(collision_force * (1 - entity.soft_collision))
+            collision_force = Vec((self.pos - entity.pos)).normalize() * 6000
+            self.apply_force(collision_force * self.movability * entity.solidness)
 
         self.vel += self.acc * dt
         self.pos += self.vel * dt
@@ -104,15 +105,16 @@ class Entity(Sprite):
         Setting this to True will skip all collision checks for this entity."""
         self.no_collision = yes
 
-    def set_soft_collision(self, percentage: float) -> None:
-        """Set the entity's soft collision percentage. (default: 0.0)
+    def set_solidness(self, solidness: float) -> None:
+        """Set how strongly the entity will push out other entities on collision.
 
-        This will reduce the collision response by the specified percentage.
+        0.0 means no push (the other entity enters it freely), 1.0 means full
+        push (preventing the other entity from entering the entity's hitbox)."""
+        self.solidness = solidness
 
-        ex.
-        - set_soft_collision(0.5) will reduce the collision response by 50%.
-        - set_soft_collision(1.0) will disable the collision response entirely
-        (note that this is different from `set_no_collision` as it still
-        processes collisions, but does not apply any collision response).
-        - set_soft_collision(0.0) will enable the full collision response"""
-        self.soft_collision = percentage
+    def set_movability(self, movability: float) -> None:
+        """Set how easily the entity is moved by other entities on collision.
+
+        0.0 means the entity will not be moved at all, 1.0 means it will be
+        moved at the same velocity as the other entity."""
+        self.movability = movability

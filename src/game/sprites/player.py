@@ -34,6 +34,8 @@ class Player(Entity):
         self.update_keys(dt)
         self.update_position(dt)
         self.update_surroundings()
+        Debug.add_entry("hp", self.hp)
+        Debug.add_entry("pos", self.pos)
 
     def draw(self, target: pygame.Surface) -> None:
         self.draw_centered(target, Image.get("player"))

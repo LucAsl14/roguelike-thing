@@ -116,5 +116,5 @@ class Entity(Sprite):
         """Set how easily the entity is moved by other entities on collision.
 
         0.0 means the entity will not be moved at all, 1.0 means it will be
-        moved at the same velocity as the other entity."""
+        moved will full force."""
         self.movability = movability

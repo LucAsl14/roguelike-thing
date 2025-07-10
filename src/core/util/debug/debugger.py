@@ -3,19 +3,16 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.core.game import Game
 
-from functools import lru_cache
-from typing import Any, Callable, Optional
 from src.core.util.timer import Time
-from itertools import chain
+from typing import Any, Callable
 from functools import wraps
 from tkinter import ttk
+from .logger import Log
 import tkinter as tk
 import tomllib
 import weakref
 import pygame
 import types
-import os
-import gc
 
 class ToolTip:
     def __init__(self, widget: tk.Widget):
@@ -43,33 +40,22 @@ class ToolTip:
         self.tipwindow = None
 
 class Debug:
-    """A simple debugging class that can be used to enable or disable debug
-    output in the game.
+    _categories: dict[str, bool] = {}
 
-    This class will dynamically read the `debug.toml` file and check if the
-    given debug type is enabled. If the file does not exist, the debug type
-    will be disabled.
-
-    Initial formatting of the `debug.toml` file should look like this:
-    ```toml
-    debug = true
-    info = true
-    warn = true
-    error = true
-    ```
-    """
+    try:
+        with open("debug.toml", "rb") as file:
+            data = tomllib.load(file)
+            _categories.update(data)
+    except FileNotFoundError:
+        pass # Debug is off
 
     @staticmethod
-    def on() -> bool:
-        return Debug.get_visibility("debug")
-
-    @staticmethod
-    def requires_debug(*types: str) -> Callable[..., Any]:
+    def requires_debug(*categories: str) -> Callable[..., Any]:
         """Any function decorated with this will only run if the given debug
-        type is enabled in the debug.toml file.
+        category is enabled.
 
         Args:
-            type: The type of debug to check for. Defaults to "debug".
+            category: The category of debug to check for. Defaults to "debug".
 
         Returns:
             The decorated function.
@@ -78,63 +64,43 @@ class Debug:
             ```python
             @Debug.requires_debug()
             def my_function():
-                print("This will only run if the 'debug' type is enabled.")
+                print("This will only run if the 'debug' category is enabled.")
 
-            @Debug.requires_debug("warn")
+            @Debug.requires_debug("hitbox")
             def my_function():
-                print("This will only run if the 'warn' type is enabled.")
+                print("This will only run if the 'hitbox' category is enabled.")
 
-            @Debug.requires_debug("info", "custom_type")
+            @Debug.requires_debug("info", "custom")
             def my_function():
-                print("This will only run if the 'info' and 'custom_type' types are both enabled.")
+                print("This will only run if the 'info' and 'custom' categories are both enabled.")
             ```
         """
-        types = types or ("debug",)
+        categories += ("debug",)
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             @wraps(func)
             def wrapper(*args, **kwargs) -> Any:
-                if Debug.get_visibility(*types):
+                if Debug.get_category(*categories):
                     return func(*args, **kwargs)
             return wrapper
         return decorator
 
     @staticmethod
-    def is_debug(*types: str) -> bool:
-        return Debug.get_visibility(*types)
-
-    _conf_cache = None
-    _conf_last_modified = None
-
-    @lru_cache(maxsize=1000)
-    @staticmethod
-    def get_config_option(name: str) -> Optional[Any]:
-        try:
-            last_modified = os.path.getmtime("debug.toml")
-            # Only read the file if it has been modified since the last read
-            if Debug._conf_cache is None or Debug._conf_last_modified != last_modified:
-                with open("debug.toml", "rb") as file:
-                    Debug._conf_cache = tomllib.load(file)
-                    Debug._conf_last_modified = last_modified
-            return Debug._conf_cache.get(name)
-        except FileNotFoundError:
-            return None
+    @requires_debug()
+    def toggle_category(category: str) -> None:
+        val = Debug._categories[category] = not Debug.get_category(category)
+        Log.info(f"Toggled debug category '{category}' to {val}")
 
     @staticmethod
-    def get_visibility(*types: str) -> bool:
-        try:
-            return all(Debug.get_config_option(type) for type in types)
-        except KeyError:
-            return False
+    def get_category(*categories: str) -> bool:
+        return all(Debug._categories.get(category, False)
+                   for category in categories)
+
+    on = get_category # alias
 
     _debug_font = None
-    _visible = True
     _paused = False
     _pause_start = 0
     _pause_time = 0
-
-    @staticmethod
-    def toggle_visibility() -> None:
-        Debug._visible = not Debug._visible
 
     @staticmethod
     def toggle_paused(game: Game) -> None:
@@ -282,15 +248,13 @@ class Debug:
     _entries: dict[str, Any] = {}
 
     @staticmethod
-    @requires_debug()
+    @requires_debug("info")
     def add_entry(name: str, value: Any) -> None:
         Debug._entries[name] = value
 
     @staticmethod
-    @requires_debug()
+    @requires_debug("info")
     def draw(target: pygame.Surface) -> None:
-        if not Debug._visible: return
-
         if Debug._debug_font is None:
             Debug._debug_font = pygame.font.SysFont("monospace", 16)
 

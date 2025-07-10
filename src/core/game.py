@@ -28,6 +28,7 @@ class Game(metaclass=Singleton):
         self.dt = 0.0167
         self.fps = 0
         self.timestamp = 0
+        self.f3_interrupted = False
 
         self.ctx = zengl.context()
 
@@ -92,8 +93,19 @@ class Game(metaclass=Singleton):
                     Debug.toggle_paused(self)
                 case pygame.K_F2:
                     Debug.launch_tkinter_tree(self)
-                case pygame.K_F3:
-                    Debug.toggle_visibility()
+
+        if self.keys[K_F3] and Debug.on():
+            if KEYDOWN in self.events:
+                if self.events[KEYDOWN].key != K_F3:
+                    self.f3_interrupted = True
+                    if self.events[KEYDOWN].key == K_b:
+                        Debug.toggle_category("hitbox")
+
+        if KEYUP in self.events and Debug.on():
+            if self.events[KEYUP].key == K_F3:
+                if not self.f3_interrupted:
+                    Debug.toggle_category("info")
+                self.f3_interrupted = False
 
         if Debug.on():
             pygame.display.set_caption(f"{TITLE} - FPS: {self.fps:.1f}")

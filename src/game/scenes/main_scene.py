@@ -34,7 +34,7 @@ class MainScene(Scene):
         screen.fill((120, 160, 80))
 
     def postdraw(self, screen: Surface) -> None:
-        if Debug.on():
+        if Debug.on("hitbox"):
             for bucket in self.entity_buckets.values():
                 for entity in bucket:
                     entity.hitbox.draw(screen, self.camera.pos)

@@ -1,5 +1,4 @@
 from datetime import datetime
-from .debugger import Debug
 from typing import Any
 
 class Log:
@@ -25,7 +24,6 @@ class Log:
     LOG_FILE = "debug/watch.txt"
 
     @staticmethod
-    @Debug.requires_debug("debug")
     def debug(*messages: str) -> None:
         level = f"{Log.OKBLUE}DEBUG{Log.ENDC}"
         timestamp = f"{Log.UNDERLINE}{Log.datetime()}{Log.ENDC}"
@@ -33,7 +31,6 @@ class Log:
         print(f"[{level} {timestamp}] {message}")
 
     @staticmethod
-    @Debug.requires_debug("info")
     def info(*messages: str) -> None:
         level = f"{Log.OKGREEN}INFO{Log.ENDC}"
         timestamp = f"{Log.UNDERLINE}{Log.datetime()}{Log.ENDC}"
@@ -41,7 +38,6 @@ class Log:
         print(f"[{level} {timestamp}] {message}")
 
     @staticmethod
-    @Debug.requires_debug("warn")
     def warn(*messages: str) -> None:
         level = f"{Log.WARNING}WARNING{Log.ENDC}"
         timestamp = f"{Log.UNDERLINE}{Log.datetime()}{Log.ENDC}"
@@ -49,7 +45,6 @@ class Log:
         print(f"[{level} {timestamp}] {message}")
 
     @staticmethod
-    @Debug.requires_debug("error")
     def error(*messages: str) -> None:
         level = f"{Log.FAIL}ERROR{Log.ENDC}"
         timestamp = f"{Log.UNDERLINE}{Log.datetime()}{Log.ENDC}"

@@ -206,6 +206,7 @@ class PolygonalHitbox(Hitbox):
         self.vertices = rotated
 
     def get_hitbox(self) -> List[Vec]:
+        """ Returns the actual hitbox vertices (in-world position) """
         real_hitbox = []
         for p in self.vertices:
             real_hitbox.append(p + self.center)
@@ -257,7 +258,7 @@ class PolygonalHitbox(Hitbox):
         return True # all projections overlap
 
     def draw(self, target: pygame.Surface, camera_pos: Vec) -> None:
-        pygame.draw.polygon(target, (255, 0, 0), [self.center + v - camera_pos for v in self.get_hitbox()], 2)
+        pygame.draw.polygon(target, (255, 0, 0), [v - camera_pos for v in self.get_hitbox()], 2)
 
 __all__ = [
     "Hitbox",
